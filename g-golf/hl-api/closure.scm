@@ -252,7 +252,16 @@
   (let ((value (g-value-ref g-value)))
     (case (g-value->g-type g-value)
       ((object)
-       (g-inst-cache-ref value))
+       (if (null-pointer? value)
+           #f
+           (or (g-inst-cache-ref value)
+               (let* ((module (resolve-module '(g-golf hl-api object)))
+                      (r-type (g-value->g-type-id g-value))
+                      (info (g-irepository-find-by-gtype r-type))
+                      (name (g-registered-type-info-get-type-name info))
+                      (c-name (g-name->class-name name))
+                      (type (module-ref module c-name)))
+                 (make type #:g-inst value)))))
       (else
        value))))
 
