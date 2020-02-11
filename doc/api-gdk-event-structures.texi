@@ -21,6 +21,7 @@ Events Structures — Data structures specific to each type of event
 @item @ref{<gdk-event-key>}
 @item @ref{<gdk-event-button>}
 @item @ref{<gdk-event-motion>}
+@item @ref{<gdk-event-crossing>}
 @end table
 @end indentedblock
 
@@ -62,6 +63,23 @@ Events Structures — Data structures specific to each type of event
 @item @ref{gdk-event-motion:root-coords}
 @item @ref{gdk-event-motion:x-root}
 @item @ref{gdk-event-motion:y-root}
+
+@item @ref{gdk-event-crossing:window}
+@c ;;gdk-event-crossing:send-event
+@c ;;gdk-event-crossing:subwindow
+@item @ref{gdk-event-crossing:time}
+@item @ref{gdk-event-crossing:coords}
+@item @ref{gdk-event-crossing:x}
+@item @ref{gdk-event-crossing:y}
+@item @ref{gdk-event-crossing:root-coords}
+@item @ref{gdk-event-crossing:x-root}
+@item @ref{gdk-event-crossing:y-root}
+@c ;;gdk-event-crossing:mode
+@c ;;gdk-event-crossing:notify-type
+@c ;;gdk-event-crossing:focus
+@item @ref{gdk-event-crossing:state}
+
+
 @end table
 @end indentedblock
 
@@ -111,6 +129,13 @@ Describes a button-press, button-release, 2button-press,
 @deftp Class <gdk-event-motion> (@ref{<gdk-event>})
 
 Describes a motion-notify event.
+@end deftp
+
+
+@anchor{<gdk-event-crossing>}
+@deftp Class <gdk-event-crossing> (@ref{<gdk-event>})
+
+Generated when the pointer enters or leaves a window.
 @end deftp
 
 
@@ -174,14 +199,14 @@ The time of the event in milliseconds.
 @item @emph{state}
 
 A list representing the state of the modifier keys (e.g. Control, Shift
-and Alt) and the pointer buttons@footnote{The @code{GdkModifierType} is
-obtained by introspection, from the "Gdk" namespace, when the (g-golf)
-module is imported (used). You may obtain its @code{<gi-flag>} instance
-doing @code{(gi-cache-ref 'flag 'gdk-modifier-type)}, and visualize its
-content using @code{describe}.} Please refer to the
-@uref{@value{UGDK-ModifierType}, enum GdkModifierType} section of the
-Gdk Reference Manual for a complete list and description of all modifier
-bit-flags.
+and Alt) and the pointer buttons. Please refer to the
+@uref{@value{UGDK-ModifierType}, enum GdkModifierType}@footnote{The
+@code{GdkModifierType} is obtained by introspection, from the "Gdk"
+namespace, when the (g-golf) module is imported (used). You may obtain
+its @code{<gi-flag>} instance doing @code{(gi-cache-ref 'flag
+'gdk-modifier-type)}, and visualize its content using @code{describe}.}
+section of the Gdk Reference Manual for a complete list and description
+of all modifier bit-flags.
 
 @item @emph{keyval}
 
@@ -248,14 +273,8 @@ The time of the event in milliseconds.
 @item @emph{state}
 
 A list representing the state of the modifier keys (e.g. Control, Shift
-and Alt) and the pointer buttons@footnote{The @code{GdkModifierType} is
-obtained by introspection, from the "Gdk" namespace, when the (g-golf)
-module is imported (used). You may obtain its @code{<gi-flag>} instance
-doing @code{(gi-cache-ref 'flag 'gdk-modifier-type)}, and visualize its
-content using @code{describe}.} Please refer to the
-@uref{@value{UGDK-ModifierType}, enum GdkModifierType} section of the
-Gdk Reference Manual for a complete list and description of all modifier
-bit-flags.
+and Alt) and the pointer buttons (see the @ref{gdk-event-key:state}
+description for some more information about @code{GdkModifierType}).
 
 @item @emph{button}
 
@@ -326,14 +345,8 @@ The time of the event in milliseconds.
 @item @emph{state}
 
 A list representing the state of the modifier keys (e.g. Control, Shift
-and Alt) and the pointer buttons@footnote{The @code{GdkModifierType} is
-obtained by introspection, from the "Gdk" namespace, when the (g-golf)
-module is imported (used). You may obtain its @code{<gi-flag>} instance
-doing @code{(gi-cache-ref 'flag 'gdk-modifier-type)}, and visualize its
-content using @code{describe}.} Please refer to the
-@uref{@value{UGDK-ModifierType}, enum GdkModifierType} section of the
-Gdk Reference Manual for a complete list and description of all modifier
-bit-flags.
+and Alt) and the pointer buttons (see the @ref{gdk-event-key:state}
+description for some more information about @code{GdkModifierType}).
 
 @item @emph{coords}
 
@@ -359,6 +372,75 @@ The x root window relative coordinate of the event.
 
 The y root window relative coordinate of the event.
 
+@end table
+@end indentedblock
+@end deffn
+
+
+@anchor{gdk-event-crossing:window}
+@anchor{gdk-event-crossing:time}
+@anchor{gdk-event-crossing:coords}
+@anchor{gdk-event-crossing:x}
+@anchor{gdk-event-crossing:y}
+@anchor{gdk-event-crossing:root-coords}
+@anchor{gdk-event-crossing:x-root}
+@anchor{gdk-event-crossing:y-root}
+@anchor{gdk-event-crossing:state}
+@deffn Method gdk-event-crossing:window (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:time (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:coords (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:x (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:y (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:root-coords (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:x-root (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:y-root (inst <gdk-event-crossing>)
+@deffnx Method gdk-event-crossing:state (inst <gdk-event-crossing>)
+
+Respectively returns the scheme representation of the content of the
+@var{inst} event crossing element, refered to by its name - the part of
+the method name that follows the semi-colon, which are:
+
+
+@indentedblock
+@table @code
+
+@item @emph{window}
+
+A pointer to the  @var{GdkWindow} that received the event.
+
+@item @emph{time}
+
+The time of the event in milliseconds.
+
+@item @emph{coords}
+
+The list of the x and y window relative coordinates of the event.
+
+@item @emph{x}
+
+The x window relative coordinate of the event.
+
+@item @emph{y}
+
+The y window relative coordinate of the event.
+
+@item @emph{root-coords}
+
+The list of the x and y root window relative coordinates of the event.
+
+@item @emph{x-root}
+
+The x root window relative coordinate of the event.
+
+@item @emph{y-root}
+
+The y root window relative coordinate of the event.
+
+@item @emph{state}
+
+A list representing the state of the modifier keys (e.g. Control, Shift
+and Alt) and the pointer buttons (see the @ref{gdk-event-key:state}
+description for some more information about @code{GdkModifierType}).
 @end table
 @end indentedblock
 @end deffn

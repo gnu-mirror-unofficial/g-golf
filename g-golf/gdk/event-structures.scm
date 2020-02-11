@@ -86,6 +86,22 @@
             gdk-event-motion:x-root
             gdk-event-motion:y-root
 
+            <gdk-event-crossing>
+            gdk-event-crossing:window
+            ;;gdk-event-crossing:send-event
+            ;;gdk-event-crossing:subwindow
+            gdk-event-crossing:time
+            gdk-event-crossing:coords
+            gdk-event-crossing:x
+            gdk-event-crossing:y
+            gdk-event-crossing:root-coords
+            gdk-event-crossing:x-root
+            gdk-event-crossing:y-root
+            ;;gdk-event-crossing:mode
+            ;;gdk-event-crossing:notify-type
+            ;;gdk-event-crossing:focus
+            gdk-event-crossing:state
+
             #;gdk-event-key-parse
 
             #;%gdk-event-key))
@@ -110,6 +126,9 @@
       3button-press
       3button-release)
      (make <gdk-event-button> #:event event))
+    ((enter-notify
+      leave-notify)
+     (make <gdk-event-crossing> #:event event))
     ((motion-notify)
      (make <gdk-event-motion> #:event event))
     (else
@@ -257,6 +276,56 @@
 (define-method (gdk-event-motion:y-root (self <gdk-event-motion>))
   (match (gdk-event-get-root-coords (!event self))
     ((x-root y-root) y-root)))
+
+
+;;;
+;;; Crossing
+;;;
+
+(define-class <gdk-event-crossing> (<gdk-event>))
+
+(define-method (initialize (self <gdk-event-crossing>) initargs)
+  (let ((event (or (get-keyword #:event initargs #f)
+                   (error "Missing #:event initarg: " initargs))))
+    (next-method)))
+
+(define-method (gdk-event-crossing:window (self <gdk-event-crossing>))
+  (gdk-event-get-window (!event self)))
+
+;;gdk-event-crossing:send-event
+;;gdk-event-crossing:subwindow
+
+(define-method (gdk-event-crossing:time (self <gdk-event-crossing>))
+  (gdk-event-get-time (!event self)))
+
+(define-method (gdk-event-crossing:coords (self <gdk-event-crossing>))
+  (gdk-event-get-coords (!event self)))
+
+(define-method (gdk-event-crossing:x (self <gdk-event-crossing>))
+  (match (gdk-event-get-coords (!event self))
+    ((x y) x)))
+
+(define-method (gdk-event-crossing:y (self <gdk-event-crossing>))
+  (match (gdk-event-get-coords (!event self))
+    ((x y) y)))
+
+(define-method (gdk-event-crossing:root-coords (self <gdk-event-crossing>))
+  (gdk-event-get-root-coords (!event self)))
+
+(define-method (gdk-event-crossing:x-root (self <gdk-event-crossing>))
+  (match (gdk-event-get-root-coords (!event self))
+    ((x-root y-root) x-root)))
+
+(define-method (gdk-event-crossing:y-root (self <gdk-event-crossing>))
+  (match (gdk-event-get-root-coords (!event self))
+    ((x-root y-root) y-root)))
+
+;;gdk-event-crossing:mode
+;;gdk-event-crossing:notify-type
+;;gdk-event-crossing:focus
+
+(define-method (gdk-event-crossing:state (self <gdk-event-crossing>))
+  (gdk-event-get-state (!event self)))
 
 
 ;;;
