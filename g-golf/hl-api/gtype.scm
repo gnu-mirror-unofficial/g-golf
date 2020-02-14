@@ -199,9 +199,10 @@
                      results)))))))
 
 (define-method (unref (self <gtype-instance>))
-  (let ((g-inst (!g-inst self)))
+  (let* ((g-inst (!g-inst self))
+         (prev-ref-count (g-object-ref-count g-inst)))
     (g-object-unref g-inst)
-    (when (= (g-object-ref-count g-inst) 0)
+    (when (= prev-ref-count 1)
       (g-inst-cache-remove! self)
       (set! (!g-inst self) #f))
     (values)))
@@ -219,15 +220,17 @@
   (hashq-remove! %g-inst-cache
                  (pointer-address (!g-inst self))))
 
-(define %g-inst-cache-show-prelude
-  "The g-inst cache entries are")
-
 (define* (g-inst-cache-show #:optional
                             (port (current-output-port)))
-  (format port "~A~%"
-          %g-inst-cache-show-prelude)
-  (letrec ((show (lambda (key value)
-                   (format port "  ~S  -  ~S~%"
-                           (!g-inst value)
-                           value))))
-    (g-inst-cache-for-each show)))
+  (let ((n-entry (hash-count (const #t) %g-inst-cache)))
+    (case n-entry
+      ((0)
+       (display "The g-inst cache is empty\n" port))
+      (else
+       (letrec ((show (lambda (key value)
+                        (format port "  ~S  -  ~S~%"
+                                (!g-inst value)
+                                value))))
+         (format port "The g-inst cache has ~A entry(ies):~%"
+                 n-entry)
+         (g-inst-cache-for-each show))))))
