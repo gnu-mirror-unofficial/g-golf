@@ -606,17 +606,19 @@
                                              %null-pointer
                                              (error "Invalid arg: " arg)))))))))
             ((array)
-             (match type-desc
-               ((array fixed-size is-zero-terminated param-n param-tag)
-                (if (and (eq? array 'c)
-                         (= fixed-size -1)
-                         is-zero-terminated
-                         (= param-n -1)
-                         (eq? param-tag 'utf8))
-                    (gi-argument-set! gi-argument-in 'v-pointer
-                                      (scm->gi arg 'strings))
-                    (warning "Unimplemented type - array;"
-                             (format #f "~S" type-desc))))))
+             (if (not arg)
+                 (if may-be-null?
+                     (gi-argument-set! gi-argument-in 'v-pointer #f)
+                     (error "Argument value not allowed: " #f))
+                 (match type-desc
+                   ((array fixed-size is-zero-terminated param-n param-tag)
+                    (case param-tag
+                      ((utf8)
+                       (gi-argument-set! gi-argument-in 'v-pointer
+                                         (scm->gi arg 'strings)))
+                      (else
+                       (warning "Unimplemented (prepare args-in) type - array;"
+                                (format #f "~S" type-desc))))))))
             ((glist
               gslist
               ghash
@@ -679,14 +681,9 @@
             ((array)
              (match type-desc
                ((array fixed-size is-zero-terminated param-n param-tag)
-                (if (and (eq? array 'c)
-                         (= fixed-size -1)
-                         is-zero-terminated
-                         (= param-n -1)
-                         (eq? param-tag 'utf8))
-                    (gi-argument-set! gi-argument-out 'v-pointer %null-pointer)
-                    (warning "Unimplemented type - array;"
-                             (format #f "~S" type-desc))))))
+                ;; (gi-argument-set! gi-argument-out 'v-pointer %null-pointer)
+                (warning "Unimplemented (prepare args-out) type - array;"
+                         (format #f "~S" type-desc)))))
             ((glist
               gslist
               ghash
@@ -732,14 +729,12 @@
       ((array)
        (match type-desc
          ((array fixed-size is-zero-terminated param-n param-tag)
-          (if (and (eq? array 'c)
-                   (= fixed-size -1)
-                   is-zero-terminated
-                   (= param-n -1)
-                   (eq? param-tag 'utf8))
-              (gi->scm (gi-argument-ref gi-argument-out 'v-pointer) 'strings)
-              (warning "Unimplemented type - array;"
-                       (format #f "~S" type-desc))))))
+          (case param-tag
+            ((utf8)
+             (gi->scm (gi-argument-ref gi-argument-out 'v-pointer) 'strings))
+            (else
+             (warning "Unimplemented (arg-out->scm) type - array;"
+                      (format #f "~S" type-desc)))))))
       ((glist
         gslist
         ghash
@@ -792,14 +787,12 @@
       ((array)
        (match type-desc
          ((array fixed-size is-zero-terminated param-n param-tag)
-          (if (and (eq? array 'c)
-                   (= fixed-size -1)
-                   is-zero-terminated
-                   (= param-n -1)
-                   (eq? param-tag 'utf8))
-              (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) 'strings)
-              (warning "Unimplemented type - array;"
-                       (format #f "~S" type-desc))))))
+          (case param-tag
+            ((utf8)
+             (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) 'strings))
+            (else
+             (warning "Unimplemented (return-value->scm) type - array;"
+                      (format #f "~S" type-desc)))))))
       ((glist
         gslist)
        (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) return-type type-desc))
