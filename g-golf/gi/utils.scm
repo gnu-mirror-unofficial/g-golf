@@ -127,16 +127,19 @@
       (pointer->string pointer)))
 
 (define (gi-strings->scm pointer)
-  (letrec ((gi-strings->scm-1
-            (lambda (pointer result)
-              (receive (d-pointer)
-	          (dereference-pointer pointer)
-                (if (null-pointer? d-pointer)
-                    (reverse! result)
-                    (gi-strings->scm-1 (gi-pointer-inc pointer)
-                                       (cons (pointer->string d-pointer)
-                                             result)))))))
-    (gi-strings->scm-1 pointer '())))
+  (and pointer
+       (if (null-pointer? pointer)
+           #f
+           (letrec ((gi-strings->scm-1
+                     (lambda (pointer result)
+                       (receive (d-pointer)
+	                   (dereference-pointer pointer)
+                         (if (null-pointer? d-pointer)
+                             (reverse! result)
+                             (gi-strings->scm-1 (gi-pointer-inc pointer)
+                                                (cons (pointer->string d-pointer)
+                                                      result)))))))
+             (gi-strings->scm-1 pointer '())))))
 
 (define (gi-csv-string->scm pointer)
   (if (null-pointer? pointer)
