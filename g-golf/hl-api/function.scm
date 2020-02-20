@@ -629,7 +629,8 @@
                  (match type-desc
                    ((array fixed-size is-zero-terminated param-n param-tag)
                     (case param-tag
-                      ((utf8)
+                      ((utf8
+                        filename)
                        (gi-argument-set! gi-argument-in 'v-pointer
                                          (scm->gi arg 'strings)))
                       (else
@@ -776,7 +777,8 @@
        (match type-desc
          ((array fixed-size is-zero-terminated param-n param-tag)
           (case param-tag
-            ((utf8)
+            ((utf8
+              filename)
              (gi->scm (gi-argument-ref gi-argument-out 'v-pointer) 'strings))
             (else
              (warning "Unimplemented (arg-out->scm) type - array;"
@@ -848,7 +850,8 @@
        (match type-desc
          ((array fixed-size is-zero-terminated param-n param-tag)
           (case param-tag
-            ((utf8)
+            ((utf8
+              filename)
              (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) 'strings))
             (else
              (warning "Unimplemented (return-value->scm) type - array;"
