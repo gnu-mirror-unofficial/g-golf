@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -67,9 +67,11 @@
           !n-gi-arg-in
           !args-in
           !gi-args-in
+          !gi-args-in-bv
           !n-gi-arg-out
           !args-out
           !gi-args-out
+          !gi-args-out-bv
           !gi-arg-result
 
           !closure	;; argument
@@ -87,7 +89,9 @@
           !is-return-value?
           !is-skip?
           !gi-argument-in
+          !gi-argument-in-bv-pos
           !gi-argument-out
+          !gi-argument-out-bv-pos
           !gi-argument-field
 
           is-interface?)
@@ -172,9 +176,11 @@
   (n-gi-arg-in #:accessor !n-gi-arg-in)
   (args-in #:accessor !args-in)
   (gi-args-in #:accessor !gi-args-in)
+  (gi-args-in-bv #:accessor !gi-args-in-bv)
   (n-gi-arg-out #:accessor !n-gi-arg-out)
   (args-out #:accessor !args-out)
   (gi-args-out #:accessor !gi-args-out)
+  (gi-args-out-bv #:accessor !gi-args-out-bv)
   (gi-arg-result #:accessor !gi-arg-result))
 
 (define-method (initialize (self <function>) initargs)
@@ -198,8 +204,8 @@
                   'type-desc type-desc
                   'may-return-null? (g-callable-info-may-return-null info))
       (receive (n-arg args
-                n-gi-arg-in args-in gi-args-in
-                n-gi-arg-out args-out gi-args-out)
+                n-gi-arg-in args-in gi-args-in gi-args-in-bv
+                n-gi-arg-out args-out gi-args-out gi-args-out-bv)
           (function-arguments-and-gi-arguments info flags)
         (mslot-set! self
                     'n-arg n-arg
@@ -207,9 +213,11 @@
                     'n-gi-arg-in n-gi-arg-in
                     'args-in args-in
                     'gi-args-in gi-args-in
+                    'gi-args-in-bv gi-args-in-bv
                     'n-gi-arg-out n-gi-arg-out
                     'args-out args-out
                     'gi-args-out gi-args-out
+                    'gi-args-out-bv gi-args-out-bv
                     'gi-arg-result (make-gi-argument))))))
 
 #;(define-method* (describe (self <function>) #:key (port #t))
@@ -250,7 +258,9 @@
   (is-return-value? #:accessor !is-return-value?)
   (is-skip? #:accessor !is-skip?)
   (gi-argument-in #:accessor !gi-argument-in #:init-value #f)
+  (gi-argument-in-bv-pos #:accessor !gi-argument-in-bv-pos #:init-value #f)
   (gi-argument-out #:accessor !gi-argument-out #:init-value #f)
+  (gi-argument-out-bv-pos #:accessor !gi-argument-out-bv-pos #:init-value #f)
   (gi-argument-field #:accessor !gi-argument-field #:init-keyword #:gi-argument-field))
 
 (define-method (initialize (self <argument>) initargs)
@@ -509,14 +519,17 @@
                     n-gi-arg-in
                     args-in
                     gi-args-in
+                    gi-args-in-bv
                     n-gi-arg-out
                     args-out
-                    gi-args-out))
+                    gi-args-out
+                    gi-args-out-bv))
           (let* ((arg-info (g-callable-info-get-arg info i))
                  (argument (make <argument> #:info arg-info)))
             (g-base-info-unref arg-info)
             (case (!direction argument)
               ((in)
+               (set! (!gi-argument-in-bv-pos argument) n-gi-arg-in)
                (loop (+ i 1)
                      (cons argument arguments)
                      (+ n-gi-arg-in 1)
@@ -524,6 +537,8 @@
                      n-gi-arg-out
                      args-out))
               ((inout)
+               (set! (!gi-argument-in-bv-pos argument) n-gi-arg-in)
+               (set! (!gi-argument-out-bv-pos argument) n-gi-arg-out)
                (loop (+ i 1)
                      (cons argument arguments)
                      (+ n-gi-arg-in 1)
@@ -531,6 +546,7 @@
                      (+ n-gi-arg-out 1)
                      (cons argument args-out)))
               ((out)
+               (set! (!gi-argument-out-bv-pos argument) n-gi-arg-out)
                (loop (+ i 1)
                      (cons argument arguments)
                      n-gi-arg-in
@@ -637,67 +653,97 @@
                ;; string->pointer (and does not keep a reference).
                (gi-argument-set! gi-argument-in 'v-pointer string-pointer)))
             (else
-             (gi-argument-set! gi-argument-in
-                               (gi-type-tag->field forced-type)
-                               arg)))
+             ;; Here starts fundamental types. However, we still need to
+             ;; check the forced-type slot-value, and when it is a
+             ;; pointer, allocate mem for the type-tag, then set the
+             ;; value and initialize the gi-argument to a pointer to the
+             ;; alocated mem.
+             (case forced-type
+               ((pointer)
+                (case type-tag
+                  ((int32)
+                   (let ((s32 (make-s32vector 1 0)))
+                     (s32vector-set! s32 0 arg)
+                     (gi-argument-set! gi-argument-in
+                                       (gi-type-tag->field forced-type)
+                                       (bytevector->pointer s32))))
+                  (else
+                   (warning "Unimplemeted (pointer to) type-tag: " type-tag))))
+               (else
+                (gi-argument-set! gi-argument-in
+                                  (gi-type-tag->field forced-type)
+                                  arg)))))
           (loop (+ i 1))))))
 
 (define (prepare-gi-args-out function n-gi-arg-out args-out)
   (let loop ((i 0))
     (if (= i n-gi-arg-out)
         #t
-        (let* ((arg-out (list-ref args-out i))
-               (type-tag (!type-tag arg-out))
-               (type-desc (!type-desc arg-out))
-               (is-pointer? (!is-pointer? arg-out))
-               (may-be-null? (!may-be-null? arg-out))
-               (is-caller-allocate? (!is-caller-allocate? arg-out))
-               (forced-type (!forced-type arg-out))
-               (gi-argument-out (!gi-argument-out arg-out))
-               (field (!gi-argument-field arg-out)))
-          (case type-tag
-            ((interface)
-             (match type-desc
-               ((type name gi-type g-type confirmed?)
-                (case type
-                  ((enum)
-                   (gi-argument-set! gi-argument-out 'v-int -1))
-                  ((flags)
-                   (gi-argument-set! gi-argument-out 'v-int -1))
-                  ((struct)
-                   (gi-argument-set! gi-argument-out 'v-pointer
-                                     (cond ((!is-opaque? gi-type)
-                                            %null-pointer)
-                                           ((!is-semi-opaque? gi-type)
-                                            (bytevector->pointer
-                                             (make-bytevector (!size gi-type) 0)))
-                                           (else
-                                            (make-c-struct (!scm-types gi-type)
-                                                           (!init-vals gi-type))))))
-                  ((object)
-                   (warning "Arg out"
-                            "type-tag object - not sure this will ever happen ...")
-                   (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))))))
-            ((array)
-             (match type-desc
-               ((array fixed-size is-zero-terminated param-n param-tag)
-                ;; (gi-argument-set! gi-argument-out 'v-pointer %null-pointer)
-                (warning "Unimplemented (prepare args-out) type - array;"
-                         (format #f "~S" type-desc)))))
-            ((glist
-              gslist
-              ghash
-              error)
-             (warning "Unimplemented type" (symbol->string type-tag))
-             (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))
-            ((utf8
-              filename)
-             ;; not sure, but this shouldn't arm.
-             (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))
-            (else
-             ;; not sure, but this shouldn't arm.
-             (gi-argument-set! gi-argument-out 'v-ulong 0)))
-          (loop (+ i 1))))))
+        (let ((arg-out (list-ref args-out i)))
+          (if (eq? (!direction arg-out) 'inout)
+              ;; then we 'merely' copy the content of the gi-argument-in
+              ;; to the gi-argument-out.
+              (let ((gi-argument-size %gi-argument-size)
+                    (in-bv (!gi-args-in-bv function))
+                    (in-bv-pos (!gi-argument-in-bv-pos arg-out))
+                    (out-bv (!gi-args-out-bv function))
+                    (out-bv-pos (!gi-argument-out-bv-pos arg-out)))
+                (bytevector-copy! in-bv
+                                  (* in-bv-pos gi-argument-size)
+                                  out-bv
+                                  (* out-bv-pos gi-argument-size)
+                                  gi-argument-size))
+              (let ((type-tag (!type-tag arg-out))
+                    (type-desc (!type-desc arg-out))
+                    (is-pointer? (!is-pointer? arg-out))
+                    (may-be-null? (!may-be-null? arg-out))
+                    (is-caller-allocate? (!is-caller-allocate? arg-out))
+                    (forced-type (!forced-type arg-out))
+                    (gi-argument-out (!gi-argument-out arg-out))
+                    (field (!gi-argument-field arg-out)))
+                (case type-tag
+                  ((interface)
+                   (match type-desc
+                     ((type name gi-type g-type confirmed?)
+                      (case type
+                        ((enum)
+                         (gi-argument-set! gi-argument-out 'v-int -1))
+                        ((flags)
+                         (gi-argument-set! gi-argument-out 'v-int -1))
+                        ((struct)
+                         (gi-argument-set! gi-argument-out 'v-pointer
+                                           (cond ((!is-opaque? gi-type)
+                                                  %null-pointer)
+                                                 ((!is-semi-opaque? gi-type)
+                                                  (bytevector->pointer
+                                                   (make-bytevector (!size gi-type) 0)))
+                                                 (else
+                                                  (make-c-struct (!scm-types gi-type)
+                                                                 (!init-vals gi-type))))))
+                        ((object)
+                         (warning "Arg out"
+                                  "type-tag object - not sure this will ever happen ...")
+                         (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))))))
+                  ((array)
+                   (match type-desc
+                     ((array fixed-size is-zero-terminated param-n param-tag)
+                      ;; (gi-argument-set! gi-argument-out 'v-pointer %null-pointer)
+                      (warning "Unimplemented (prepare args-out) type - array;"
+                               (format #f "~S" type-desc)))))
+                  ((glist
+                    gslist
+                    ghash
+                    error)
+                   (warning "Unimplemented type" (symbol->string type-tag))
+                   (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))
+                  ((utf8
+                    filename)
+                   ;; not sure, but this shouldn't arm.
+                   (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))
+                  (else
+                   ;; not sure, but this shouldn't arm.
+                   (gi-argument-set! gi-argument-out 'v-ulong 0)))))
+                (loop (+ i 1))))))
 
 (define (arg-out->scm arg-out)
   (let* ((type-tag (!type-tag arg-out))
@@ -745,7 +791,21 @@
        ;; not sure, but this shouldn't arm.
        (gi->scm (gi-argument-ref gi-argument-out 'v-pointer) 'string))
       (else
-       (gi-argument-ref gi-argument-out field)))))
+       ;; Here starts fundamental types. However, we still need to check
+       ;; the forced-type slot-value, and when it is a pointer, allocate
+       ;; mem for the type-tag, then set the value and initialize the
+       ;; gi-argument to a pointer to the alocated mem.
+       (case forced-type
+         ((pointer)
+          (case type-tag
+            ((int32)
+             (let* ((pointer (gi-argument-ref gi-argument-out field))
+                    (s32 (pointer->bytevector pointer (sizeof int))))
+               (s32vector-ref s32 0)))
+            (else
+             (warning "Unimplemeted (pointer to) type-tag: " type-tag))))
+         (else
+          (gi-argument-ref gi-argument-out field)))))))
 
 (define (return-value->scm function)
   (let ((return-type (!return-type function))
