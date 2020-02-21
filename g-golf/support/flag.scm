@@ -27,6 +27,7 @@
 
 
 (define-module (g-golf support flag)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-60)
   #:use-module (oop goops)
@@ -67,17 +68,20 @@
                (g-name->scm-name gi-name)))))
 
 (define (gi-gflags->integer gflags flags)
-  (list->integer
-   (reverse (map (lambda (name)
-		   (if (member name flags) #t #f))
-	      (enum->symbols gflags)))))
+  (let ((enum-set (!enum-set gflags)))
+    (apply logior
+           (map
+               (lambda (flag)
+                 (or (assq-ref enum-set flag)
+                     (error "Unkown flag: " flag)))
+             flags))))
 
 (define (gi-integer->gflags gflags n)
-  (let ((symbols (enum->symbols gflags)))
-    (fold-right (lambda (symbol bool result)
-		  (if bool
-		      (cons symbol result)
-		      result))
-		'()
-		symbols
-		(reverse (integer->list n (length symbols))))))
+  (let ((enum-set (!enum-set gflags)))
+    (filter-map
+        (match-lambda
+          ((k . v)
+           (and (or (= n v)
+                    (logtest n v))
+                k)))
+        enum-set)))
