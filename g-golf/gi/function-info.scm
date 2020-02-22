@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -148,9 +148,9 @@
 (define %g-function-info-flags
   (make <gi-flag>
     #:gi-name "GIFunctionInfoFlags"
-    #:enum-set '(is-method
-                 is-constructor
-                 is-getter
-                 is-setter
-                 wraps-vfunc
-                 throws)))
+    #:enum-set '((is-method . 1)
+                 (is-constructor . 2)
+                 (is-getter . 4)
+                 (is-setter . 8)
+                 (wraps-vfunc . 16)
+                 (throws . 32))))

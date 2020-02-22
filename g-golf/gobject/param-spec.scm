@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2018
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -47,15 +47,15 @@
 (define %g-param-flags
   (make <gi-flag>
     #:gi-name "GParamFlags"
-    #:enum-set '(readable
-                 writable
-                 #;readwrite
-                 construct
-                 construct-only
-                 lax-validation
-                 static-name
-                 #;private
-                 static-nick
-                 static-blurb
-                 explicit-notify
-                 deprecated)))
+    #:enum-set '((readable . 1)
+                 (writable . 2)
+                 (readwrite . 3)
+                 (construct . 4)
+                 (construct-only . 8)
+                 (lax-validation . 16)
+                 (static-name . 32)
+                 ;#(private . 32)
+                 (static-nick . 64)
+                 (static-blurb . 128)
+                 (explicit-notify . 1073741824)
+                 (deprecated . 2147483648))))
