@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -134,7 +134,7 @@
 
 (define-method (test-g-value-set-flags (self <g-golf-test-gobject>))
   (let ((g-value (g-value-init %flags-info-g-type)))
-    (assert (g-value-set! g-value '(flags_none)))))
+    (assert (g-value-set! g-value '(mapped)))))
 
 (define-method (test-g-value-get-string (self <g-golf-test-gobject>))
   (let ((g-value (g-value-init (symbol->g-type 'string))))
