@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -73,15 +73,16 @@
            (map
                (lambda (flag)
                  (or (assq-ref enum-set flag)
-                     (error "Unkown flag: " flag)))
+                     (error "Unknown flag: " flag)))
              flags))))
 
 (define (gi-integer->gflags gflags n)
   (let ((enum-set (!enum-set gflags)))
     (filter-map
         (match-lambda
-          ((k . v)
-           (and (or (= n v)
-                    (logtest n v))
-                k)))
+          ((key . val)
+           (and (if (zero? val)
+                    (zero? n)
+                    (= (logand n val) val))
+                key)))
         enum-set)))
