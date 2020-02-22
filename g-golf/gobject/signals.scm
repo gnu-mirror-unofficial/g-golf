@@ -185,12 +185,12 @@
 (define %g-signal-flags
   (make <gi-flag>
     #:gi-name "GsignalFlags"
-    #:enum-set '(run-first
-                 run-last
-                 run-cleanup
-                 no-recurse
-                 detailed
-                 action
-                 no-hooks
-                 must-collect
-                 deprecated)))
+    #:enum-set '((run-first . 1)
+                 (run-last . 2)
+                 (run-cleanup . 4)
+                 (no-recurse . 8)
+                 (detailed . 16)
+                 (action . 32)
+                 (no-hooks . 64)
+                 (must-collect . 128)
+                 (deprecated . 256))))
