@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -101,7 +101,37 @@
   (assert (gi-integer->gflags %g-function-info-flags 2))
   (assert-true (= (gi-gflags->integer %g-function-info-flags
                                       '(is-constructor))
-                  2)))
+                  2))
+  ;; multiple-bit flag
+  (assert-true (= (gi-gflags->integer %g-param-flags
+                                      '(readable writable))
+                  3))
+  (assert-true (= (gi-gflags->integer %g-param-flags
+                                      '(readable writable readwrite))
+                  3))
+  (let ((expected-flags '(readable writable readwrite))
+        (flags (gi-integer->gflags %g-param-flags
+                                   3)))
+    (assert-true (and (= (length flags) 3)
+                      (= (list->integer
+                          (map (lambda (flag)
+                                 (if (memq flag expected-flags) #t #f))
+                            flags))
+                         7))))
+  ;; non-contiguous bits flags
+  (assert-true (= (gi-gflags->integer %g-param-flags
+                                      '(explicit-notify))
+                  1073741824))
+  (assert-true (eq? (car (gi-integer->gflags %g-param-flags
+                                             1073741824))
+                    'explicit-notify))
+  (assert-true (= (gi-gflags->integer %g-param-flags
+                                      '(deprecated))
+                  2147483648))
+  (assert-true (eq? (car (gi-integer->gflags %g-param-flags
+                                             2147483648))
+                    'deprecated)))
+
 
 ;;;
 ;;; Utils
