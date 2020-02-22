@@ -109,10 +109,10 @@
 (define %g-type-fundamental-flags
   (make <gi-flag>
     #:gi-name "GTypeFundamentalFlags"
-    #:enum-set '(classed
-                 instantiable
-                 derivable
-                 deep-derivable)))
+    #:enum-set '((classed . 1)
+                 (instantiable . 2)
+                 (derivable . 4)
+                 (deep-derivable . 8))))
 
 (define %g-type-fundamental-types
   ;; manually built, from the list of fundamental types starting with
