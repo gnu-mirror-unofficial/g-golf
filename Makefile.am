@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 - 2019
+#### Copyright (C) 2016 - 2020
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf
@@ -77,6 +77,7 @@ SOURCES = \
 	g-golf/gi/struct-info.scm		\
 	g-golf/gi/union-info.scm		\
 	g-golf/gi/object-info.scm		\
+	g-golf/gi/interface-info.scm		\
 	g-golf/gi/arg-info.scm			\
 	g-golf/gi/constant-info.scm		\
 	g-golf/gi/field-info.scm		\

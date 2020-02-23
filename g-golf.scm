@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -89,6 +89,7 @@
   #:use-module (g-golf gi struct-info)
   #:use-module (g-golf gi union-info)
   #:use-module (g-golf gi object-info)
+  #:use-module (g-golf gi interface-info)
   #:use-module (g-golf gi arg-info)
   #:use-module (g-golf gi constant-info)
   #:use-module (g-golf gi field-info)
@@ -165,6 +166,7 @@
                               (g-golf gi struct-info)
                               (g-golf gi union-info)
 			      (g-golf gi object-info)
+                              (g-golf gi interface-info)
 			      (g-golf gi arg-info)
                               (g-golf gi constant-info)
                               (g-golf gi field-info)
