@@ -62,6 +62,7 @@
           !n-arg
           !caller-owns
           !return-type
+          !type-desc
           !may-return-null?
           !arguments
           !n-gi-arg-in
