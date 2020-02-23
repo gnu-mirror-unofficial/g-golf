@@ -39,9 +39,11 @@ The G-Golf GI function and argument high level API.
 @item @ref{!n-gi-arg-in}
 @item @ref{!args-in}
 @item @ref{!gi-args-in}
+@item @ref{!gi-args-in-bv}
 @item @ref{!n-gi-arg-out}
 @item @ref{!args-out}
 @item @ref{!gi-args-out}
+@item @ref{!gi-args-out-bv}
 @item @ref{!gi-arg-result}
 @item @ref{!name_}
 @item @ref{!closure}
@@ -60,7 +62,9 @@ The G-Golf GI function and argument high level API.
 @item @ref{!is-return-value?}
 @item @ref{!is-skip?}
 @item @ref{!gi-argument-in}
+@item @ref{!gi-argument-in-bv-pos}
 @item @ref{!gi-argument-out}
+@item @ref{!gi-argument-out-bv-pos}
 @item @ref{!gi-argument-field}
 @item @ref{is-interface?}
 @end table
@@ -123,6 +127,9 @@ Its slots are:
 @item @emph{gi-args-in}
 #:accessor !gi-args-in
 
+@item @emph{gi-args-in-bv}
+#:accessor !gi-args-in-bv
+
 @item @emph{n-gi-arg-out}
 #:accessor !n-gi-arg-out
 
@@ -131,6 +138,9 @@ Its slots are:
 
 @item @emph{gi-args-out}
 #:accessor !gi-args-out
+
+@item @emph{gi-args-out-bv}
+#:accessor !gi-args-out-bv
 
 @item @emph{gi-arg-result}
 #:accessor !gi-arg-result
@@ -212,8 +222,16 @@ Its slots are:
 #:accessor !gi-argument-in	@*
 #:init-value #f
 
+@item @emph{gi-argument-in-bv-pos}
+#:accessor !gi-argument-in-bv-pos	@*
+#:init-value #f
+
 @item @emph{gi-argument-out}
 #:accessor !gi-argument-out	@*
+#:init-value #f
+
+@item @emph{gi-argument-out-bv-pos}
+#:accessor !gi-argument-out-bv-pos	@*
 #:init-value #f
 
 @item @emph{name}
@@ -250,9 +268,11 @@ respectively.
 @anchor{!n-gi-arg-in}
 @anchor{!args-in}
 @anchor{!gi-args-in}
+@anchor{!gi-args-in-bv}
 @anchor{!n-gi-arg-out}
 @anchor{!args-out}
 @anchor{!gi-args-out}
+@anchor{!gi-args-out-bv}
 @anchor{!gi-arg-result}
 @deffn Accessor !info function
 @deffnx Accessor !name function
@@ -266,9 +286,11 @@ respectively.
 @deffnx Accessor !n-gi-arg-in function
 @deffnx Accessor !args-in function
 @deffnx Accessor !gi-args-in function
+@deffnx Accessor !gi-args-in-bv function
 @deffnx Accessor !n-gi-arg-out function
 @deffnx Accessor !args-out function
 @deffnx Accessor !gi-args-out function
+@deffnx Accessor !gi-args-out-bv function
 @deffnx Accessor !gi-arg-result function
 
 Returns the content of their respective slot for @var{function}.
@@ -292,7 +314,9 @@ Returns the content of their respective slot for @var{function}.
 @anchor{!is-return-value?}
 @anchor{!is-skip?}
 @anchor{!gi-argument-in}
+@anchor{!gi-argument-in-bv-pos}
 @anchor{!gi-argument-out}
+@anchor{!gi-argument-out-bv-pos}
 @anchor{!gi-argument-field}
 @deffn Accessor !name argument
 @deffnx Accessor !closure argument
@@ -311,7 +335,9 @@ Returns the content of their respective slot for @var{function}.
 @deffnx Accessor !is-return-value? argument
 @deffnx Accessor !is-skip? argument
 @deffnx Accessor !gi-argument-in argument
+@deffnx Accessor !gi-argument-in-bv-pos argument
 @deffnx Accessor !gi-argument-out argument
+@deffnx Accessor !gi-argument-out-bv-pos argument
 @deffnx Accessor !gi-argument-field argument
 
 Returns the content of their respective slot for @var{argument}.
