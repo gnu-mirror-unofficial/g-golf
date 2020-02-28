@@ -50,7 +50,8 @@
             <function>
             <argument>
             gi-enum-import-methods
-            gi-struct-import-methods))
+            gi-struct-import-methods
+            gi-interface-import-methods))
 
 
 (g-export describe	;; function and argument
@@ -428,6 +429,15 @@
                  ;; returned by a function call that uses this
                  ;; type-spec.
                  #f)))
+      ((interface)
+       (values id
+               name
+               (or (gi-cache-ref 'iface name)
+                   (let ((gi-iface (gi-interface-import info)))
+                     (gi-cache-set! 'iface name gi-iface)
+                     (gi-interface-import-methods info)
+                     gi-iface))
+               #t))
       (else
        (values id name #f #f)))))
 
@@ -621,7 +631,10 @@
                                          (!g-inst arg)
                                          (if may-be-null?
                                              %null-pointer
-                                             (error "Invalid arg: " arg)))))))))
+                                             (error "Invalid arg: " arg)))))
+                  ((interface)
+                   (gi-argument-set! gi-argument-in 'v-pointer
+                                     (scm->gi arg 'pointer)))))))
             ((array)
              (if (not arg)
                  (if may-be-null?
@@ -722,9 +735,8 @@
                                                  (else
                                                   (make-c-struct (!scm-types gi-type)
                                                                  (!init-vals gi-type))))))
-                        ((object)
-                         (warning "Arg out"
-                                  "type-tag object - not sure this will ever happen ...")
+                        ((object
+                          interface)
                          (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))))))
                   ((array)
                    (match type-desc
@@ -773,7 +785,24 @@
                      (!is-semi-opaque? gi-type))
                  (gi-argument-ref gi-argument-out 'v-pointer)
                  (parse-c-struct (gi-argument-ref gi-argument-out 'v-pointer)
-                                 (!scm-types gi-type))))))))
+                                 (!scm-types gi-type))))
+            ((object)
+             ;; See the comment in registered-type->gi-type which
+             ;; describes the role of confirmed? in the pattern.
+             (if confirmed?
+                 (make gi-type
+                   #:g-inst (gi-argument-ref gi-argument-out 'v-pointer))
+                 (let* ((module (resolve-module '(g-golf hl-api object)))
+                        (foreign (gi-argument-ref gi-argument-out 'v-pointer))
+                        (type (g-object-type foreign))
+                        (gi-name (g-object-type-name foreign))
+                        (c-name (g-name->class-name gi-name))
+                        (class (module-ref module c-name)))
+                   (set! (!type-desc arg-out)
+                         (list 'object c-name class (g-object-type foreign) #t))
+                   (make class #:g-inst foreign))))
+            ((interface)
+             (gi-argument-ref gi-argument-out 'v-pointer))))))
       ((array)
        (match type-desc
          ((array fixed-size is-zero-terminated param-n param-tag)
@@ -846,7 +875,9 @@
                         (class (module-ref module c-name)))
                    (set! (!type-desc function)
                          (list 'object c-name class (g-object-type foreign) #t))
-                   (make class #:g-inst foreign))))))))
+                   (make class #:g-inst foreign))))
+            ((interface)
+             (gi-argument-ref gi-arg-result 'v-pointer))))))
       ((array)
        (match type-desc
          ((array fixed-size is-zero-terminated param-n param-tag)
@@ -903,6 +934,27 @@
             (+ i 1)))
         ((= i n-method))
       (let* ((m-info (g-struct-info-get-method info i))
+             (namespace (g-base-info-get-namespace m-info))
+             (name (g-function-info-get-symbol m-info)))
+        ;; Some methods listed here are functions: (a) their flags is an
+        ;; empty list; (b) they do not expect an additional instance
+        ;; argument (their GIargInfo list is complete); (c) they have a
+        ;; GIFuncInfo entry in the namespace (methods do not). We do not
+        ;; (re)import those here.
+        (unless (g-irepository-find-by-name namespace name)
+          (gi-import-function m-info))))))
+
+
+;;;
+;;; Interface have methods
+;;;
+
+(define (gi-interface-import-methods info)
+  (let ((n-method (g-interface-info-get-n-methods info)))
+    (do ((i 0
+            (+ i 1)))
+        ((= i n-method))
+      (let* ((m-info (g-interface-info-get-method info i))
              (namespace (g-base-info-get-namespace m-info))
              (name (g-function-info-get-symbol m-info)))
         ;; Some methods listed here are functions: (a) their flags is an
