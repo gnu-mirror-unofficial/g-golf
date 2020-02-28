@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2019
+;;;; Copyright (C) 2018 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -56,7 +56,8 @@
             gi-import-flag
             gi-import-struct
             gi-import-union
-            gi-import-constant))
+            gi-import-constant
+            gi-import-interface))
 
 
 #;(g-export )
@@ -126,6 +127,11 @@
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
        (gi-import-object info))
+      ((interface)
+       (unless (memq i-type
+                     %gi-imported-base-info-types)
+         (push! i-type %gi-imported-base-info-types))
+       (gi-import-interface info #:recur recur))
       #;((callback)
        (unless (memq i-type
                      %gi-imported-base-info-types)
@@ -217,3 +223,14 @@
     (g-base-info-unref type-info)
     (values constant
             gi-name)))
+
+(define* (gi-import-interface info #:key (recur #t))
+  (let* ((id (g-registered-type-info-get-g-type info))
+         (name (g-type-name id))
+         (key (string->symbol (g-studly-caps-expand name))))
+    (or (gi-cache-ref 'iface key)
+        (let ((gi-iface (list 'interface key name id #t)))
+          (gi-cache-set! 'iface key gi-iface)
+          (when recur
+            (gi-interface-import-methods info))
+          gi-iface))))
