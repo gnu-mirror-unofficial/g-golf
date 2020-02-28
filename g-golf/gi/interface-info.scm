@@ -31,7 +31,7 @@
   #:use-module (oop goops)
   #:use-module (system foreign)
   #:use-module (g-golf support utils)
-  #:use-module (g-golf gobject enum-flags)
+  #:use-module (g-golf gobject type-info)
   #:use-module (g-golf init)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gi base-info)
@@ -70,10 +70,11 @@
 ;;; Import Interface
 ;;;
 
-
 (define (gi-interface-import info)
-  ;; fixme
-  #f)
+  (let* ((id (g-registered-type-info-get-g-type info))
+         (name (g-type-name id))
+         (key (string->symbol (g-studly-caps-expand name))))
+    (list 'interface key name id #t)))
 
 (define %iface-fmt
   "
