@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -81,7 +81,7 @@
          (g-closure (g-closure-new-simple (g-closure-size) #f)))
     (next-method)
     (set! (!g-closure self) g-closure)
-    (gi-closure-cache-set! g-closure function)
+    (gi-closure-cache-set! g-closure self)
     (g-closure-ref g-closure)
     (g-closure-sink g-closure)
     (g-closure-set-marshal g-closure %g-closure-marshal)
@@ -227,7 +227,8 @@
                            invocation-hint
                            marshal-data)
   (let* ((%g-value-size (g-value-size))
-         (function (gi-closure-cache-ref g-closure))
+         (closure (gi-closure-cache-ref g-closure))
+         (function (!function closure))
          (args (if (= n-param 0)
                    '()
                    (let loop ((i 0)
@@ -269,8 +270,8 @@
   (case (g-value->g-type g-value)
     ((object)
      (!g-inst return-val))
-      (else
-       return-val)))
+    (else
+     return-val)))
 
 (define %g-closure-marshal
   (procedure->pointer void
