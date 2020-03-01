@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -146,31 +146,31 @@
 
 
 (define-method (test-g-idle-add (self <g-golf-test-hl-api>))
-  (let ((loop (g-main-loop-new #f #f))
-        (idle (assert (g-idle-add (lambda ()
-                                    'ok
-                                    #f))))
-        (thread (make-thread g-main-loop-run loop)))
+  (let* ((loop (g-main-loop-new #f #f))
+         (idle (assert (g-idle-add (lambda ()
+                                     'ok
+                                     #f))))
+         (thread (make-thread g-main-loop-run loop)))
     (cancel-thread thread)))
 
 
 (define-method (test-g-timeout-add (self <g-golf-test-hl-api>))
-  (let ((loop (g-main-loop-new #f #f))
-        (idle (assert (g-timeout-add 1000
-                                     (lambda ()
-                                       'ok
-                                       #f))))
-        (thread (make-thread g-main-loop-run loop)))
+  (let* ((loop (g-main-loop-new #f #f))
+         (idle (assert (g-timeout-add 1000
+                                      (lambda ()
+                                        'ok
+                                        #f))))
+         (thread (make-thread g-main-loop-run loop)))
     (cancel-thread thread)))
 
 
 (define-method (test-g-timeout-add-seconds (self <g-golf-test-hl-api>))
-  (let ((loop (g-main-loop-new #f #f))
-        (idle (assert (g-timeout-add-seconds 1
-                                             (lambda ()
-                                               'ok
-                                               #f))))
-        (thread (make-thread g-main-loop-run loop)))
+  (let* ((loop (g-main-loop-new #f #f))
+         (idle (assert (g-timeout-add-seconds 1
+                                              (lambda ()
+                                                'ok
+                                                #f))))
+         (thread (make-thread g-main-loop-run loop)))
     (cancel-thread thread)))
 
 
