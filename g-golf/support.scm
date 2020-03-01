@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -36,7 +36,6 @@
 
 (define-module (g-golf support)
   #:use-module (oop goops)
-  #:use-module (oop goops describe)
   #:use-module (g-golf support libg-golf)
   #:use-module (g-golf support float)
   #:use-module (g-golf support modules)
@@ -60,7 +59,6 @@
 
 (eval-when (expand load eval)
   (re-export-public-interface (oop goops)
-                              (oop goops describe)
                               (g-golf support libg-golf)
                               (g-golf support float)
                               (g-golf support modules)
