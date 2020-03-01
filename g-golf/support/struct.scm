@@ -31,6 +31,7 @@
   #:use-module (g-golf support goops)
   #:use-module (g-golf support g-export)
   #:use-module (g-golf support utils)
+  #:use-module (g-golf support enum)
 
   #:duplicates (merge-generics
 		replace
@@ -41,7 +42,7 @@
   #:export (<gi-struct>))
 
 
-(g-export #;!gtype-id
+(g-export !gtype-id
           !gi-name
           !scm-name
           !alignment

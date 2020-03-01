@@ -42,6 +42,7 @@
   #:use-module (g-golf support goops)
   #:use-module (g-golf support g-export)
   #:use-module (g-golf support utils)
+  #:use-module (g-golf support struct)
 
   #:duplicates (merge-generics
 		replace
@@ -56,7 +57,7 @@
             <gi-union>))
 
 
-(g-export #;!gtype-id
+(g-export !gtype-id
           !gi-name
           !scm-name
           !size
