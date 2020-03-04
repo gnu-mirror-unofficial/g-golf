@@ -1,7 +1,7 @@
 /*  -*- mode: C; coding: utf-8 -*-
 
 ####
-#### Copyright (C) 2016 - 2019
+#### Copyright (C) 2016 - 2020
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf.
@@ -73,3 +73,15 @@ g_closure_size ();
 
 uint
 g_closure_ref_count (GClosure *closure);
+
+
+/*
+ * Test suite
+ *
+*/
+
+char**
+test_suite_n_string_ptr ();
+
+char**
+test_suite_strings_ptr ();

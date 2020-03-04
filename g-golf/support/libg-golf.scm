@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -30,10 +30,10 @@
   #:use-module (system foreign)
   #:use-module (g-golf init)
   
-  #:export (;; misc.
+  #:export (;; Misc.
             pointer_address_size
 
-            ;; floats
+            ;; Floats
             float_to_int
 
             ;; Glib
@@ -45,11 +45,15 @@
             #;g_object_type_name
             g_object_ref_count
             g_closure_size
-            g_closure_ref_count))
+            g_closure_ref_count
+
+            ;; Test suite
+            test_suite_n_string_ptr
+            test_suite_strings_ptr))
 
 
 ;;;
-;;; misc.
+;;; Misc.
 ;;;
 
 (define pointer_address_size
@@ -60,7 +64,7 @@
 
 
 ;;;
-;;; floats
+;;; Floats
 ;;;
 
 (define float_to_int
@@ -105,8 +109,8 @@ The following is not working yet, it segfault, complaining that:
   /opt2/bin/guile: symbol lookup error: /opt2/lib/libg-golf.so:
   undefined symbol: g_type_name
 
-  [ which is weird since g_type_name is defined in GObject Tye nfo, and
-  [ so it should be part of glib-object.h, afaict at least.
+  [ which is weird since g_type_name is defined in GObject Type info,
+  [ and so it should be part of glib-object.h, afaict at least.
 
 It is not a real problem though, because we already bind g_type_name
 using the ffi, in (g-golf gobject type-info).  I'll try to fix this
@@ -137,3 +141,20 @@ later.
                       (dynamic-func "g_closure_ref_count"
                                     %libg-golf)
                       (list '*)))
+
+
+;;;
+;;; Test suite
+;;;
+
+(define test_suite_n_string_ptr
+  (pointer->procedure '*
+                      (dynamic-func "test_suite_n_string_ptr"
+                                    %libg-golf)
+                      (list)))
+
+(define test_suite_strings_ptr
+  (pointer->procedure '*
+                      (dynamic-func "test_suite_strings_ptr"
+                                    %libg-golf)
+                      (list)))

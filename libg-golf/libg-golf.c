@@ -1,7 +1,7 @@
 /*  -*- mode: C; coding: utf-8 -*-
 
 ####
-#### Copyright (C) 2016 - 2019
+#### Copyright (C) 2016 - 2020
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf.
@@ -133,4 +133,41 @@ uint
 g_closure_ref_count (GClosure *closure)
 {
     return (closure->ref_count);
+}
+
+
+/*
+ * Test suite
+ *
+*/
+
+char**
+test_suite_n_string_ptr ()
+{
+  char** strings = malloc(3 * sizeof(char*));
+
+  for (int i = 0 ; i < 3; ++i)
+    strings[i] = malloc(3 * sizeof(char));
+
+  strings[0] = "foo";
+  strings[1] = "bar";
+  strings[2] = "baz";
+
+  return strings;
+}
+
+char**
+test_suite_strings_ptr ()
+{
+  char** strings = malloc(4 * sizeof(char*));
+
+  for (int i = 0 ; i < 3; ++i)
+    strings[i] = malloc(3 * sizeof(char));
+
+  strings[0] = "foo";
+  strings[1] = "bar";
+  strings[2] = "baz";
+  strings[3] = NULL;
+
+  return strings;
 }
