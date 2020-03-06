@@ -44,7 +44,7 @@
 		warn-override-core
 		warn
 		last)
-  
+
   #:export (%gi-strip-boolean-result
             gi-import-function
             <function>
@@ -682,6 +682,10 @@
                      (gi-argument-set! gi-argument-in
                                        (gi-type-tag->field forced-type)
                                        (bytevector->pointer s32))))
+                  ((void)
+                   (if (and may-be-null? (not arg))
+                       (gi-argument-set! gi-argument-in 'v-pointer #f)
+                       (warning "Unimplemented (pointer to) type void " arg)))
                   (else
                    (warning "Unimplemeted (pointer to) type-tag: " type-tag))))
                (else
