@@ -27,6 +27,7 @@
 
 
 (define-module (tests gi)
+  #:use-module (ice-9 receive)
   #:use-module (oop goops)
   #:use-module (unit-test)
   #:use-module (g-golf)
@@ -50,12 +51,51 @@
   (assert (gi-pointer-inc (gi-pointer-new) 0))
   (assert (gi-attribute-iter-new)))
 
-(define-method (test-utils-strings (self <g-golf-test-gi>))
+(define-method (test-utils-n-string (self <g-golf-test-gi>))
   (let ((a '("the" "bluefox" "and" "the" "red" "bear")))
     (assert-true
-     (let ((b (gi->scm (scm->gi a 'strings) 'strings)))
+     (receive (ptr i-ptrs)
+         (scm->gi a 'n-string)
+       (let ((b (gi->scm ptr 'n-string 6)))
+         (and (= (length a) (length b))
+              (every string=? a b)))))))
+
+(define-method (test-utils-strings (self <g-golf-test-gi>))
+  (let ((a '("the" "bluefox" "and" "the" "red" "bear")))
+    (receive (ptr i-ptrs)
+        (scm->gi a 'strings)
+    (assert-true
+     (let ((b (gi->scm ptr 'strings)))
        (and (= (length a) (length b))
-            (every string=? a b))))))
+            (every string=? a b)))))))
+
+(define-method (test-utils-n-pointer (self <g-golf-test-gi>))
+  (let ((a '("the" "bluefox" "and" "the" "red" "bear")))
+    (assert-true
+     (receive (ptr i-ptrs)
+         (scm->gi a 'n-string)
+       (let* ((b (scm->gi i-ptrs 'n-pointer))
+              (c (gi->scm b 'n-pointer 6)))
+         (and (= (length i-ptrs) (length c))
+              (every (lambda (p1 p2)
+                       (= (pointer-address p1)
+                          (pointer-address p2)))
+                     i-ptrs
+                     c)))))))
+
+(define-method (test-utils-pointers (self <g-golf-test-gi>))
+  (let ((a '("the" "bluefox" "and" "the" "red" "bear")))
+    (assert-true
+     (receive (ptr i-ptrs)
+         (scm->gi a 'strings)
+       (let* ((b (scm->gi i-ptrs 'pointers))
+              (c (gi->scm b 'pointers)))
+         (and (= (length i-ptrs) (length c))
+              (every (lambda (p1 p2)
+                       (= (pointer-address p1)
+                          (pointer-address p2)))
+                     i-ptrs
+                     c)))))))
 
 
 ;;;

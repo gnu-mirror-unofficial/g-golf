@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -49,16 +49,22 @@
 	    gi->scm
             gi-boolean->scm
             gi-string->scm
+            gi-n-string->scm
             gi-strings->scm
             gi-csv-string->scm
 	    gi-pointer->scm
+            gi-n-pointer->scm
+            gi-pointers->scm
             gi-glist->scm
             gi-gslist->scm
             scm->gi
             scm->gi-boolean
             scm->gi-string
+            scm->gi-n-string
             scm->gi-strings
-            scm->gi-pointer))
+            scm->gi-pointer
+            scm->gi-n-pointer
+            scm->gi-pointers))
 
 
 (define %gi-pointer-size (sizeof '*))
@@ -106,15 +112,18 @@
 ;;; gi->scm procedures
 ;;;
 
-(define* (gi->scm value type #:optional (type-desc #f))
+(define* (gi->scm value type #:optional (cmpl #f))
   (case type
     ((boolean) (gi-boolean->scm value))
     ((string) (gi-string->scm value))
     ((strings) (gi-strings->scm value))
+    ((n-string) (gi-n-string->scm value cmpl))
     ((csv-string) (gi-csv-string->scm value))
     ((pointer) (gi-pointer->scm value))
-    ((glist) (gi-glist->scm value type-desc))
-    ((gslist) (gi-gslist->scm value type-desc))
+    ((n-pointer) (gi-n-pointer->scm value cmpl))
+    ((pointers) (gi-pointers->scm value))
+    ((glist) (gi-glist->scm value cmpl))
+    ((gslist) (gi-gslist->scm value cmpl))
     (else
      (error "No such type: " type))))
 
@@ -126,11 +135,26 @@
       #f
       (pointer->string pointer)))
 
+(define (gi-n-string->scm pointer n-string)
+  (if (or (not pointer)
+          (null-pointer? pointer)
+          (= n-string 0))
+      #f
+      (let loop ((i 0)
+                 (pointer pointer)
+                 (results '()))
+        (if (= i n-string)
+            (reverse! results)
+            (loop (+ i 1)
+                  (gi-pointer-inc pointer)
+                  (cons (pointer->string (dereference-pointer pointer))
+                        results))))))
+
 (define (gi-strings->scm pointer)
-  (and pointer
-       (if (null-pointer? pointer)
-           #f
-           (letrec ((gi-strings->scm-1
+  (if (or (not pointer)
+          (null-pointer? pointer))
+      #f
+      (letrec ((gi-strings->scm-1
                      (lambda (pointer result)
                        (receive (d-pointer)
 	                   (dereference-pointer pointer)
@@ -139,7 +163,7 @@
                              (gi-strings->scm-1 (gi-pointer-inc pointer)
                                                 (cons (pointer->string d-pointer)
                                                       result)))))))
-             (gi-strings->scm-1 pointer '())))))
+             (gi-strings->scm-1 pointer '()))))
 
 (define (gi-csv-string->scm pointer)
   (if (null-pointer? pointer)
@@ -151,6 +175,36 @@
   (if (null-pointer? pointer)
       #f
       pointer))
+
+(define (gi-n-pointer->scm pointer n-pointer)
+  (if (or (not pointer)
+          (null-pointer? pointer)
+          (= n-pointer 0))
+      #f
+      (let loop ((i 0)
+                 (pointer pointer)
+                 (results '()))
+        (if (= i n-pointer)
+            (reverse! results)
+            (loop (+ i 1)
+                  (gi-pointer-inc pointer)
+                  (cons (dereference-pointer pointer)
+                        results))))))
+
+(define (gi-pointers->scm pointer)
+  (if (or (not pointer)
+          (null-pointer? pointer))
+      #f
+      (letrec ((gi-pointers->scm-1
+                (lambda (pointer result)
+                  (receive (d-pointer)
+	              (dereference-pointer pointer)
+                    (if (null-pointer? d-pointer)
+                        (reverse! result)
+                        (gi-pointers->scm-1 (gi-pointer-inc pointer)
+                                            (cons d-pointer
+                                                  result)))))))
+        (gi-pointers->scm-1 pointer '()))))
 
 (define (gi-glist->scm g-list type-desc)
   ;; The reason g-list, which is supposed to be a pointer, can be #f is
@@ -233,9 +287,12 @@
   (case type
     ((boolean) (scm->gi-boolean value))
     ((string) (scm->gi-string value))
+    ((n-string) (scm->gi-n-string value))
     ((strings) (scm->gi-strings value))
     #;((csv-string) (scm->gi-csv-string value))
     ((pointer) (scm->gi-pointer value))
+    ((n-pointer) (scm->gi-n-pointer value))
+    ((pointers) (scm->gi-pointers value))
     (else
      value)))
 
@@ -245,25 +302,93 @@
 (define (scm->gi-string value)
   (string->pointer value))
 
+;; The following two procedures need a bit more work, be cause a
+;; reference to the 'inner' pointers mst be kept (and returned to the
+;; caller). otherwise, they might be GC'ed ...
+
+(define (scm->gi-n-string lst)
+  (if (null? lst)
+      (values %null-pointer
+              '())
+      (let* ((p-size %gi-pointer-size)
+             (n-string (length lst))
+             (bv (make-bytevector (* n-string p-size) 0))
+             (o-ptr (bytevector->pointer bv)))
+        (let loop ((w-ptr o-ptr)
+                   (i-ptrs '())
+                   (lst lst))
+          (if (null? lst)
+              (values o-ptr
+                      (reverse! i-ptrs))
+              (match lst
+                ((str . rest)
+                 (let ((i-ptr (string->pointer str)))
+                   (bv-ptr-set! w-ptr i-ptr)
+                   (loop (gi-pointer-inc w-ptr)
+                         (cons i-ptr i-ptrs)
+                         rest)))))))))
+
 (define (scm->gi-strings lst)
   (if (null? lst)
-      %null-pointer
+      (values %null-pointer
+              '())
       (let* ((p-size %gi-pointer-size)
              (n-string (length lst))
              (bv (make-bytevector (* (+ n-string 1) p-size) 0))
-             (ptr (bytevector->pointer bv)))
-        (let loop ((ptr ptr)
+             (o-ptr (bytevector->pointer bv)))
+        (let loop ((w-ptr o-ptr)
+                   (i-ptrs '())
                    (lst lst))
           (if (null? lst)
-              (bv-ptr-set! ptr %null-pointer)
+              (begin
+                (bv-ptr-set! w-ptr %null-pointer)
+                (values o-ptr
+                        (reverse! i-ptrs)))
               (match lst
                 ((str . rest)
-                 (bv-ptr-set! ptr (string->pointer str))
-                 (loop (gi-pointer-inc ptr)
-                       rest)))))
-        ptr)))
+                 (let ((i-ptr (string->pointer str)))
+                   (bv-ptr-set! w-ptr i-ptr)
+                   (loop (gi-pointer-inc w-ptr)
+                         (cons i-ptr i-ptrs)
+                         rest)))))))))
 
 (define (scm->gi-pointer value)
   (if value
       value
       %null-pointer))
+
+(define (scm->gi-n-pointer lst)
+  (if (null? lst)
+      %null-pointer
+      (let* ((p-size %gi-pointer-size)
+             (n-pointer (length lst))
+             (bv (make-bytevector (* n-pointer p-size) 0))
+             (o-ptr (bytevector->pointer bv)))
+        (let loop ((w-ptr o-ptr)
+                   (lst lst))
+          (if (null? lst)
+              o-ptr
+              (match lst
+                ((i-ptr . rest)
+                 (bv-ptr-set! w-ptr i-ptr)
+                 (loop (gi-pointer-inc w-ptr)
+                       rest))))))))
+
+(define (scm->gi-pointers lst)
+  (if (null? lst)
+      %null-pointer
+      (let* ((p-size %gi-pointer-size)
+             (n-pointer (length lst))
+             (bv (make-bytevector (* (+ n-pointer 1) p-size) 0))
+             (o-ptr (bytevector->pointer bv)))
+        (let loop ((w-ptr o-ptr)
+                   (lst lst))
+          (if (null? lst)
+              (begin
+                (bv-ptr-set! w-ptr %null-pointer)
+                o-ptr)
+              (match lst
+                ((l-ptr . rest)
+                 (bv-ptr-set! w-ptr l-ptr)
+                 (loop (gi-pointer-inc w-ptr)
+                       rest))))))))
