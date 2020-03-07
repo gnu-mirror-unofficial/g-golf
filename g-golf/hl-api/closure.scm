@@ -38,6 +38,7 @@
   #:use-module (g-golf gobject)
   #:use-module (g-golf hl-api gtype)
   #:use-module (g-golf hl-api gobject)
+  #:use-module (g-golf hl-api function)
 
   #:duplicates (merge-generics
 		replace
@@ -60,6 +61,7 @@
           !function
           !return-type
           !param-types
+          !param-args
 
           invoke
           free)
@@ -69,7 +71,8 @@
   (g-closure #:accessor !g-closure)
   (function #:accessor !function #:init-keyword #:function)
   (return-type #:accessor !return-type #:init-keyword #:return-type)
-  (param-types #:accessor !param-types #:init-keyword #:param-types))
+  (param-types #:accessor !param-types #:init-keyword #:param-types)
+  (param-args #:accessor !param-args #:init-keyword #:param-args #:init-value #f))
 
 (define-method (initialize (self <closure>) initargs)
   (let* ((function (or (get-keyword #:function initargs #f)
@@ -229,17 +232,23 @@
   (let* ((%g-value-size (g-value-size))
          (closure (gi-closure-cache-ref g-closure))
          (function (!function closure))
-         (args (if (= n-param 0)
-                   '()
-                   (let loop ((i 0)
-                              (g-value param-vals)
-                              (results '()))
-                     (if (= i n-param)
-                         (reverse! results)
-                         (loop (+ i 1)
-                               (gi-pointer-inc g-value %g-value-size)
-                               (cons (g-closure-marshal-g-value-ref g-value)
-                                     results)))))))
+         (param-args (!param-args closure))
+         (args
+          (if (= n-param 0)
+              '()
+              (let loop ((i 0)
+                         (g-value param-vals)
+                         (results '()))
+                (if (= i n-param)
+                    (reverse! results)
+                    (loop (+ i 1)
+                          (gi-pointer-inc g-value %g-value-size)
+                          (cons
+                           (g-closure-marshal-g-value-ref g-value
+                                                          (and param-args
+                                                               (list-ref param-args i))
+                                                          param-vals)
+                           results)))))))
   (if (null-pointer? return-val)
       (begin
         (apply function args)
@@ -249,7 +258,7 @@
                       (g-closure-marshal-g-value-return-val return-val result))
         (values)))))
 
-(define (g-closure-marshal-g-value-ref g-value)
+(define (g-closure-marshal-g-value-ref g-value param-arg param-vals)
   (let ((value (g-value-ref g-value)))
     (case (g-value->g-type g-value)
       ((object)
@@ -263,8 +272,41 @@
                       (c-name (g-name->class-name name))
                       (type (module-ref module c-name)))
                  (make type #:g-inst value)))))
+      ((pointer)
+       (if param-arg
+           (let ((type-tag (!type-tag param-arg))
+                 (type-desc (!type-desc param-arg)))
+             (case type-tag
+               ((array)
+                (match type-desc
+                  ((array fixed-size is-zero-terminated param-n param-tag)
+                   (case param-tag
+                     ((utf8
+                       filename)
+                      (gi-strings->scm value)
+                      #;(gi-n-string->scm value
+                      (g-value-ref-param-n param-vals param-n)))
+                     ((interface)
+                      (gi-pointers->scm value)
+                      #;(gi-n-pointer->scm value
+                      (g-value-ref-param-n param-vals param-n)))
+                     (else
+                      (warning
+                       "Unimplemented (g-closure-marshal-g-value-ref) type - array;"
+                       (format #f "~S" type-desc)))))))))
+           value))
       (else
        value))))
+
+;; Incomplete - Wip
+#;(define (g-value-ref-param-n param-vals param-n)
+  ;; these are pointers to int32, holding the length of an array
+  (let* ((%g-value-size (g-value-size))
+         (g-value (gi-pointer-inc param-vals
+                                  (* %g-value-size param-n)))
+         (pointer (g-value-ref g-value))
+         (s32 (pointer->bytevector pointer (sizeof int))))
+    (s32vector-ref s32 0)))
 
 (define (g-closure-marshal-g-value-return-val g-value return-val)
   (case (g-value->g-type g-value)
