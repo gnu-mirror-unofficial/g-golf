@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -41,11 +41,14 @@
   #:use-module (ice-9 receive)
   #:use-module (srfi srfi-1)
   #:use-module (oop goops)
+  #:use-module (oop goops describe)
   #:use-module (g-golf support)
   #:use-module (g-golf gi)
   #:use-module (g-golf glib)
   #:use-module (g-golf gobject)
   #:use-module (g-golf hl-api gtype)
+  #:use-module (g-golf hl-api gobject)
+  #:use-module (g-golf hl-api function)
   #:use-module (g-golf hl-api closure)
 
   #:replace (connect)
@@ -67,13 +70,16 @@
             gi-signal-cache-find))
 
 
-(g-export !id
+(g-export describe
+          !id
           !name
           !flags
-          !interface-type
+          !iface-type
+          !iface-name
+          !iface-class
           !return-type
           !param-types
-          #;!class-generic
+          !param-args
 
           connect-after)
 
@@ -98,37 +104,58 @@
   (signal-connect inst name function #t detail))
 
 (define (signal-connect inst s-name function after? detail)
-  ;; Below, i- stands for interface-, s- for signal-
+  ;; Below, i- stands for instance-, o- for object-, s- for signal-
   (let* ((i-class (class-of inst))
          (i-class-name (class-name i-class))
-         (signal (or (gi-signal-cache-ref i-class-name s-name)
-                     (let* ((i-type (!gtype-id i-class))
-                            (s-id (or (g-signal-lookup (symbol->string s-name) i-type)
-                                      (error "No such signal: " i-class-name s-name)))
-                            (g-signal (g-signal-query s-id)))
-                       (match g-signal
-                         ((id name i-type flags return-type n-param param-types)
-                          (let ((s-inst (make <signal>
-                                          #:id id
-                                          #:name name
-                                          #:interface-type i-type
-                                          #:flags flags
-                                          #:return-type return-type
-                                          #:n-param n-param
-                                          #:param-types param-types)))
-                            (gi-signal-cache-set! i-class-name s-name s-inst)
-                            s-inst))))))
-         (closure (make <closure>
-                    #:function function
-                    #:return-type (!return-type signal)
-                    #:param-types (cons 'object
-                                        (!param-types signal)))))
-    (g-signal-connect-closure-by-id (!g-inst inst)
-                                    (!id signal)
-                                    detail
-                                    (!g-closure closure)
-                                    after?)
-    (values)))
+         (i-type (!gtype-id i-class))
+         (s-id (or (g-signal-lookup (symbol->string s-name) i-type)
+                   (error "No such signal: " i-class-name s-name)))
+         (g-signal (g-signal-query s-id)))
+    (match g-signal
+      ((id name iface-type flags return-type n-param param-types)
+       (let* ((iface-name (g-type-name iface-type))
+              (iface-key (string->symbol
+                          (g-studly-caps-expand iface-name)))
+              (signal (or (gi-signal-cache-ref iface-key s-name)
+                          (let* ((iface-info (g-irepository-find-by-gtype iface-type))
+                                 (iface-s-info (g-object-info-find-signal iface-info name))
+                                 (param-args (signal-arguments iface-s-info))
+                                 (s-inst (make <signal>
+                                           #:id id
+                                           #:name name
+                                           #:iface-type iface-type
+                                           #:iface-name iface-name
+                                           #:flags flags
+                                           #:return-type return-type
+                                           #:n-param n-param
+                                           #:param-types param-types
+                                           #:param-args param-args)))
+                            (gi-signal-cache-set! iface-key s-name s-inst)
+                            s-inst)))
+              (closure (make <closure>
+                         #:function function
+                         #:return-type (!return-type signal)
+                         #:param-types (cons 'object
+                                             (!param-types signal))
+                         #:param-args (cons #f
+                                            (!param-args signal)))))
+         (g-signal-connect-closure-by-id (!g-inst inst)
+                                         (!id signal)
+                                         detail
+                                         (!g-closure closure)
+                                         after?)
+         (values))))))
+
+(define (signal-arguments info)
+  (let loop ((n-arg (g-callable-info-get-n-args info))
+             (args '()))
+    (if (= n-arg 0)
+        args
+        (loop (- n-arg 1)
+              (cons (make <argument>
+                      #:info (g-callable-info-get-arg info
+                                                      (- n-arg 1)))
+                    args)))))
 
 
 ;;;
@@ -138,17 +165,33 @@
 (define-class <signal> ()
   (id #:accessor !id #:init-keyword #:id #:init-value #f)
   (name #:accessor !name #:init-keyword #:name)
-  (interface-type #:accessor !interface-type #:init-keyword #:interface-type)
+  (iface-type #:accessor !iface-type #:init-keyword #:iface-type)
+  (iface-name #:accessor !iface-name #:init-keyword #:iface-name)
+  (iface-class #:accessor !iface-class #:init-keyword #:iface-class)
   (flags #:accessor !flags #:init-keyword #:flags)
   (return-type #:accessor !return-type #:init-keyword #:return-type)
   (n-param #:accessor !n-param #:init-keyword #:n-param)
   (param-types #:accessor !param-types #:init-keyword #:param-types)
-  #;(class-generic #:accessor !class-generic
-                 #:init-keyword #:class-generic #:init-value #f))
+  (param-args #:accessor !param-args #:init-keyword #:param-args #:init-value #f))
 
 (define-method (initialize (self <signal>) initargs)
   (next-method)
-  'wip)
+  (let* ((module (resolve-module '(g-golf hl-api gobject)))
+         (iface-type (!iface-type self))
+         (iface-name (g-type-name iface-type))
+         (iface-c-name (g-name->class-name iface-name))
+         (iface-class (module-ref module iface-c-name)))
+    (mslot-set! self
+                'iface-name iface-name
+                'iface-class iface-class)))
+
+(define-method (describe (self <signal>))
+  (next-method)
+  (newline)
+  (for-each (lambda (argument)
+              (describe argument)
+              (newline))
+      (!param-args self)))
 
 
 ;;;
