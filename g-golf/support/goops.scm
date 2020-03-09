@@ -42,6 +42,7 @@
   #:use-module (ice-9 receive)
   #:use-module (srfi srfi-1)
   #:use-module (oop goops)
+  #:use-module (oop goops describe)
   #:use-module (g-golf support g-export)
   #:use-module (g-golf support modules)
 
@@ -62,7 +63,7 @@
 	  #;describe)
 
 
-#;(eval-when (expand load eval)
+(eval-when (expand load eval)
   (re-export-public-interface (oop goops)
                               (oop goops describe)))
 

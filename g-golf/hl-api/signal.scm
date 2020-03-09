@@ -41,7 +41,6 @@
   #:use-module (ice-9 receive)
   #:use-module (srfi srfi-1)
   #:use-module (oop goops)
-  #:use-module (oop goops describe)
   #:use-module (g-golf support)
   #:use-module (g-golf gi)
   #:use-module (g-golf glib)
