@@ -791,20 +791,21 @@
                  (parse-c-struct (gi-argument-ref gi-argument-out 'v-pointer)
                                  (!scm-types gi-type))))
             ((object)
-             ;; See the comment in registered-type->gi-type which
-             ;; describes the role of confirmed? in the pattern.
-             (if confirmed?
-                 (make gi-type
-                   #:g-inst (gi-argument-ref gi-argument-out 'v-pointer))
-                 (let* ((module (resolve-module '(g-golf hl-api object)))
-                        (foreign (gi-argument-ref gi-argument-out 'v-pointer))
-                        (type (g-object-type foreign))
-                        (gi-name (g-object-type-name foreign))
-                        (c-name (g-name->class-name gi-name))
-                        (class (module-ref module c-name)))
-                   (set! (!type-desc arg-out)
-                         (list 'object c-name class (g-object-type foreign) #t))
-                   (make class #:g-inst foreign))))
+             (let ((foreign (gi-argument-ref gi-argument-out 'v-pointer)))
+               (and foreign
+                    ;; See the comment in registered-type->gi-type which
+                    ;; describes the role of confirmed? in the pattern.
+                    (if confirmed?
+                        (make gi-type
+                          #:g-inst (gi-argument-ref gi-argument-out 'v-pointer))
+                        (let* ((module (resolve-module '(g-golf hl-api object)))
+                               (type (g-object-type foreign))
+                               (gi-name (g-object-type-name foreign))
+                               (c-name (g-name->class-name gi-name))
+                               (class (module-ref module c-name)))
+                          (set! (!type-desc arg-out)
+                                (list 'object c-name class type #t))
+                          (make class #:g-inst foreign))))))
             ((interface)
              (gi-argument-ref gi-argument-out 'v-pointer))))))
       ((array)
@@ -866,20 +867,21 @@
                  (parse-c-struct (gi-argument-ref gi-arg-result 'v-pointer)
                                  (!scm-types gi-type))))
             ((object)
-             ;; See the comment in registered-type->gi-type which
-             ;; describes the role of confirmed? in the pattern.
-             (if confirmed?
-                 (make gi-type
-                   #:g-inst (gi-argument-ref gi-arg-result 'v-pointer))
-                 (let* ((module (resolve-module '(g-golf hl-api object)))
-                        (foreign (gi-argument-ref gi-arg-result 'v-pointer))
-                        (type (g-object-type foreign))
-                        (gi-name (g-object-type-name foreign))
-                        (c-name (g-name->class-name gi-name))
-                        (class (module-ref module c-name)))
-                   (set! (!type-desc function)
-                         (list 'object c-name class (g-object-type foreign) #t))
-                   (make class #:g-inst foreign))))
+             (let ((foreign (gi-argument-ref gi-arg-result 'v-pointer)))
+               (and foreign
+                    ;; See the comment in registered-type->gi-type which
+                    ;; describes the role of confirmed? in the pattern.
+                    (if confirmed?
+                        (make gi-type
+                          #:g-inst (gi-argument-ref gi-arg-result 'v-pointer))
+                        (let* ((module (resolve-module '(g-golf hl-api object)))
+                               (type (g-object-type foreign))
+                               (gi-name (g-object-type-name foreign))
+                               (c-name (g-name->class-name gi-name))
+                               (class (module-ref module c-name)))
+                          (set! (!type-desc function)
+                                (list 'object c-name class type #t))
+                          (make class #:g-inst foreign))))))
             ((interface)
              (gi-argument-ref gi-arg-result 'v-pointer))))))
       ((array)
