@@ -247,7 +247,8 @@
                            (g-closure-marshal-g-value-ref g-value
                                                           (and param-args
                                                                (list-ref param-args i))
-                                                          param-vals)
+                                                          param-vals
+                                                          param-args)
                            results)))))))
   (if (null-pointer? return-val)
       (begin
@@ -258,7 +259,7 @@
                       (g-closure-marshal-g-value-return-val return-val result))
         (values)))))
 
-(define (g-closure-marshal-g-value-ref g-value param-arg param-vals)
+(define (g-closure-marshal-g-value-ref g-value param-arg param-vals param-args)
   (let ((value (g-value-ref g-value)))
     (case (g-value->g-type g-value)
       ((object)
@@ -283,13 +284,19 @@
                    (case param-tag
                      ((utf8
                        filename)
-                      (gi-strings->scm value)
-                      #;(gi-n-string->scm value
-                      (g-value-ref-param-n param-vals param-n)))
-                     ((interface)
-                      (gi-pointers->scm value)
-                      #;(gi-n-pointer->scm value
-                      (g-value-ref-param-n param-vals param-n)))
+                      (if is-zero-terminated
+                          (gi-strings->scm value)
+                          (gi-n-string->scm value
+                                            (g-value-ref-param-n param-vals
+                                                                 param-args
+                                                                 param-n))))
+                      ((interface)
+                       (if is-zero-terminated
+                           (gi-pointers->scm value)
+                           (gi-n-pointer->scm value
+                                              (g-value-ref-param-n param-vals
+                                                                   param-args
+                                                                   param-n))))
                      (else
                       (warning
                        "Unimplemented (g-closure-marshal-g-value-ref) type - array;"
@@ -298,15 +305,13 @@
       (else
        value))))
 
-;; Incomplete - Wip
-#;(define (g-value-ref-param-n param-vals param-n)
-  ;; these are pointers to int32, holding the length of an array
+(define (g-value-ref-param-n param-vals param-args param-n)
   (let* ((%g-value-size (g-value-size))
          (g-value (gi-pointer-inc param-vals
                                   (* %g-value-size param-n)))
-         (pointer (g-value-ref g-value))
-         (s32 (pointer->bytevector pointer (sizeof int))))
-    (s32vector-ref s32 0)))
+         (param-arg (and param-args
+                         (list-ref param-args param-n))))
+    (g-closure-marshal-g-value-ref g-value param-arg param-vals param-args)))
 
 (define (g-closure-marshal-g-value-return-val g-value return-val)
   (case (g-value->g-type g-value)
