@@ -287,16 +287,18 @@
                       (if is-zero-terminated
                           (gi-strings->scm value)
                           (gi-n-string->scm value
-                                            (g-value-ref-param-n param-vals
-                                                                 param-args
-                                                                 param-n))))
+                                            (dimfi "param-n value"
+                                                   (g-value-ref-param-n param-vals
+                                                                        param-args
+                                                                        param-n)))))
                       ((interface)
                        (if is-zero-terminated
                            (gi-pointers->scm value)
                            (gi-n-pointer->scm value
-                                              (g-value-ref-param-n param-vals
-                                                                   param-args
-                                                                   param-n))))
+                                              (dimfi "param-n value"
+                                                     (g-value-ref-param-n param-vals
+                                                                          param-args
+                                                                          param-n)))))
                      (else
                       (warning
                        "Unimplemented (g-closure-marshal-g-value-ref) type - array;"
@@ -305,12 +307,52 @@
       (else
        value))))
 
+#!
+
+;; Debugging material ...
+
+(define %param-vals #f)
+(define %param-args #f)
+(define %param-n #f)
+(define %g-value)
+
+(export %param-vals
+        %param-args
+        %param-n
+        %g-value)
+
+!#
+
 (define (g-value-ref-param-n param-vals param-args param-n)
   (let* ((%g-value-size (g-value-size))
+         (param-n (if param-args
+                      (match param-args
+                        ((param-arg1 . rest)
+                         (if param-arg1
+                             param-n
+                             ;; When #f is the first argument 'desc', it
+                             ;; means that the closure is a method - see
+                             ;; signal-connect in (g-golf hl-api signal)
+                             ;; to see this 'in action'. In these cases,
+                             ;; the typelib GI information about
+                             ;; 'array-length' argument position must be
+                             ;; increased by one, because the GI
+                             ;; g-type-info-get-array-length returns a
+                             ;; value that does not take the first
+                             ;; method argument into account, the
+                             ;; instance upon which the method is
+                             ;; called.
+                             (+ param-n 1))))
+                      param-n))
          (g-value (gi-pointer-inc param-vals
                                   (* %g-value-size param-n)))
          (param-arg (and param-args
                          (list-ref param-args param-n))))
+    ;; Debugging material ...
+    #;(set! %param-vals param-vals)
+    #;(set! %param-args param-args)
+    #;(set! %param-n param-n)
+    #;(set! %g-value g-value)
     (g-closure-marshal-g-value-ref g-value param-arg param-vals param-args)))
 
 (define (g-closure-marshal-g-value-return-val g-value return-val)
