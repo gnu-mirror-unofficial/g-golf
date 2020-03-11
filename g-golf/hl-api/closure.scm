@@ -287,18 +287,16 @@
                       (if is-zero-terminated
                           (gi-strings->scm value)
                           (gi-n-string->scm value
-                                            (dimfi "param-n value"
-                                                   (g-value-ref-param-n param-vals
-                                                                        param-args
-                                                                        param-n)))))
+                                            (g-value-ref-param-n param-vals
+                                                                 param-args
+                                                                 param-n))))
                       ((interface)
                        (if is-zero-terminated
                            (gi-pointers->scm value)
                            (gi-n-pointer->scm value
-                                              (dimfi "param-n value"
-                                                     (g-value-ref-param-n param-vals
-                                                                          param-args
-                                                                          param-n)))))
+                                              (g-value-ref-param-n param-vals
+                                                                   param-args
+                                                                   param-n))))
                      (else
                       (warning
                        "Unimplemented (g-closure-marshal-g-value-ref) type - array;"
