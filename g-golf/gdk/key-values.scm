@@ -27,23 +27,23 @@
 
 
 (define-module (g-golf gdk key-values)
-  #:use-module (ice-9 match)
-  #:use-module (oop goops)
+  ;; #:use-module (ice-9 match)
+  ;; #:use-module (oop goops)
   #:use-module (system foreign)
   #:use-module (g-golf init)
-  #:use-module (g-golf support libg-golf)
-  #:use-module (g-golf support utils)
-  #:use-module (g-golf support enum)
-  #:use-module (g-golf support struct)
-  #:use-module (g-golf support union)
-  #:use-module (g-golf gi utils)
-  #:use-module (g-golf gi cache)
+  ;; #:use-module (g-golf support libg-golf)
+  ;; #:use-module (g-golf support utils)
+  ;; #:use-module (g-golf support enum)
+  ;; #:use-module (g-golf support struct)
+  ;; #:use-module (g-golf support union)
+  ;; #:use-module (g-golf gi utils)
+  ;; #:use-module (g-golf gi cache)
   
-  #:duplicates (merge-generics
-		replace
-		warn-override-core
-		warn
-		last)
+  ;; #:duplicates (merge-generics
+  ;;	replace
+  ;;	warn-override-core
+  ;;	warn
+  ;;	last)
 
   #:export (gdk-keyval-name))
 
