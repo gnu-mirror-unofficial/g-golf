@@ -36,7 +36,7 @@
   ;; #:use-module (g-golf support enum)
   ;; #:use-module (g-golf support struct)
   ;; #:use-module (g-golf support union)
-  ;; #:use-module (g-golf gi utils)
+  #:use-module (g-golf gi utils)
   ;; #:use-module (g-golf gi cache)
   
   ;; #:duplicates (merge-generics
