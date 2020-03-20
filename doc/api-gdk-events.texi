@@ -28,6 +28,23 @@ Events — Functions for handling events from the window system
 @indentedblock
 @table @code
 @item @ref{!event}
+
+@item @ref{gdk-event:button}
+@item @ref{gdk-event:click-count}
+@item @ref{gdk-event:coords}
+@item @ref{gdk-event:x}
+@item @ref{gdk-event:y}
+@item @ref{gdk-event:keycode}
+@item @ref{gdk-event:keyval}
+@item @ref{gdk-event:keyname}
+@item @ref{gdk-event:root-coords}
+@item @ref{gdk-event:root-x}
+@item @ref{gdk-event:root-x}
+@item @ref{gdk-event:state}
+@item @ref{gdk-event:time}
+@item @ref{gdk-event:window}
+@item @ref{gdk-event:type}
+
 @item @ref{gdk-event-get-button}
 @item @ref{gdk-event-get-click-count}
 @item @ref{gdk-event-get-coords}
@@ -99,12 +116,115 @@ Returns the content of the @code{event} slot for @var{inst}.
 @end deffn
 
 
+@anchor{gdk-event:button}
+@anchor{gdk-event:click-count}
+@anchor{gdk-event:coords}
+@anchor{gdk-event:x}
+@anchor{gdk-event:y}
+@anchor{gdk-event:keycode}
+@anchor{gdk-event:keyval}
+@anchor{gdk-event:keyname}
+@anchor{gdk-event:root-coords}
+@anchor{gdk-event:root-x}
+@anchor{gdk-eventroot-y}
+@anchor{gdk-event:state}
+@anchor{gdk-event:time}
+@anchor{gdk-event:window}
 @anchor{gdk-event:type}
-@deffn Method gdk-event:type inst
+@deffn Method gdk-event:button (inst <gdk-event>)
+@deffnx Method gdk-event:click-count (inst <gdk-event>)
+@deffnx Method gdk-event:coords (inst <gdk-event>)
+@deffnx Method gdk-event:x (inst <gdk-event>)
+@deffnx Method gdk-event:y (inst <gdk-event>)
+@deffnx Method gdk-event:keycode (inst <gdk-event>)
+@deffnx Method gdk-event:keyval (inst <gdk-event>)
+@deffnx Method gdk-event:keyname (inst <gdk-event>)
+@deffnx Method gdk-event:root-coords (inst <gdk-event>)
+@deffnx Method gdk-event:root-x (inst <gdk-event>)
+@deffnx Method gdk-event:root-y (inst <gdk-event>)
+@deffnx Method gdk-event:state (inst <gdk-event>)
+@deffnx Method gdk-event:time (inst <gdk-event>)
+@deffnx Method gdk-event:window (inst <gdk-event>)
+@deffnx Method gdk-event:type (inst <gdk-event>)
 
-Returns a symbol.
+Respectively returns the scheme representation of the content of the
+@var{inst} event (struct) element - refered to by its name - or #f if
+the event (struct) does not deliver the element.
 
-Obtains and returns the event type (symbol) name for @var{inst}.
+The event (struct) elements are:
+
+
+@indentedblock
+@table @code
+
+@item @emph{button}
+
+The button number of the event.
+
+@item @emph{click-count}
+
+The click-count of the event.
+
+@item @emph{coords}
+
+The list of the x and y window relative coordinates of the event.
+
+@item @emph{x}
+
+The x window relative coordinate of the event.
+
+@item @emph{y}
+
+The y window relative coordinate of the event.
+
+@item @emph{keycode}
+
+The raw code (also called hardware keycode) of the key that was pressed
+of released.
+
+@item @emph{keyval}
+
+The key value that was pressed of released (See the gdk/gdkkeysyms.h
+header file for a complete list of GDK key codes.
+
+@item @emph{keyname}
+
+The key name that was pressed of released (There is actually no such
+element in any (gdk) event, this method calls @ref{gdk-keyval-name} on
+the keyval of the event).
+
+@item @emph{root-coords}
+
+The list of the x and y root window relative coordinates of the event.
+
+@item @emph{root-x}
+
+The root x window relative coordinate of the event.
+
+@item @emph{root-y}
+
+The root y window relative coordinate of the event.
+
+@item @emph{state}
+
+A list representing the state of the modifier keys (e.g. Control, Shift
+and Alt) and the pointer buttons (see the @ref{gdk-event-get-state}
+description for some more information about @code{GdkModifierType}).
+
+@item @emph{time}
+
+The time of the event in milliseconds.
+
+@item @emph{window}
+
+The (a pointer to the) @code{GdkWindow} of the event.
+
+@item @emph{type}
+
+The type of the event.
+
+@end table
+@end indentedblock
 @end deffn
 
 
@@ -212,7 +332,7 @@ Extracts and returns (a pointer to) the @code{GdkWindow} associated with
 @anchor{gdk-event-get-event-type}
 @deffn Procedure gdk-event-get-event-type event
 
-Returns the event type name.
+Returns the event type (symbol) name.
 
 Obtains and returns the @ref{%gdk-event-type} (symbol) name for
 @var{event}.

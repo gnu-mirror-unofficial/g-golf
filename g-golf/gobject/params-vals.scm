@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -38,7 +38,7 @@
   #:use-module (g-golf support struct)
   #:use-module (g-golf support union)
   #:use-module (g-golf support utils)
-  #:use-module (g-golf gdk)
+  #:use-module (g-golf gdk events)
   #:use-module (g-golf gi cache)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gobject type-info)
@@ -258,7 +258,7 @@
         (value (g_value_get_boxed g-value)))
     (cond ((is-a? gi-boxed <gi-union>)
            (if (string=? (!scm-name gi-boxed) "gdk-event")
-               (make-gdk-event value)
+               (make <gdk-event> #:event value)
                value))
           ((or (!is-opaque? gi-boxed)
                (!is-semi-opaque? gi-boxed))

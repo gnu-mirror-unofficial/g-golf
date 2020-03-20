@@ -44,7 +44,6 @@ SOURCES = \
 	g-golf/support.scm			\
 	g-golf/init.scm				\
 	g-golf/gdk/events.scm			\
-	g-golf/gdk/event-structures.scm		\
 	g-golf/gdk/key-values.scm		\
 	g-golf/gdk.scm				\
 	g-golf/glib/mem-alloc.scm		\
@@ -134,6 +133,45 @@ SUBDIRS = \
 	libg-golf			\
 	test-suite			\
 	doc
+
+
+###
+### Removing old mod and go files if any
+###
+
+SOURCES_TO_REMOVE = \
+	g-golf/gdk/event-structures.scm
+
+GOBJECTS_TO_REMOVE = $(SOURCES_TO_REMOVE:%.scm=%.go)
+
+install-data-local:
+	for f in $(SOURCES_TO_REMOVE); do	\
+          if [ -e $(moddir)/$$f ]; then		\
+	    rm $(moddir)/$$f;			\
+	  fi;					\
+	done
+	for f in $(GOBJECTS_TO_REMOVE); do 	\
+	  if [ -e $(godir)/$$f ]; then		\
+	    rm $(godir)/$$f;			\
+	  fi;					\
+	done
+
+uninstall-local:
+	for f in $(SOURCES_TO_REMOVE); do	\
+          if [ -e $(moddir)/$$f ]; then		\
+	    rm $(moddir)/$$f;			\
+	  fi;					\
+	done
+	for f in $(GOBJECTS_TO_REMOVE); do 	\
+	  if [ -e $(godir)/$$f ]; then		\
+	    rm $(godir)/$$f;			\
+	  fi;					\
+	done
+
+
+###
+### Distclean
+###
 
 distclean-local:
 	rm -f Makefile

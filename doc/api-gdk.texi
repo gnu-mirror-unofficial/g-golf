@@ -23,11 +23,11 @@ they might be some exception in the future.
 @menu
 
 * Events:: Functions for handling events from the window system.
-* Event Structures:: Data structures specific to each type of event.
+@c * Event Structures:: Data structures specific to each type of event.
 * Key Values:: Functions for manipulating keyboard codes.
 @end menu
 
 
 @include api-gdk-events.texi
-@include api-gdk-event-structures.texi
+@c @include api-gdk-event-structures.texi
 @include api-gdk-key-values.texi
