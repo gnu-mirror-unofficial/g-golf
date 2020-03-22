@@ -153,7 +153,7 @@
         (let ((gi-enum (gi-enum-import info)))
           (gi-cache-set! 'enum key gi-enum)
           (when recur
-            (gi-enum-import-methods info))
+            (gi-import-enum-methods info))
           gi-enum))))
 
 (define* (gi-import-flag info #:key (recur #t))
@@ -164,7 +164,7 @@
         (let ((gi-flag (gi-enum-import info #:flag #t)))
           (gi-cache-set! 'flag key gi-flag)
           (when recur
-            (gi-enum-import-methods info))
+            (gi-import-enum-methods info))
           gi-flag))))
 
 (define* (gi-import-struct info #:key (recur #t))
@@ -175,7 +175,7 @@
         (let ((gi-struct (gi-struct-import info)))
           (gi-cache-set! 'boxed key gi-struct)
           (when recur
-            (gi-struct-import-methods info))
+            (gi-import-struct-methods info))
           gi-struct))))
 
 (define %type-description
@@ -206,7 +206,7 @@
                   #:discriminator-offset (g-union-info-get-discriminator-offset info))))
           (gi-cache-set! 'boxed scm-name gi-union)
           #;(when recur
-            (gi-union-import-methods info))
+            (gi-import-union-methods info))
           (g-base-info-unref info)
           gi-union))))
 
@@ -232,5 +232,5 @@
         (let ((gi-iface (list 'interface key name id #t)))
           (gi-cache-set! 'iface key gi-iface)
           (when recur
-            (gi-interface-import-methods info))
+            (gi-import-interface-methods info))
           gi-iface))))

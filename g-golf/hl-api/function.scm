@@ -49,9 +49,9 @@
             gi-import-function
             <function>
             <argument>
-            gi-enum-import-methods
-            gi-struct-import-methods
-            gi-interface-import-methods))
+            gi-import-enum-methods
+            gi-import-struct-methods
+            gi-import-interface-methods))
 
 
 (g-export describe	;; function and argument
@@ -366,7 +366,7 @@
                (or (gi-cache-ref 'enum name)
                    (let ((gi-enum (gi-enum-import info)))
                      (gi-cache-set! 'enum name gi-enum)
-                     (gi-enum-import-methods info)
+                     (gi-import-enum-methods info)
                      gi-enum))
                #t))
       ((flags)
@@ -375,7 +375,7 @@
                (or (gi-cache-ref 'flag name)
                    (let ((gi-enum (gi-enum-import info #:flag #t)))
                      (gi-cache-set! 'flag name gi-enum)
-                     (gi-enum-import-methods info)
+                     (gi-import-enum-methods info)
                      gi-enum))
                #t))
       ((struct)
@@ -384,7 +384,7 @@
                (or (gi-cache-ref 'boxed name)
                    (let ((gi-struct (gi-struct-import info)))
                      (gi-cache-set! 'boxed name gi-struct)
-                     (gi-struct-import-methods info)
+                     (gi-import-struct-methods info)
                      gi-struct))
                #t))
       ((object)
@@ -435,7 +435,7 @@
                (or (gi-cache-ref 'iface name)
                    (let ((gi-iface (gi-interface-import info)))
                      (gi-cache-set! 'iface name gi-iface)
-                     (gi-interface-import-methods info)
+                     (gi-import-interface-methods info)
                      gi-iface))
                #t))
       (else
@@ -913,7 +913,7 @@
 ;;; Enum have methods
 ;;;
 
-(define (gi-enum-import-methods info)
+(define (gi-import-enum-methods info)
   (let ((n-method (g-enum-info-get-n-methods info)))
     (do ((i 0
             (+ i 1)))
@@ -934,7 +934,7 @@
 ;;; Struct have methods
 ;;;
 
-(define (gi-struct-import-methods info)
+(define (gi-import-struct-methods info)
   (let ((n-method (g-struct-info-get-n-methods info)))
     (do ((i 0
             (+ i 1)))
@@ -955,7 +955,7 @@
 ;;; Interface have methods
 ;;;
 
-(define (gi-interface-import-methods info)
+(define (gi-import-interface-methods info)
   (let ((n-method (g-interface-info-get-n-methods info)))
     (do ((i 0
             (+ i 1)))
