@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2019
+;;;; Copyright (C) 2018 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -71,7 +71,7 @@
                                 val)))))
 
 (define* (gi-cache-show #:optional (m-key #f))
-  (format #t "%gi-cahe~%")
+  (format #t "%gi-cache~%")
   (if m-key
       (begin
         (format #t "  ~A~%" m-key)
@@ -87,7 +87,7 @@
           %gi-cache)))
 
 #;(define* (gi-cache-show #:key (level 1))
-  (format #t "%gi-cahe~%")
+  (format #t "%gi-cache~%")
   (for-each (lambda (m-entry)
               (match m-entry
                 ((m-key . m-vals)
