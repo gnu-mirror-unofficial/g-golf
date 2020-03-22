@@ -1,11 +1,15 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2019 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
 @node Struct
 @subsection Struct
+
+G-Golf class, accessors, methods and procedures to deal with C struct
+types.
+
 
 @subheading Classes
 
@@ -14,6 +18,7 @@
 @item @ref{<gi-struct>}
 @end table
 @end indentedblock
+
 
 @subheading Procedures and Accessors
 
@@ -33,6 +38,14 @@
 @end table
 @end indentedblock
 
+
+@subheading Description
+
+G-Golf class, accessors, methods and procedures to deal with C struct
+types.
+
+
+@subheading Classes
 
 @anchor{<gi-struct>}
 @deftp Class <gi-struct>
@@ -88,6 +101,8 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @end deftp
 
 
+@subheading Procedures and Accessors
+
 @anchor{!gi-name_}
 @anchor{!scm-name__}
 @anchor{!alignment}
@@ -97,23 +112,23 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @anchor{!field-types}
 @anchor{!scm-types}
 @anchor{!init-vals}
-@deffn Accessor !gi-name gi-struct
-@deffnx Accessor !scm-name gi-struct
-@deffnx Accessor !alignment gi-struct
-@deffnx Accessor !size gi-struct
-@deffnx Accessor !is-gtype-struct? gi-struct
-@deffnx Accessor !field-types gi-struct
-@deffnx Accessor !scm-types gi-struct
-@deffnx Accessor !init-vals gi-struct
+@deffn Accessor !gi-name (inst <gi-struct>)
+@deffnx Accessor !scm-name (inst <gi-struct>)
+@deffnx Accessor !alignment (inst <gi-struct>)
+@deffnx Accessor !size (inst <gi-struct>)
+@deffnx Accessor !is-gtype-struct? (inst <gi-struct>)
+@deffnx Accessor !field-types (inst <gi-struct>)
+@deffnx Accessor !scm-types (inst <gi-struct>)
+@deffnx Accessor !init-vals (inst <gi-struct>)
 
-Returns the content of their respective slot for @var{gi-struct}.
+Returns the content of their respective slot for @var{inst}.
 @end deffn
 
 
 @anchor{!is-opaque?}
-@deffn Accessor !is-opaque? gi-struct
+@deffn Accessor !is-opaque? (inst <gi-struct>)
 
-Returns @code{#t} if @var{gi-struct} is @samp{opaque}, otherwise,
+Returns @code{#t} if @var{inst} is @samp{opaque}, otherwise,
 it returns @code{#f}.
 
 A <gi-struct> instance is said to be @samp{opaque} when the call to
@@ -127,9 +142,9 @@ A <gi-struct> instance is said to be @samp{opaque} when the call to
 
 
 @anchor{!is-semi-opaque?}
-@deffn Accessor !is-semi-opaque? gi-struct
+@deffn Accessor !is-semi-opaque? (inst <gi-struct>)
 
-Returns @code{#t} if @var{gi-struct} is @samp{semi-opaque}, otherwise,
+Returns @code{#t} if @var{inst} is @samp{semi-opaque}, otherwise,
 it returns @code{#f}.
 
 A <gi-struct> instance is said to be @samp{semi-opaque} when one of its

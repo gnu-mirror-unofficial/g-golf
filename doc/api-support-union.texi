@@ -1,18 +1,36 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
 @node Union
 @subsection Union
 
-G-Golf procedures to deal with C unions.
+G-Golf class, accessors, methods and procedures to deal with C union
+types.
 
-@subheading Procedures
+@subheading Classes
 
 @indentedblock
 @table @code
+@item @ref{<gi-union>}
+@end table
+@end indentedblock
+
+@subheading Procedures and Accessors
+
+@indentedblock
+@table @code
+@item @ref{!gtype-id__}
+@item @ref{!gi-name__}
+@item @ref{!scm-name___}
+@item @ref{!size_}
+@item @ref{!alignment_}
+@item @ref{!fields}
+@item @ref{!is-discriminated?}
+@item @ref{!discriminator-offset}
+@item @ref{!discriminator}
 @item @ref{make-c-union}
 @item @ref{c-union-ref}
 @item @ref{c-union-set!}
@@ -25,10 +43,69 @@ G-Golf procedures to deal with C unions.
 
 @subheading Description
 
-G-Golf procedures to deal with C unions.
+G-Golf class, accessors, methods and procedures to deal with C union
+types.
 
 
-@subheading Procedures
+@subheading Classes
+
+
+
+@anchor{<gi-union>}
+@deftp Class <gi-union>
+
+The @code{<gi-union>} class. Its @code{class-direct-slots} are:
+
+@indentedblock
+@table @code
+@item @emph{gtype-id}
+#:accessor !gtype-id @*
+#:init-keyword #:gtype-id
+
+@item @emph{gi-name}
+#:accessor !gi-name @*
+#:init-keyword #:gi-name
+
+@item @emph{scm-name}
+#:accessor !scm-name
+
+@item @emph{size}
+#:accessor !size @*
+#:init-keyword #:size
+
+@item @emph{alignment}
+#:accessor !alignment @*
+#:init-keyword #:alignment
+
+@item @emph{fields}
+#:accessor !fields @*
+#:init-keyword #:fields
+
+@item @emph{is-discrimanted?}
+#:accessor !is-discriminated? @*
+#:init-keyword #:is-discriminated?
+
+@item @emph{discriminator-offset}
+#:accessor !discriminator-offset @*
+#:init-keyword #:discriminator-offset
+
+@item @emph{discriminator}
+#:accessor !discriminator
+#:init-keyword #:discriminator
+#:init-value #f
+@end table
+@end indentedblock
+
+The @code{scm-name} slot is automatically initialized.
+
+Instances of the @code{<gi-union>} are immutable (to be precise, there
+are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
+'Slots are not Immutable').
+@end deftp
+
+
+
+@subheading Procedures, Accessors and Methods
 
 
 @anchor{make-c-union}
@@ -58,6 +135,30 @@ Returns nothing.
 Sets the content of the C union pointed by @var{foreign} to @var{val},
 given its @var{size} and @var{type}.
 @end deffn
+
+
+@anchor{!gtype-id__}
+@anchor{!gi-name__}
+@anchor{!scm-name___}
+@anchor{!size_}
+@anchor{!alignment_}
+@anchor{!fields}
+@anchor{!is-discriminated?}
+@anchor{!discriminator-offset}
+@anchor{!discriminator}
+@deffn Accessor !gtype-id (inst <gi-union>)
+@deffnx Accessor !gi-name (inst <gi-union>)
+@deffnx Accessor !scm-name (inst <gi-union>)
+@deffnx Accessor !size (inst <gi-union>)
+@deffnx Accessor !alignment (inst <gi-union>)
+@deffnx Accessor !fields (inst <gi-union>)
+@deffnx Accessor !is-discriminated? (inst <gi-union>)
+@deffnx Accessor !discriminator-offset (inst <gi-union>)
+@deffnx Accessor !discriminator (inst <gi-union>)
+
+Returns the content of their respective slot for @var{inst}.
+@end deffn
+
 
 
 @c @subheading Types and Values

@@ -1,11 +1,15 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2018 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
 @node Enum
 @subsection Enum
+
+G-Golf class, accessors, methods and procedures to deal with C enum
+types.
+
 
 @subheading Classes
 
@@ -16,7 +20,8 @@
 @end table
 @end indentedblock
 
-@subheading Procedures and Methods
+
+@subheading Procedures, Accessors and Methods
 
 @indentedblock
 @table @code
@@ -33,6 +38,14 @@
 @end table
 @end indentedblock
 
+
+@subheading Description
+
+G-Golf class, accessors, methods and procedures to deal with C enum
+types.
+
+
+@subheading Classes
 
 @anchor{<enum>}
 @deftp Class <enum>
@@ -82,46 +95,6 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @end deftp
 
 
-@anchor{!enum-set}
-@deffn Method !enum-set enum
-
-Returns the content of the enum-set slot for @var{enum}.
-@end deffn
-
-
-@anchor{enum->value}
-@anchor{enum->values}
-@deffn Method enum->value enum symbol
-@deffnx Method enum->values enum
-
-Returns the @var{enum} value for @var{symbol} (or @code{#f} if it does
-not exists), or the list of all values for  @var{enum}, respectively.
-@end deffn
-
-
-@anchor{enum->symbol}
-@anchor{enum->symbols}
-@deffn Method enum->symbol enum value
-@deffnx Method enum->symbols enum
-
-Returns the @var{enum} symbol for @var{value} (or @code{#f} if it does
-not exists), or the list of all symbols for  @var{enum}, respectively.
-@end deffn
-
-
-@anchor{enum->name}
-@anchor{enum->names}
-@deffn Method enum->name enum value
-@deffnx Method enum->names enum
-
-Returns the @var{enum} name (the string representation of the symbol)
-for @var{value} (or @code{#f} if it does not exists), or the list of all
-names for @var{enum}, respectively.
-
-@var{value} can either be a @code{symbol} or an @code{id}.
-@end deffn
-
-
 @anchor{<gi-enum>}
 @deftp Class <gi-enum>
 
@@ -152,13 +125,54 @@ Conventions}, 'Slots are not Immutable').
 @end deftp
 
 
+@subheading Procedures, Accessors and Methods
+
+@anchor{!enum-set}
+@deffn Accessor !enum-set (inst <enum>)
+
+Returns the content of the enum-set slot for @var{inst}.
+@end deffn
+
+@anchor{enum->value}
+@anchor{enum->values}
+@deffn Method enum->value (inst <enum>) symbol
+@deffnx Method enum->values (inst <enum>)
+
+Returns the @var{inst} value for @var{symbol} (or @code{#f} if it does
+not exists), or the list of all values for @var{inst}, respectively.
+@end deffn
+
+
+@anchor{enum->symbol}
+@anchor{enum->symbols}
+@deffn Method enum->symbol (inst <enum>) value
+@deffnx Method enum->symbols (inst <enum>)
+
+Returns the @var{inst} symbol for @var{value} (or @code{#f} if it does
+not exists), or the list of all symbols for @var{inst}, respectively.
+@end deffn
+
+
+@anchor{enum->name}
+@anchor{enum->names}
+@deffn Method enum->name (inst <enum>) value
+@deffnx Method enum->names (inst <enum>)
+
+Returns the @var{inst} name (the string representation of the symbol)
+for @var{value} (or @code{#f} if it does not exists), or the list of all
+names for @var{inst}, respectively.
+
+@var{value} can either be a @code{symbol} or an @code{id}.
+@end deffn
+
+
 @anchor{!gtype-id_}
 @anchor{!gi-name}
 @anchor{!scm-name}
-@deffn Method !gtype-id gi-enum
-@deffnx Method !gi-name gi-enum
-@deffnx Method !scm-name gi-enum
+@deffn Accessor !gtype-id (inst <gi-enum>)
+@deffnx Accessor !gi-name (inst <gi-enum>)
+@deffnx Accessor !scm-name (inst <gi-enum>)
 
 Returns the content of the gtype-id, gi-name or scm-name slot for
-@var{gi-enum}, respectively.
+@var{inst}, respectively.
 @end deffn
