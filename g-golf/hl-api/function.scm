@@ -51,6 +51,7 @@
             <argument>
             gi-import-enum-methods
             gi-import-struct-methods
+            gi-import-union-methods
             gi-import-interface-methods))
 
 
@@ -940,6 +941,27 @@
             (+ i 1)))
         ((= i n-method))
       (let* ((m-info (g-struct-info-get-method info i))
+             (namespace (g-base-info-get-namespace m-info))
+             (name (g-function-info-get-symbol m-info)))
+        ;; Some methods listed here are functions: (a) their flags is an
+        ;; empty list; (b) they do not expect an additional instance
+        ;; argument (their GIargInfo list is complete); (c) they have a
+        ;; GIFuncInfo entry in the namespace (methods do not). We do not
+        ;; (re)import those here.
+        (unless (g-irepository-find-by-name namespace name)
+          (gi-import-function m-info))))))
+
+
+;;;
+;;; Union have methods
+;;;
+
+(define (gi-import-union-methods info)
+  (let ((n-method (g-union-info-get-n-methods info)))
+    (do ((i 0
+            (+ i 1)))
+        ((= i n-method))
+      (let* ((m-info (g-union-info-get-method info i))
              (namespace (g-base-info-get-namespace m-info))
              (name (g-function-info-get-symbol m-info)))
         ;; Some methods listed here are functions: (a) their flags is an

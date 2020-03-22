@@ -205,7 +205,7 @@
                   #:is-discriminated? (g-union-info-is-discriminated? info)
                   #:discriminator-offset (g-union-info-get-discriminator-offset info))))
           (gi-cache-set! 'boxed scm-name gi-union)
-          #;(when recur
+          (when recur
             (gi-import-union-methods info))
           (g-base-info-unref info)
           gi-union))))
