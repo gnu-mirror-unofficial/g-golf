@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -90,7 +90,7 @@
      (unless (member namespace
                      (g-irepository-get-loaded-namespaces)
                      string=?)
-       g-irepository-require namespace)
+       (g-irepository-require namespace))
      (let* ((r-type (g-registered-type-info-get-g-type info))
             (gi-name (g-type-name r-type))
             (c-name (g-name->class-name gi-name)))
@@ -101,8 +101,12 @@
                                    #:info info)))
            (module-define! module c-name c-inst)
            (module-g-export! module `(,c-name))
-           (gi-object-import-methods info)
-           (gi-object-import-signals info)))))))
+           (gi-import-object-methods info)
+           ;; We do not import signals, they are imported on
+           ;; demand. Visit (g-golf hl-api signal) signal-connect and
+           ;; the %gi-signal-cache related code to see how this is
+           ;; achieved.
+           #;(gi-import-object-signals info)))))))
 
 (define (g-object-class-precedence-list info)
   (let  loop ((parent (g-object-info-get-parent info))
@@ -117,7 +121,7 @@
                           (g-object-info-get-type-name parent))
                     results)))))
 
-(define (gi-object-import-methods info)
+(define (gi-import-object-methods info)
   (let ((n-method (g-object-info-get-n-methods info)))
     (do ((i 0
             (+ i 1)))
@@ -125,7 +129,13 @@
       (let ((m-info (g-object-info-get-method info i)))
         (gi-import-function m-info)))))
 
-(define (gi-object-import-signals info)
+#!
+
+;; As said above, we do not import signals, they are imported on
+;; demand. Visit (g-golf hl-api signal) signal-connect and the
+;; %gi-signal-cache related code to see how this is achieved.
+
+(define (gi-import-object-signals info)
   (let ((n-signal (g-object-info-get-n-signals info)))
     #;(dimfi (g-object-info-get-type-name info)
            " " n-signal "signals")
@@ -137,3 +147,5 @@
                (g-base-info-get-name s-info)
                " (signal)")
         'wip))))
+
+!#
