@@ -126,8 +126,16 @@
     (do ((i 0
             (+ i 1)))
         ((= i n-method))
-      (let ((m-info (g-object-info-get-method info i)))
-        (gi-import-function m-info)))))
+      (let* ((m-info (g-object-info-get-method info i))
+             (namespace (g-base-info-get-namespace m-info))
+             (name (g-function-info-get-symbol m-info)))
+        ;; Some methods listed here are functions: (a) their flags is an
+        ;; empty list; (b) they do not expect an additional instance
+        ;; argument (their GIargInfo list is complete); (c) they have a
+        ;; GIFuncInfo entry in the namespace (methods do not). We do not
+        ;; (re)import those here.
+        (unless (g-irepository-find-by-name namespace namespace)
+          (gi-import-function m-info))))))
 
 #!
 
