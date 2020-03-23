@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016
+;;;; Copyright (C) 2016, 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -31,6 +31,7 @@
 
 
 (define-module (g-golf gi object-info)
+  #:use-module (ice-9 format)
   #:use-module (oop goops)
   #:use-module (system foreign)
   #:use-module (g-golf support utils)
@@ -47,6 +48,7 @@
 		last)
 
   #:export (gi-object-import
+            gi-object-show
 
 	    g-object-info-get-abstract
 	    g-object-info-get-parent
@@ -80,6 +82,60 @@
 (define (gi-object-import info)
   ;; fixme
   #f)
+
+(define %object-fmt
+  "
+~S is a (pointer to a) GIObjectInfo:
+
+  Parent:
+          namespace: ~S
+               name: ~S
+             g-type: ~A
+        g-type-name: ~S
+
+  Object:
+          namespace: ~S
+               name: ~S
+             g-type: ~A
+        g-type-name: ~S
+           abstract: ~A
+        n-constants: ~A
+           n-fields: ~A
+       n-interfaces: ~A
+          n-methods: ~A
+       n-properties: ~A
+          n-signals: ~A
+          n-vfuncts: ~A
+
+")
+
+(define* (gi-object-show info
+                         #:optional (port (current-output-port)))
+  (let* ((parent (g-object-info-get-parent info))
+         (parent-namespace (g-base-info-get-namespace parent))
+         (parent-name (g-base-info-get-name parent))
+         (parent-g-type (g-registered-type-info-get-g-type parent))
+         (parent-g-type-name (g-registered-type-info-get-type-name parent)))
+    (format port "~?" %object-fmt
+            (list
+             info
+             parent-namespace
+             parent-name
+             parent-g-type
+             parent-g-type-name
+             (g-base-info-get-namespace info)
+             (g-base-info-get-name info)
+             (g-registered-type-info-get-g-type info)
+             (g-registered-type-info-get-type-name info)
+             (g-object-info-get-abstract info)
+             (g-object-info-get-n-constants info)
+             (g-object-info-get-n-fields info)
+             (g-object-info-get-n-interfaces info)
+             (g-object-info-get-n-methods info)
+             (g-object-info-get-n-properties info)
+             (g-object-info-get-n-signals info)
+             (g-object-info-get-n-vfuncs info)))
+    (values)))
 
 
 ;;;
@@ -193,7 +249,7 @@
 ;;; GI Bindings
 ;;;
 
-(define (g_object_info_get_abstract info)
+(define g_object_info_get_abstract
   (pointer->procedure int
                       (dynamic-func "g_object_info_get_abstract"
 				    %libgirepository)

@@ -18,7 +18,8 @@ GIObjectInfo — Structs representing a GObject.
 
 @indentedblock
 @table @code
-@c @item @ref{g-golf-object-import}
+@c @item @ref{gi-object-import}
+@item @ref{gi-object-show}
 @item @ref{g-object-info-get-abstract}
 @item @ref{g-object-info-get-parent}
 @item @ref{g-object-info-get-type-name}
@@ -78,13 +79,57 @@ Note: in this section, unless otherwise specified, the @var{info}
 argument is [must be] a pointer to a @code{GIObjectInfo}.
 
 
-@c @anchor{g-golf-object-import}
-@c @deffn Procedure g-golf-object-import info
+@c @anchor{gi-object-import}
+@c @deffn Procedure gi-object-import info
 
 @c Returns a @code{<gobject>} instance.
 
 @c Obtain the values this objecteration contains and construct ...
 @c @end deffn
+
+
+@anchor{gi-object-show}
+@deffn Procedure gi-object-show info
+
+Returns nothing.
+
+Obtains and displays the following informations about the object
+(and its parent) pointed to by @var{info}:
+
+@lisp
+,use (g-golf)
+(g-irepository-require "Clutter")
+$2 = #<pointer 0x56396a4f9f80>
+
+(g-irepository-find-by-name "Clutter" "Actor")
+$3 = #<pointer 0x56396a4fdc00>
+
+(gi-object-show $3)
+@print{}
+#<pointer 0x56396a4fdc00> is a (pointer to a) GIObjectInfo:
+
+  Parent:
+          namespace: "GObject"
+               name: "InitiallyUnowned"
+             g-type: 94804596757600
+        g-type-name: "GInitiallyUnowned"
+
+  Object:
+          namespace: "Clutter"
+               name: "Actor"
+             g-type: 94804596864480
+        g-type-name: "ClutterActor"
+           abstract: #f
+        n-constants: 0
+           n-fields: 4
+       n-interfaces: 4
+          n-methods: 238
+       n-properties: 82
+          n-signals: 26
+          n-vfuncts: 35
+
+@end lisp
+@end deffn
 
 
 @anchor{g-object-info-get-abstract}
