@@ -67,74 +67,73 @@
 
 
 (g-export !event
-
-          gdk-event:button
-          gdk-event:click-count
-          gdk-event:coords
-          gdk-event:x
-          gdk-event:y
-          gdk-event:keycode
-          gdk-event:keyval
-          gdk-event:keyname
-          gdk-event:root-coords
-          gdk-event:root-x
-          gdk-event:root-y
-          gdk-event:state
-          gdk-event:time
-          gdk-event:window
-          gdk-event:type)
+          !button
+          !click-count
+          !coords
+          !x
+          !y
+          !keycode
+          !keyval
+          !keyname
+          !root-coords
+          !root-x
+          !root-y
+          !state
+          !time
+          !window
+          !type)
 
 
 (define-class <gdk-event> ()
   (event #:accessor !event #:init-keyword #:event))
 
-(define-method (gdk-event:button (self <gdk-event>))
+(define-method (!button (self <gdk-event>))
   (gdk-event-get-button (!event self)))
 
-(define-method (gdk-event:click-count (self <gdk-event>))
+(define-method (!click-count (self <gdk-event>))
   (gdk-event-get-click-count (!event self)))
 
-(define-method (gdk-event:coords (self <gdk-event>))
+(define-method (!coords (self <gdk-event>))
   (gdk-event-get-coords (!event self)))
 
-(define-method (gdk-event:x (self <gdk-event>))
+(define-method (!x (self <gdk-event>))
   (match (gdk-event-get-coords (!event self))
     ((x y) x)))
 
-(define-method (gdk-event:y (self <gdk-event>))
+(define-method (!y (self <gdk-event>))
   (match (gdk-event-get-coords (!event self))
     ((x y) y)))
 
-(define-method (gdk-event:keycode (self <gdk-event>))
+(define-method (!keycode (self <gdk-event>))
   (gdk-event-get-keycode (!event self)))
 
-(define-method (gdk-event:keyval (self <gdk-event>))
+(define-method (!keyval (self <gdk-event>))
   (gdk-event-get-keyval (!event self)))
 
-(define-method (gdk-event:keyname (self <gdk-event>))
+(define-method (!keyname (self <gdk-event>))
   (gdk-keyval-name (gdk-event-get-keyval (!event self))))
 
-(define-method (gdk-event:root-coords (self <gdk-event>))
+(define-method (!root-coords (self <gdk-event>))
   (gdk-event-get-root-coords (!event self)))
 
-(define-method (gdk-event:root-x (self <gdk-event>))
+(define-method (!root-x (self <gdk-event>))
   (match (gdk-event-get-root-coords (!event self))
     ((root-x root-y) root-x)))
 
-(define-method (gdk-event:root-y (self <gdk-event>))
+(define-method (!root-y (self <gdk-event>))
   (match (gdk-event-get-root-coords (!event self))
     ((root-x root-y) root-y)))
 
-(define-method (gdk-event:state (self <gdk-event>))
+(define-method (!state (self <gdk-event>))
   (gdk-event-get-state (!event self)))
 
-(define-method (gdk-event:time (self <gdk-event>))
+(define-method (!time (self <gdk-event>))
   (gdk-event-get-time (!event self)))
 
-(define-method (gdk-event:window (self <gdk-event>))
+(define-method (!window (self <gdk-event>))
   (gdk-event-get-window (!event self)))
 
-(define-method (gdk-event:type (self <gdk-event>))
+(define-method (!type (self <gdk-event>))
   (gdk-event-get-event-type (!event self)))
 
 

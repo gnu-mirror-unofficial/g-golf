@@ -29,21 +29,21 @@ Events — Functions for handling events from the window system
 @table @code
 @item @ref{!event}
 
-@item @ref{gdk-event:button}
-@item @ref{gdk-event:click-count}
-@item @ref{gdk-event:coords}
-@item @ref{gdk-event:x}
-@item @ref{gdk-event:y}
-@item @ref{gdk-event:keycode}
-@item @ref{gdk-event:keyval}
-@item @ref{gdk-event:keyname}
-@item @ref{gdk-event:root-coords}
-@item @ref{gdk-event:root-x}
-@item @ref{gdk-event:root-x}
-@item @ref{gdk-event:state}
-@item @ref{gdk-event:time}
-@item @ref{gdk-event:window}
-@item @ref{gdk-event:type}
+@item @ref{!button}
+@item @ref{!click-count}
+@item @ref{!coords}
+@item @ref{!x}
+@item @ref{!y}
+@item @ref{!keycode}
+@item @ref{!keyval}
+@item @ref{!keyname}
+@item @ref{!root-coords}
+@item @ref{!root-x}
+@item @ref{!root-x}
+@item @ref{!state}
+@item @ref{!time}
+@item @ref{!window}
+@item @ref{!type}
 
 @item @ref{gdk-event-get-button}
 @item @ref{gdk-event-get-click-count}
@@ -116,36 +116,36 @@ Returns the content of the @code{event} slot for @var{inst}.
 @end deffn
 
 
-@anchor{gdk-event:button}
-@anchor{gdk-event:click-count}
-@anchor{gdk-event:coords}
-@anchor{gdk-event:x}
-@anchor{gdk-event:y}
-@anchor{gdk-event:keycode}
-@anchor{gdk-event:keyval}
-@anchor{gdk-event:keyname}
-@anchor{gdk-event:root-coords}
-@anchor{gdk-event:root-x}
-@anchor{gdk-eventroot-y}
-@anchor{gdk-event:state}
-@anchor{gdk-event:time}
-@anchor{gdk-event:window}
-@anchor{gdk-event:type}
-@deffn Method gdk-event:button (inst <gdk-event>)
-@deffnx Method gdk-event:click-count (inst <gdk-event>)
-@deffnx Method gdk-event:coords (inst <gdk-event>)
-@deffnx Method gdk-event:x (inst <gdk-event>)
-@deffnx Method gdk-event:y (inst <gdk-event>)
-@deffnx Method gdk-event:keycode (inst <gdk-event>)
-@deffnx Method gdk-event:keyval (inst <gdk-event>)
-@deffnx Method gdk-event:keyname (inst <gdk-event>)
-@deffnx Method gdk-event:root-coords (inst <gdk-event>)
-@deffnx Method gdk-event:root-x (inst <gdk-event>)
-@deffnx Method gdk-event:root-y (inst <gdk-event>)
-@deffnx Method gdk-event:state (inst <gdk-event>)
-@deffnx Method gdk-event:time (inst <gdk-event>)
-@deffnx Method gdk-event:window (inst <gdk-event>)
-@deffnx Method gdk-event:type (inst <gdk-event>)
+@anchor{!button}
+@anchor{!click-count}
+@anchor{!coords}
+@anchor{!x}
+@anchor{!y}
+@anchor{!keycode}
+@anchor{!keyval}
+@anchor{!keyname}
+@anchor{!root-coords}
+@anchor{!root-x}
+@anchor{!root-y}
+@anchor{!state}
+@anchor{!time}
+@anchor{!window}
+@anchor{!type}
+@deffn Method !button (inst <gdk-event>)
+@deffnx Method !click-count (inst <gdk-event>)
+@deffnx Method !coords (inst <gdk-event>)
+@deffnx Method !x (inst <gdk-event>)
+@deffnx Method !y (inst <gdk-event>)
+@deffnx Method !keycode (inst <gdk-event>)
+@deffnx Method !keyval (inst <gdk-event>)
+@deffnx Method !keyname (inst <gdk-event>)
+@deffnx Method !root-coords (inst <gdk-event>)
+@deffnx Method !root-x (inst <gdk-event>)
+@deffnx Method !root-y (inst <gdk-event>)
+@deffnx Method !state (inst <gdk-event>)
+@deffnx Method !time (inst <gdk-event>)
+@deffnx Method !window (inst <gdk-event>)
+@deffnx Method !type (inst <gdk-event>)
 
 Respectively returns the scheme representation of the content of the
 @var{inst} event (struct) element - refered to by its name - or #f if
