@@ -102,7 +102,7 @@
               (gi-name (g-type-name r-type))
               (c-name (g-name->class-name gi-name)))
          (unless (module-bound? module c-name)
-           (let ((c-inst (make-class (dimfi c-name namespace supers)
+           (let ((c-inst (make-class supers
                                      '()
                                      #:name c-name
                                      #:info info)))
