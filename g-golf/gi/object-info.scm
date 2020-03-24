@@ -146,7 +146,7 @@
   (gi->scm (g_object_info_get_abstract info) 'boolean))
 
 (define (g-object-info-get-parent info)
-  (g_object_info_get_parent info))
+  (gi->scm (g_object_info_get_parent info) 'pointer))
 
 (define (g-object-info-get-type-name info)
   (gi->scm (g_object_info_get_type_name info) 'string))

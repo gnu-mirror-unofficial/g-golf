@@ -145,9 +145,10 @@ instantiated.
 @anchor{g-object-info-get-parent}
 @deffn Procedure g-object-info-get-parent info
 
-Returns a pointer to the @var{info}'s parent @code{GIObjectInfo}.
+Returns a pointer or #f.
 
-Obtain the parent of the object type.
+Obtains and returns a pointer to the @var{info}'s parent
+@code{GIObjectInfo}, or #f if @var{info} has no parent.
 @end deffn
 
 
