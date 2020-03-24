@@ -44,7 +44,9 @@
 		warn
 		last)
 
-  #:export (%gi-strip-boolean-result
+  #:export (%gi-import-namespace-exceptions
+            is-namespace-import-exception?
+            %gi-strip-boolean-result
             gi-import-function
             <function>
             <argument>
@@ -102,6 +104,15 @@
 ;;;
 ;;; 
 ;;;
+
+(define %gi-import-namespace-exceptions
+  '("Glib"
+    "GObject"))
+
+(define (is-namespace-import-exception? namespace)
+  (member namespace
+          %gi-import-namespace-exceptions
+          string=?))
 
 (define %gi-strip-boolean-result '())
 

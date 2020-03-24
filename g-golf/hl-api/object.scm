@@ -50,21 +50,24 @@
 
 #;(g-export )
 
-(define (gi-import-object info)
-  (let ((module (resolve-module '(g-golf hl-api gobject)))
-        (r-info-cpl (reverse! (g-object-class-precedence-list info))))
-    (unless (is-g-object-subclass? r-info-cpl)
-      ;; A 'fundamental type' class, not a GObject subclass.
-      (match r-info-cpl
-        ((parent . rest)
-         (g-object-import-with-supers parent '() module))))
-    (let loop ((r-info-cpl r-info-cpl))
-      (match r-info-cpl
-        ((item)
-         'done)
-        ((parent child . rest)
-         (g-object-import child parent module)
-         (loop (cons child rest)))))))
+(define* (gi-import-object info #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info)))
+    (when (or force?
+              (not (is-namespace-import-exception? namespace)))
+      (let ((module (resolve-module '(g-golf hl-api gobject)))
+            (r-info-cpl (reverse! (g-object-class-precedence-list info))))
+        (unless (is-g-object-subclass? r-info-cpl)
+          ;; A 'fundamental type' class, not a GObject subclass.
+          (match r-info-cpl
+            ((parent . rest)
+             (g-object-import-with-supers parent '() module #:force? force?))))
+        (let loop ((r-info-cpl r-info-cpl))
+          (match r-info-cpl
+            ((item)
+             'done)
+            ((parent child . rest)
+             (g-object-import child parent module #:force? force?)
+             (loop (cons child rest)))))))))
 
 (define (is-g-object-subclass? info-cpl)
   (letrec ((is-g-object-info-cpl-item?
@@ -74,7 +77,7 @@
                  (string=? name what))))))
     (member "GObject" info-cpl is-g-object-info-cpl-item?)))
 
-(define (g-object-import child parent module)
+(define* (g-object-import child parent module  #:key (force? #f))
   (match parent
     ((p-info p-namespace p-name)
      (let* ((p-r-type (g-registered-type-info-get-g-type p-info))
@@ -82,31 +85,35 @@
             (p-c-name (g-name->class-name p-gi-name)))
        (g-object-import-with-supers child
                                     (list (module-ref module p-c-name))
-                                    module)))))
+                                    module
+                                    #:force? force?)))))
 
-(define (g-object-import-with-supers child supers module)
+(define* (g-object-import-with-supers child supers module
+                                      #:key (force? #f))
   (match child
     ((info namespace name)
-     (unless (member namespace
-                     (g-irepository-get-loaded-namespaces)
-                     string=?)
-       (g-irepository-require namespace))
-     (let* ((r-type (g-registered-type-info-get-g-type info))
-            (gi-name (g-type-name r-type))
-            (c-name (g-name->class-name gi-name)))
-       (unless (module-bound? module c-name)
-         (let ((c-inst (make-class supers
-                                   '()
-                                   #:name c-name
-                                   #:info info)))
-           (module-define! module c-name c-inst)
-           (module-g-export! module `(,c-name))
-           (gi-import-object-methods info)
-           ;; We do not import signals, they are imported on
-           ;; demand. Visit (g-golf hl-api signal) signal-connect and
-           ;; the %gi-signal-cache related code to see how this is
-           ;; achieved.
-           #;(gi-import-object-signals info)))))))
+     (when (or force?
+               (not (is-namespace-import-exception? namespace)))
+       (unless (member namespace
+                       (g-irepository-get-loaded-namespaces)
+                       string=?)
+         (g-irepository-require namespace))
+       (let* ((r-type (g-registered-type-info-get-g-type info))
+              (gi-name (g-type-name r-type))
+              (c-name (g-name->class-name gi-name)))
+         (unless (module-bound? module c-name)
+           (let ((c-inst (make-class (dimfi c-name namespace supers)
+                                     '()
+                                     #:name c-name
+                                     #:info info)))
+             (module-define! module c-name c-inst)
+             (module-g-export! module `(,c-name))
+             (gi-import-object-methods info)
+             ;; We do not import signals, they are imported on
+             ;; demand. Visit (g-golf hl-api signal) signal-connect and
+             ;; the %gi-signal-cache related code to see how this is
+             ;; achieved.
+             #;(gi-import-object-signals info))))))))
 
 (define (g-object-class-precedence-list info)
   (let  loop ((parent (g-object-info-get-parent info))
@@ -121,21 +128,24 @@
                           (g-object-info-get-type-name parent))
                     results)))))
 
-(define (gi-import-object-methods info)
-  (let ((n-method (g-object-info-get-n-methods info)))
-    (do ((i 0
-            (+ i 1)))
-        ((= i n-method))
-      (let* ((m-info (g-object-info-get-method info i))
-             (namespace (g-base-info-get-namespace m-info))
-             (name (g-function-info-get-symbol m-info)))
-        ;; Some methods listed here are functions: (a) their flags is an
-        ;; empty list; (b) they do not expect an additional instance
-        ;; argument (their GIargInfo list is complete); (c) they have a
-        ;; GIFuncInfo entry in the namespace (methods do not). We do not
-        ;; (re)import those here.
-        (unless (g-irepository-find-by-name namespace namespace)
-          (gi-import-function m-info))))))
+(define* (gi-import-object-methods info #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info)))
+    (when (or force?
+              (not (is-namespace-import-exception? namespace)))
+      (let ((n-method (g-object-info-get-n-methods info)))
+        (do ((i 0
+                (+ i 1)))
+            ((= i n-method))
+          (let* ((m-info (g-object-info-get-method info i))
+                 (namespace (g-base-info-get-namespace m-info))
+                 (name (g-function-info-get-symbol m-info)))
+            ;; Some methods listed here are functions: (a) their flags is an
+            ;; empty list; (b) they do not expect an additional instance
+            ;; argument (their GIargInfo list is complete); (c) they have a
+            ;; GIFuncInfo entry in the namespace (methods do not). We do not
+            ;; (re)import those here.
+            (unless (g-irepository-find-by-name namespace namespace)
+              (gi-import-function m-info))))))))
 
 #!
 
