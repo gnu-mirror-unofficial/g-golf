@@ -108,7 +108,7 @@
                                      #:info info)))
              (module-define! module c-name c-inst)
              (module-g-export! module `(,c-name))
-             (gi-import-object-methods info)
+             (gi-import-object-methods info #:force? force?)
              ;; We do not import signals, they are imported on
              ;; demand. Visit (g-golf hl-api signal) signal-connect and
              ;; the %gi-signal-cache related code to see how this is
@@ -145,7 +145,7 @@
             ;; GIFuncInfo entry in the namespace (methods do not). We do not
             ;; (re)import those here.
             (unless (g-irepository-find-by-name namespace namespace)
-              (gi-import-function m-info))))))))
+              (gi-import-function m-info #:force? force?))))))))
 
 #!
 
