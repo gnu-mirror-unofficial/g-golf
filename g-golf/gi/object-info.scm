@@ -112,10 +112,18 @@
 (define* (gi-object-show info
                          #:optional (port (current-output-port)))
   (let* ((parent (g-object-info-get-parent info))
-         (parent-namespace (g-base-info-get-namespace parent))
-         (parent-name (g-base-info-get-name parent))
-         (parent-g-type (g-registered-type-info-get-g-type parent))
-         (parent-g-type-name (g-registered-type-info-get-type-name parent)))
+         (parent-namespace (or (and parent
+                                    (g-base-info-get-namespace parent))
+                               #f))
+         (parent-name (or (and parent
+                               (g-base-info-get-name parent))
+                          #f))
+         (parent-g-type (or (and parent
+                                 (g-registered-type-info-get-g-type parent))
+                            #f))
+         (parent-g-type-name (or (and parent
+                                      (g-registered-type-info-get-type-name parent))
+                                 #f)))
     (format port "~?" %object-fmt
             (list
              info
