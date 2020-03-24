@@ -113,7 +113,7 @@
               (results (list (list info
                                    (g-base-info-get-namespace info)
                                    (g-object-info-get-type-name info)))))
-    (if (null-pointer? parent)
+    (if (not parent)
         (reverse! results)
         (loop (g-object-info-get-parent parent)
               (cons (list parent
