@@ -116,65 +116,68 @@
 
 (define %gi-strip-boolean-result '())
 
-(define (gi-import-function info)
-  (let* ((gi-name (g-function-info-get-symbol info))
-         (scm-name (g-name->scm-name gi-name))
-         (name (string->symbol scm-name)))
-    (or (gi-cache-ref 'function name)
-        (let* ((module (resolve-module '(g-golf hl-api function)))
-               (function (make <function> #:info info))
-               (name (!name function)))
-          ;; unlike one may think 'at first glance', we don't unref the function
-          ;; info, it is needed by g-function-info-invoke ...
-          ;; (g-base-info-unref info)
-          (gi-cache-set! 'function name function)
-          (module-define! module
-                          name
-                          (lambda ( . args)
-                            (let ((info info)
-                                  (function function)
-                                  (name name)
-                                  (return-type (!return-type function))
-                                  (n-gi-arg-in (!n-gi-arg-in function))
-                                  (gi-args-in (!gi-args-in function))
-                                  (n-gi-arg-out (!n-gi-arg-out function))
-                                  (gi-args-out (!gi-args-out function))
-                                  (gi-arg-result (!gi-arg-result function)))
-                              (check-n-arg n-gi-arg-in args)
-                              (prepare-gi-arguments function args)
-                              (with-gerror g-error
-                                           (g-function-info-invoke info
-                                                                   gi-args-in
-                                                                   n-gi-arg-in
-			                                           gi-args-out
-                                                                   n-gi-arg-out
-			                                           gi-arg-result
-                                                                   g-error))
-                              (if (> n-gi-arg-out 0)
-                                  (case return-type
-                                    ((boolean)
-                                     (if (memq name
-                                               %gi-strip-boolean-result)
-                                         (if (return-value->scm function)
+(define* (gi-import-function info #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info)))
+    (when (or force?
+              (not (is-namespace-import-exception? namespace)))
+      (let* ((gi-name (g-function-info-get-symbol info))
+             (scm-name (g-name->scm-name gi-name))
+             (name (string->symbol scm-name)))
+        (or (gi-cache-ref 'function name)
+            (let* ((module (resolve-module '(g-golf hl-api function)))
+                   (function (make <function> #:info info))
+                   (name (!name function)))
+              ;; unlike one may think 'at first glance', we don't unref the function
+              ;; info, it is needed by g-function-info-invoke ...
+              ;; (g-base-info-unref info)
+              (gi-cache-set! 'function name function)
+              (module-define! module
+                              name
+                              (lambda ( . args)
+                                (let ((info info)
+                                      (function function)
+                                      (name name)
+                                      (return-type (!return-type function))
+                                      (n-gi-arg-in (!n-gi-arg-in function))
+                                      (gi-args-in (!gi-args-in function))
+                                      (n-gi-arg-out (!n-gi-arg-out function))
+                                      (gi-args-out (!gi-args-out function))
+                                      (gi-arg-result (!gi-arg-result function)))
+                                  (check-n-arg n-gi-arg-in args)
+                                  (prepare-gi-arguments function args)
+                                  (with-gerror g-error
+                                               (g-function-info-invoke info
+                                                                       gi-args-in
+                                                                       n-gi-arg-in
+			                                               gi-args-out
+                                                                       n-gi-arg-out
+			                                               gi-arg-result
+                                                                       g-error))
+                                  (if (> n-gi-arg-out 0)
+                                      (case return-type
+                                        ((boolean)
+                                         (if (memq name
+                                                   %gi-strip-boolean-result)
+                                             (if (return-value->scm function)
+                                                 (apply values
+                                                        (map arg-out->scm (!args-out function)))
+                                                 (error " " name " failed."))
                                              (apply values
-                                                    (map arg-out->scm (!args-out function)))
-                                             (error " " name " failed."))
+                                                    (cons (return-value->scm function)
+                                                          (map arg-out->scm (!args-out function))))))
+                                        ((void)
+                                         (apply values
+                                                (map arg-out->scm (!args-out function))))
+                                        (else
                                          (apply values
                                                 (cons (return-value->scm function)
                                                       (map arg-out->scm (!args-out function))))))
-                                    ((void)
-                                     (apply values
-                                            (map arg-out->scm (!args-out function))))
-                                    (else
-                                     (apply values
-                                            (cons (return-value->scm function)
-                                                  (map arg-out->scm (!args-out function))))))
-                                  (case return-type
-                                    ((void) (values))
-                                    (else
-                                     (return-value->scm function)))))))
-          (module-g-export! module `(,name))
-          function))))
+                                      (case return-type
+                                        ((void) (values))
+                                        (else
+                                         (return-value->scm function)))))))
+              (module-g-export! module `(,name))
+              function))))))
 
 (define-class <function> ()
   (info #:accessor !info)
@@ -924,84 +927,96 @@
 ;;; Enum have methods
 ;;;
 
-(define (gi-import-enum-methods info)
-  (let ((n-method (g-enum-info-get-n-methods info)))
-    (do ((i 0
-            (+ i 1)))
-        ((= i n-method))
-      (let* ((m-info (g-enum-info-get-method info i))
-             (namespace (g-base-info-get-namespace m-info))
-             (name (g-function-info-get-symbol m-info)))
-        ;; Some methods listed here are functions: (a) their flags is an
-        ;; empty list; (b) they do not expect an additional instance
-        ;; argument (their GIargInfo list is complete); (c) they have a
-        ;; GIFuncInfo entry in the namespace (methods do not). We do not
-        ;; (re)import those here.
-        (unless (g-irepository-find-by-name namespace name)
-          (gi-import-function m-info))))))
+(define* (gi-import-enum-methods info #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info)))
+    (when (or force?
+              (not (is-namespace-import-exception? namespace)))
+      (let ((n-method (g-enum-info-get-n-methods info)))
+        (do ((i 0
+                (+ i 1)))
+            ((= i n-method))
+          (let* ((m-info (g-enum-info-get-method info i))
+                 (namespace (g-base-info-get-namespace m-info))
+                 (name (g-function-info-get-symbol m-info)))
+            ;; Some methods listed here are functions: (a) their flags is an
+            ;; empty list; (b) they do not expect an additional instance
+            ;; argument (their GIargInfo list is complete); (c) they have a
+            ;; GIFuncInfo entry in the namespace (methods do not). We do not
+            ;; (re)import those here.
+            (unless (g-irepository-find-by-name namespace name)
+              (gi-import-function m-info #:force? force?))))))))
 
 
 ;;;
 ;;; Struct have methods
 ;;;
 
-(define (gi-import-struct-methods info)
-  (let ((n-method (g-struct-info-get-n-methods info)))
-    (do ((i 0
-            (+ i 1)))
-        ((= i n-method))
-      (let* ((m-info (g-struct-info-get-method info i))
-             (namespace (g-base-info-get-namespace m-info))
-             (name (g-function-info-get-symbol m-info)))
-        ;; Some methods listed here are functions: (a) their flags is an
-        ;; empty list; (b) they do not expect an additional instance
-        ;; argument (their GIargInfo list is complete); (c) they have a
-        ;; GIFuncInfo entry in the namespace (methods do not). We do not
-        ;; (re)import those here.
-        (unless (g-irepository-find-by-name namespace name)
-          (gi-import-function m-info))))))
+(define* (gi-import-struct-methods info #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info)))
+    (when (or force?
+              (not (is-namespace-import-exception? namespace)))
+      (let ((n-method (g-struct-info-get-n-methods info)))
+        (do ((i 0
+                (+ i 1)))
+            ((= i n-method))
+          (let* ((m-info (g-struct-info-get-method info i))
+                 (namespace (g-base-info-get-namespace m-info))
+                 (name (g-function-info-get-symbol m-info)))
+            ;; Some methods listed here are functions: (a) their flags is an
+            ;; empty list; (b) they do not expect an additional instance
+            ;; argument (their GIargInfo list is complete); (c) they have a
+            ;; GIFuncInfo entry in the namespace (methods do not). We do not
+            ;; (re)import those here.
+            (unless (g-irepository-find-by-name namespace name)
+              (gi-import-function m-info #:force? force?))))))))
 
 
 ;;;
 ;;; Union have methods
 ;;;
 
-(define (gi-import-union-methods info)
-  (let ((n-method (g-union-info-get-n-methods info)))
-    (do ((i 0
-            (+ i 1)))
-        ((= i n-method))
-      (let* ((m-info (g-union-info-get-method info i))
-             (namespace (g-base-info-get-namespace m-info))
-             (name (g-function-info-get-symbol m-info)))
-        ;; Some methods listed here are functions: (a) their flags is an
-        ;; empty list; (b) they do not expect an additional instance
-        ;; argument (their GIargInfo list is complete); (c) they have a
-        ;; GIFuncInfo entry in the namespace (methods do not). We do not
-        ;; (re)import those here.
-        (unless (g-irepository-find-by-name namespace name)
-          (gi-import-function m-info))))))
+(define* (gi-import-union-methods info #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info)))
+    (when (or force?
+              (not (is-namespace-import-exception? namespace)))
+      (let ((n-method (g-union-info-get-n-methods info)))
+        (do ((i 0
+                (+ i 1)))
+            ((= i n-method))
+          (let* ((m-info (g-union-info-get-method info i))
+                 (namespace (g-base-info-get-namespace m-info))
+                 (name (g-function-info-get-symbol m-info)))
+            ;; Some methods listed here are functions: (a) their flags is an
+            ;; empty list; (b) they do not expect an additional instance
+            ;; argument (their GIargInfo list is complete); (c) they have a
+            ;; GIFuncInfo entry in the namespace (methods do not). We do not
+            ;; (re)import those here.
+            (unless (g-irepository-find-by-name namespace name)
+              (gi-import-function m-info #:force? force?))))))))
 
 
 ;;;
 ;;; Interface have methods
 ;;;
 
-(define (gi-import-interface-methods info)
-  (let ((n-method (g-interface-info-get-n-methods info)))
-    (do ((i 0
-            (+ i 1)))
-        ((= i n-method))
-      (let* ((m-info (g-interface-info-get-method info i))
-             (namespace (g-base-info-get-namespace m-info))
-             (name (g-function-info-get-symbol m-info)))
-        ;; Some methods listed here are functions: (a) their flags is an
-        ;; empty list; (b) they do not expect an additional instance
-        ;; argument (their GIargInfo list is complete); (c) they have a
-        ;; GIFuncInfo entry in the namespace (methods do not). We do not
-        ;; (re)import those here.
-        (unless (g-irepository-find-by-name namespace name)
-          (gi-import-function m-info))))))
+(define* (gi-import-interface-methods info #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info)))
+    (when (or force?
+              (not (is-namespace-import-exception? namespace)))
+      (let ((n-method (g-interface-info-get-n-methods info)))
+        (do ((i 0
+                (+ i 1)))
+            ((= i n-method))
+          (let* ((m-info (g-interface-info-get-method info i))
+                 (namespace (g-base-info-get-namespace m-info))
+                 (name (g-function-info-get-symbol m-info)))
+            ;; Some methods listed here are functions: (a) their flags is an
+            ;; empty list; (b) they do not expect an additional instance
+            ;; argument (their GIargInfo list is complete); (c) they have a
+            ;; GIFuncInfo entry in the namespace (methods do not). We do not
+            ;; (re)import those here.
+            (unless (g-irepository-find-by-name namespace name)
+              (gi-import-function m-info #:force? force?))))))))
 
 
 ;;;
