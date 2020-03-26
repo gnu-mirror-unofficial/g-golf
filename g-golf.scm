@@ -188,8 +188,15 @@
 ;;; Mandatory selective imports
 ;;;
 
-(gi-import-by-name "GLib" "IOChannel" #:recur #f)
-(gi-import-by-name "Gdk" "Event")
+(gi-import-by-name "GLib" "IOChannel"
+                   #:with-methods? #f #:force? #t)
+
+(gi-import-by-name "GObject" "InitiallyUnowned"
+                   #:with-methods? #f #:force? #t)
+(gi-import-by-name "GObject" "ParamSpec"
+                   #:with-methods? #f #:force? #t)
+
+(gi-import-by-name "Gdk" "Event" #:with-methods? #f)
 (gi-import-by-name "Gdk" "ModifierType")
 (gi-import-by-name "Gdk" "CrossingMode")
 (gi-import-by-name "Gdk" "NotifyType")

@@ -88,7 +88,7 @@
 
 (define* (gi-import-by-name namespace name
                             #:key (not-imported-warnings? #f)
-                            (recur #t)
+                            (with-methods? #t)
                             (force? #f))
   (when (or force?
             (not (is-namespace-import-exception? namespace)))
@@ -97,13 +97,13 @@
       (if info
           (gi-import-info info
                           #:not-imported-warnings? not-imported-warnings?
-                          #:recur recur
+                          #:with-methods? with-methods?
                           #:force? force?)
           (error "No such namespace name: " namespace name)))))
 
 (define* (gi-import-info info
                          #:key (not-imported-warnings? #f)
-                         (recur #t)
+                         (with-methods? #t)
                          (force? #f))
   (let ((i-type (g-base-info-get-type info)))
     (unless (memq i-type
@@ -114,22 +114,22 @@
        (unless (memq i-type
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
-       (gi-import-enum info #:recur recur #:force? force?))
+       (gi-import-enum info #:with-methods? with-methods? #:force? force?))
       ((flags)
        (unless (memq i-type
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
-       (gi-import-flag info #:recur recur #:force? force?))
+       (gi-import-flag info #:with-methods? with-methods? #:force? force?))
       ((struct)
        (unless (memq i-type
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
-       (gi-import-struct info #:recur recur #:force? force?))
+       (gi-import-struct info #:with-methods? with-methods? #:force? force?))
       ((union)
        (unless (memq i-type
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
-       (gi-import-union info #:recur recur #:force? force?))
+       (gi-import-union info #:with-methods? with-methods? #:force? force?))
       ((function)
        (unless (memq i-type
                      %gi-imported-base-info-types)
@@ -144,7 +144,7 @@
        (unless (memq i-type
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
-       (gi-import-interface info #:recur recur #:force? force?))
+       (gi-import-interface info #:with-methods? with-methods? #:force? force?))
       #;((callback)
        (unless (memq i-type
                      %gi-imported-base-info-types)
@@ -163,7 +163,7 @@
                          "not imported"))))
            #f)))))
 
-(define* (gi-import-enum info #:key (recur #t) (force? #f))
+(define* (gi-import-enum info #:key (with-methods? #t) (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
@@ -173,11 +173,11 @@
         (or (gi-cache-ref 'enum key)
             (let ((gi-enum (gi-enum-import info)))
               (gi-cache-set! 'enum key gi-enum)
-              (when recur
+              (when with-methods?
                 (gi-import-enum-methods info #:force? force?))
               gi-enum))))))
 
-(define* (gi-import-flag info #:key (recur #t) (force? #f))
+(define* (gi-import-flag info #:key (with-methods? #t) (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
@@ -187,11 +187,11 @@
         (or (gi-cache-ref 'flag key)
             (let ((gi-flag (gi-enum-import info #:flag #t)))
               (gi-cache-set! 'flag key gi-flag)
-              (when recur
+              (when with-methods?
                 (gi-import-enum-methods info #:force? force?))
               gi-flag))))))
 
-(define* (gi-import-struct info #:key (recur #t) (force? #f))
+(define* (gi-import-struct info #:key (with-methods? #t) (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
@@ -201,14 +201,14 @@
         (or (gi-cache-ref 'boxed key)
             (let ((gi-struct (gi-struct-import info)))
               (gi-cache-set! 'boxed key gi-struct)
-              (when recur
+              (when with-methods?
                 (gi-import-struct-methods info #:force? force?))
               gi-struct))))))
 
 (define %type-description
   (@@ (g-golf hl-api function) type-description))
 
-(define* (gi-import-union info #:key (recur #t) (force? #f))
+(define* (gi-import-union info #:key (with-methods? #t) (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
@@ -235,7 +235,7 @@
                       #:is-discriminated? (g-union-info-is-discriminated? info)
                       #:discriminator-offset (g-union-info-get-discriminator-offset info))))
               (gi-cache-set! 'boxed scm-name gi-union)
-              (when recur
+              (when with-methods?
                 (gi-import-union-methods info #:force? force?))
               (g-base-info-unref info)
               gi-union))))))
@@ -254,7 +254,7 @@
     (values constant
             gi-name)))
 
-(define* (gi-import-interface info #:key (recur #t) (force? #f))
+(define* (gi-import-interface info #:key (with-methods? #t) (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
@@ -264,6 +264,6 @@
         (or (gi-cache-ref 'iface key)
             (let ((gi-iface (list 'interface key name id #t)))
               (gi-cache-set! 'iface key gi-iface)
-              (when recur
+              (when with-methods?
                 (gi-import-interface-methods info #:force? force?))
               gi-iface))))))
