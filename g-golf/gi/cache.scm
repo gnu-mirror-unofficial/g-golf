@@ -75,34 +75,21 @@
   (if m-key
       (begin
         (format #t "  ~A~%" m-key)
-        (for-each (lambda (s-entry)
-                    (match s-entry
-                      ((s-key . s-vals)
-                       (format #t "    ~A~%" s-key))))
-            (assq-ref %gi-cache m-key)))
+        (match (assq-ref %gi-cache m-key)
+          (#f
+           (format #t "    -- is empty --~%"))
+          (else
+           (for-each (lambda (s-entry)
+                       (match s-entry
+                         ((s-key . s-vals)
+                          (format #t "    ~A~%" s-key))))
+               (assq-ref %gi-cache m-key)))))
       (for-each (lambda (m-entry)
                   (match m-entry
                     ((m-key . m-vals)
                      (format #t "  ~A~%" m-key))))
-          %gi-cache)))
-
-#;(define* (gi-cache-show #:key (level 1))
-  (format #t "%gi-cache~%")
-  (for-each (lambda (m-entry)
-              (match m-entry
-                ((m-key . m-vals)
-                 (format #t "  ~A~%" m-key)
-                 (case level
-                   ((2 s-key 3 all)
-                    (for-each (lambda (s-entry)
-                                (match s-entry
-                                  ((s-key . s-vals)
-                                   (format #t "    ~A~%" s-key)
-                                   (case level
-                                     ((3 all)
-                                      (format #t "      ~A~%" s-vals))))))
-                        m-vals))))))
-      %gi-cache))
+          %gi-cache))
+  (values))
 
 (define (gi-cache-find m-key pred)
   "Obtains the %gi-cache subcache for M-KEY, an (S-KEY . S-VAL) alist,
