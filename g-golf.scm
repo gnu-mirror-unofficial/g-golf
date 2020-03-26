@@ -191,8 +191,13 @@
 (gi-import-by-name "GLib" "IOChannel"
                    #:with-methods? #f #:force? #t)
 
+;; Some (if not all) GObject subclasses also are subcllasses of
+;; GInitiallyUnowned.
+
 (gi-import-by-name "GObject" "InitiallyUnowned"
                    #:with-methods? #f #:force? #t)
+
+;; Required by "Clutter" "ParamSpecUnit"
 (gi-import-by-name "GObject" "ParamSpec"
                    #:with-methods? #f #:force? #t)
 
