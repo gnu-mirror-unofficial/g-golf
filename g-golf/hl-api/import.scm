@@ -73,27 +73,38 @@
 (define (gi-is-info-a? info type)
   (eq? (g-base-info-get-type info) type))
 
-(define* (gi-import namespace #:key (debug #f))
+(define* (gi-import namespace
+                    #:key (not-imported-warnings? #f))
   (g-irepository-require namespace)
+  (when not-imported-warnings?
+    (dimfi "Namespace constants are not imported"))
   (let ((n-info (g-irepository-get-n-infos namespace)))
     (do ((i 0
             (+ i 1)))
         ((= i n-info))
       (gi-import-info (g-irepository-get-info namespace i)
-                      #:debug debug))
+                      #:not-imported-warnings? not-imported-warnings?))
     (values)))
 
 (define* (gi-import-by-name namespace name
-                            #:key (debug #f) (recur #t) (force? #f))
+                            #:key (not-imported-warnings? #f)
+                            (recur #t)
+                            (force? #f))
   (when (or force?
             (not (is-namespace-import-exception? namespace)))
     (g-irepository-require namespace)
     (let ((info (g-irepository-find-by-name namespace name)))
       (if info
-          (gi-import-info info #:debug debug #:recur recur #:force? force?)
+          (gi-import-info info
+                          #:not-imported-warnings? not-imported-warnings?
+                          #:recur recur
+                          #:force? force?)
           (error "No such namespace name: " namespace name)))))
 
-(define* (gi-import-info info #:key (debug #f) (recur #t) (force? #f))
+(define* (gi-import-info info
+                         #:key (not-imported-warnings? #f)
+                         (recur #t)
+                         (force? #f))
   (let ((i-type (g-base-info-get-type info)))
     (unless (memq i-type
                   %gi-base-info-types)
@@ -140,12 +151,17 @@
          (push! i-type %gi-imported-base-info-types))
        (gi-import-callback info))
       (else
-       (if debug
-           (if (procedure? debug)
-               (and (debug info)
-                    (dimfi i-type (g-base-info-get-name info) "not imported"))
-               (dimfi i-type (g-base-info-get-name info) "not imported"))
-           'nothing)))))
+       (if not-imported-warnings?
+           (if (procedure? not-imported-warnings?)
+               (not-imported-warnings? info)
+               (case i-type
+                 ((constant) #f) ;; too many constant
+                 (else
+                  (dimfi (g-base-info-get-namespace info)
+                         (g-base-info-get-name info)
+                         i-type
+                         "not imported"))))
+           #f)))))
 
 (define* (gi-import-enum info #:key (recur #t) (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
