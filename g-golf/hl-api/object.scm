@@ -61,14 +61,23 @@
           (match r-info-cpl
             ((parent . rest)
              (g-object-import-with-supers parent '() module
-                                          #:with-methods? with-methods? #:force? force?))))
+                                          #:with-methods? with-methods?
+                                          #:force? force?))))
         (let loop ((r-info-cpl r-info-cpl))
           (match r-info-cpl
             ((item)
              'done)
             ((parent child . rest)
-             (g-object-import child parent module
-                              #:with-methods? with-methods? #:force? force?)
+             (match parent
+               ((p-info p-namespace p-name)
+                (let* ((p-r-type (g-registered-type-info-get-g-type p-info))
+                       (p-gi-name (g-type-name p-r-type))
+                       (p-c-name (g-name->class-name p-gi-name)))
+                  (g-object-import-with-supers child
+                                               (list (module-ref module p-c-name))
+                                               module
+                                               #:with-methods? with-methods?
+                                               #:force? force?))))
              (loop (cons child rest)))))))))
 
 (define (is-g-object-subclass? info-cpl)
@@ -78,19 +87,6 @@
                 ((info namespace name)
                  (string=? name what))))))
     (member "GObject" info-cpl is-g-object-info-cpl-item?)))
-
-(define* (g-object-import child parent module
-                          #:key (with-methods? #t) (force? #f))
-  (match parent
-    ((p-info p-namespace p-name)
-     (let* ((p-r-type (g-registered-type-info-get-g-type p-info))
-            (p-gi-name (g-type-name p-r-type))
-            (p-c-name (g-name->class-name p-gi-name)))
-       (g-object-import-with-supers child
-                                    (list (module-ref module p-c-name))
-                                    module
-                                    #:with-methods? with-methods?
-                                    #:force? force?)))))
 
 (define* (g-object-import-with-supers child supers module
                                       #:key (with-methods? #t) (force? #f))
