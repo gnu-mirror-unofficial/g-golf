@@ -139,7 +139,7 @@
        (unless (memq i-type
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
-       (gi-import-object info #:force? force?))
+       (gi-import-object info #:with-methods? with-methods? #:force? force?))
       ((interface)
        (unless (memq i-type
                      %gi-imported-base-info-types)

@@ -50,7 +50,7 @@
 
 #;(g-export )
 
-(define* (gi-import-object info #:key (force? #f))
+(define* (gi-import-object info #:key (with-methods? #t) (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
@@ -60,13 +60,15 @@
           ;; A 'fundamental type' class, not a GObject subclass.
           (match r-info-cpl
             ((parent . rest)
-             (g-object-import-with-supers parent '() module #:force? force?))))
+             (g-object-import-with-supers parent '() module
+                                          #:with-methods? with-methods? #:force? force?))))
         (let loop ((r-info-cpl r-info-cpl))
           (match r-info-cpl
             ((item)
              'done)
             ((parent child . rest)
-             (g-object-import child parent module #:force? force?)
+             (g-object-import child parent module
+                              #:with-methods? with-methods? #:force? force?)
              (loop (cons child rest)))))))))
 
 (define (is-g-object-subclass? info-cpl)
@@ -77,7 +79,8 @@
                  (string=? name what))))))
     (member "GObject" info-cpl is-g-object-info-cpl-item?)))
 
-(define* (g-object-import child parent module  #:key (force? #f))
+(define* (g-object-import child parent module
+                          #:key (with-methods? #t) (force? #f))
   (match parent
     ((p-info p-namespace p-name)
      (let* ((p-r-type (g-registered-type-info-get-g-type p-info))
@@ -86,10 +89,11 @@
        (g-object-import-with-supers child
                                     (list (module-ref module p-c-name))
                                     module
+                                    #:with-methods? with-methods?
                                     #:force? force?)))))
 
 (define* (g-object-import-with-supers child supers module
-                                      #:key (force? #f))
+                                      #:key (with-methods? #t) (force? #f))
   (match child
     ((info namespace name)
      (when (or force?
@@ -108,7 +112,8 @@
                                      #:info info)))
              (module-define! module c-name c-inst)
              (module-g-export! module `(,c-name))
-             (gi-import-object-methods info #:force? force?)
+             (when with-methods?
+               (gi-import-object-methods info #:force? force?))
              ;; We do not import signals, they are imported on
              ;; demand. Visit (g-golf hl-api signal) signal-connect and
              ;; the %gi-signal-cache related code to see how this is
@@ -128,7 +133,8 @@
                           (g-object-info-get-type-name parent))
                     results)))))
 
-(define* (gi-import-object-methods info #:key (force? #f))
+(define* (gi-import-object-methods info
+                                   #:key (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
