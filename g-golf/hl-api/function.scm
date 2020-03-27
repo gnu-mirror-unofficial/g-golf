@@ -348,16 +348,16 @@
                       (g-type-info-get-tag info))))
     (case type-tag
       ((interface)
-       (interface-description info))
+       (type-description-interface info))
       ((array)
-       (array-description info))
+       (type-description-array info))
       ((glist
         gslist)
-       (glist-description info type-tag))
+       (type-description-glist info type-tag))
       (else
        type-tag))))
 
-(define (interface-description info)
+(define (type-description-interface info)
   (let* ((info (g-type-info-get-interface info))
          (type (g-base-info-get-type info)))
     (if (is-registered? type)
@@ -464,7 +464,7 @@
             struct
             union)))
 
-(define (array-description info)
+(define (type-description-array info)
   (let* ((type (g-type-info-get-array-type info))
          (fixed-size (g-type-info-get-array-fixed-size info))
          (is-zero-terminated (g-type-info-is-zero-terminated info))
@@ -478,13 +478,13 @@
           param-n
           param-tag)))
 
-(define (glist-description info type-tag)
+(define (type-description-glist info type-tag)
   (let* ((param-type (g-type-info-get-param-type info 0))
          (param-tag (g-type-info-get-tag param-type))
          (is-pointer? (g-type-info-is-pointer param-type)))
     (case param-tag
       ((interface)
-       (let ((i-desc (interface-description param-type)))
+       (let ((i-desc (type-description-interface param-type)))
          (g-base-info-unref param-type)
          (list type-tag
                'interface
