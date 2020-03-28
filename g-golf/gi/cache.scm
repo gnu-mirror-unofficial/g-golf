@@ -96,7 +96,7 @@
                     ((m-key . m-vals)
                      (format #t "  ~A~%" m-key))))
           %gi-cache))
-  (values))g
+  (values))
 
 (define (gi-cache-find m-key pred)
   "Obtains the %gi-cache subcache for M-KEY, an (S-KEY . S-VAL) alist,
