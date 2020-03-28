@@ -42,6 +42,7 @@
 
             gi-cache-ref
             gi-cache-set!
+            gi-cache-remove!
 
             gi-cache-show
             gi-cache-find
@@ -70,6 +71,12 @@
                      (assq-set! (or subcache '()) s-key
                                 val)))))
 
+(define (gi-cache-remove! m-key s-key)
+  ;; m-key, s-key stand for main key, secondary key
+  (let ((subcache (assq-ref %gi-cache m-key)))
+    (and subcache
+         (assq-remove! subcache s-key))))
+
 (define* (gi-cache-show #:optional (m-key #f))
   (format #t "%gi-cache~%")
   (if m-key
@@ -81,15 +88,15 @@
           (else
            (for-each (lambda (s-entry)
                        (match s-entry
-                         ((s-key . s-vals)
-                          (format #t "    ~A~%" s-key))))
+                         ((s-key . s-val)
+                          (format #t "    ~A~%      ~S~%" s-key s-val))))
                (assq-ref %gi-cache m-key)))))
       (for-each (lambda (m-entry)
                   (match m-entry
                     ((m-key . m-vals)
                      (format #t "  ~A~%" m-key))))
           %gi-cache))
-  (values))
+  (values))g
 
 (define (gi-cache-find m-key pred)
   "Obtains the %gi-cache subcache for M-KEY, an (S-KEY . S-VAL) alist,
