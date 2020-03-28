@@ -401,6 +401,15 @@
                      (gi-import-struct-methods info)
                      gi-struct))
                #t))
+      ((union)
+       (values id
+               name
+               (or (gi-cache-ref 'boxed name)
+                   (let ((gi-union (gi-union-import info)))
+                     (gi-cache-set! 'boxed name gi-union)
+                     (gi-import-union-methods info)
+                     gi-union))
+               #t))
       ((object)
        (let ((module (resolve-module '(g-golf hl-api object)))
              (c-name (g-name->class-name gi-name)))
