@@ -50,10 +50,11 @@
             gi-import-function
             <function>
             <argument>
-            gi-import-enum-methods
-            gi-import-struct-methods
-            gi-import-union-methods
-            gi-import-interface-methods))
+            gi-import-enum
+            gi-import-flag
+            gi-import-struct
+            gi-import-union
+            gi-import-interface))
 
 
 (g-export describe	;; function and argument
@@ -378,37 +379,25 @@
        (values id
                name
                (or (gi-cache-ref 'enum name)
-                   (let ((gi-enum (gi-enum-import info)))
-                     (gi-cache-set! 'enum name gi-enum)
-                     (gi-import-enum-methods info)
-                     gi-enum))
+                   (gi-import-enum info))
                #t))
       ((flags)
        (values id
                name
                (or (gi-cache-ref 'flag name)
-                   (let ((gi-enum (gi-enum-import info #:flag #t)))
-                     (gi-cache-set! 'flag name gi-enum)
-                     (gi-import-enum-methods info)
-                     gi-enum))
+                   (gi-import-flag info))
                #t))
       ((struct)
        (values id
                name
                (or (gi-cache-ref 'boxed name)
-                   (let ((gi-struct (gi-struct-import info)))
-                     (gi-cache-set! 'boxed name gi-struct)
-                     (gi-import-struct-methods info)
-                     gi-struct))
+                   (gi-import-struct info))
                #t))
       ((union)
        (values id
                name
                (or (gi-cache-ref 'boxed name)
-                   (let ((gi-union (gi-union-import info)))
-                     (gi-cache-set! 'boxed name gi-union)
-                     (gi-import-union-methods info)
-                     gi-union))
+                   (gi-import-union info))
                #t))
       ((object)
        (let ((module (resolve-module '(g-golf hl-api object)))
@@ -456,10 +445,7 @@
        (values id
                name
                (or (gi-cache-ref 'iface name)
-                   (let ((gi-iface (gi-interface-import info)))
-                     (gi-cache-set! 'iface name gi-iface)
-                     (gi-import-interface-methods info)
-                     gi-iface))
+                   (gi-import-interface info))
                #t))
       (else
        (values id name #f #f)))))
@@ -933,99 +919,139 @@
 
 
 ;;;
-;;; Enum have methods
+;;; Registered types
 ;;;
 
-(define* (gi-import-enum-methods info #:key (force? #f))
-  (let ((namespace (g-base-info-get-namespace info)))
-    (when (or force?
-              (not (is-namespace-import-exception? namespace)))
-      (let ((n-method (g-enum-info-get-n-methods info)))
-        (do ((i 0
-                (+ i 1)))
-            ((= i n-method))
-          (let* ((m-info (g-enum-info-get-method info i))
-                 (namespace (g-base-info-get-namespace m-info))
-                 (name (g-function-info-get-symbol m-info)))
-            ;; Some methods listed here are functions: (a) their flags is an
-            ;; empty list; (b) they do not expect an additional instance
-            ;; argument (their GIargInfo list is complete); (c) they have a
-            ;; GIFuncInfo entry in the namespace (methods do not). We do not
-            ;; (re)import those here.
-            (unless (g-irepository-find-by-name namespace name)
-              (gi-import-function m-info #:force? force?))))))))
+;; The gi-import-* procedures must always import the info - unlike I
+;; thought when initially implementing an exception mechanism to avoid
+;; to import from GLib and GObject - because they are called by
+;; registered-type->gi-type, to the final aim of having any 'possible'
+;; argument and returned value type being fully 'described', so 'in,
+;; 'inout, 'out arguments, as well as returned value(s) may be correctly
+;; encoded/decoded from/to their scheme representation.
 
+;; So, here is a 'wip step' to achieve the above goal, but wrt to info
+;; that are part of GLib and GObject, the import procs will only import
+;; the info itself, not its methods (because they have been or should be
+;; manually binded, see (g-golf glib) and (g-golf gobject) modules.
 
-;;;
-;;; Struct have methods
-;;;
+(define* (gi-import-enum info #:key (with-methods? #t) (force? #f))
+  (gi-import-registered info
+                        'enum
+                        gi-enum-import
+                        g-enum-info-get-n-methods
+                        g-enum-info-get-method
+                        #:with-methods? with-methods?
+                        #:force? force?))
 
-(define* (gi-import-struct-methods info #:key (force? #f))
-  (let ((namespace (g-base-info-get-namespace info)))
-    (when (or force?
-              (not (is-namespace-import-exception? namespace)))
-      (let ((n-method (g-struct-info-get-n-methods info)))
-        (do ((i 0
-                (+ i 1)))
-            ((= i n-method))
-          (let* ((m-info (g-struct-info-get-method info i))
-                 (namespace (g-base-info-get-namespace m-info))
-                 (name (g-function-info-get-symbol m-info)))
-            ;; Some methods listed here are functions: (a) their flags is an
-            ;; empty list; (b) they do not expect an additional instance
-            ;; argument (their GIargInfo list is complete); (c) they have a
-            ;; GIFuncInfo entry in the namespace (methods do not). We do not
-            ;; (re)import those here.
-            (unless (g-irepository-find-by-name namespace name)
-              (gi-import-function m-info #:force? force?))))))))
+(define* (gi-import-flag info #:key (with-methods? #t) (force? #f))
+  (gi-import-registered info
+                        'flag
+                        gi-enum-import
+                        g-enum-info-get-n-methods
+                        g-enum-info-get-method
+                        #:with-methods? with-methods?
+                        #:force? force?))
 
+(define* (gi-import-struct info #:key (with-methods? #t) (force? #f))
+  (gi-import-registered info
+                        'struct
+                        gi-struct-import
+                        g-struct-info-get-n-methods
+                        g-struct-info-get-method
+                        #:with-methods? with-methods?
+                        #:force? force?))
 
-;;;
-;;; Union have methods
-;;;
+(define* (gi-import-union info #:key (with-methods? #t) (force? #f))
+  (gi-import-registered info
+                        'union
+                        gi-union-import
+                        g-union-info-get-n-methods
+                        g-union-info-get-method
+                        #:with-methods? with-methods?
+                        #:force? force?))
 
-(define* (gi-import-union-methods info #:key (force? #f))
-  (let ((namespace (g-base-info-get-namespace info)))
-    (when (or force?
-              (not (is-namespace-import-exception? namespace)))
-      (let ((n-method (g-union-info-get-n-methods info)))
-        (do ((i 0
-                (+ i 1)))
-            ((= i n-method))
-          (let* ((m-info (g-union-info-get-method info i))
-                 (namespace (g-base-info-get-namespace m-info))
-                 (name (g-function-info-get-symbol m-info)))
-            ;; Some methods listed here are functions: (a) their flags is an
-            ;; empty list; (b) they do not expect an additional instance
-            ;; argument (their GIargInfo list is complete); (c) they have a
-            ;; GIFuncInfo entry in the namespace (methods do not). We do not
-            ;; (re)import those here.
-            (unless (g-irepository-find-by-name namespace name)
-              (gi-import-function m-info #:force? force?))))))))
+(define* (gi-import-interface info #:key (with-methods? #t) (force? #f))
+  (gi-import-registered info
+                        'interface
+                        gi-interface-import
+                        g-interface-info-get-n-methods
+                        g-interface-info-get-method
+                        #:with-methods? with-methods?
+                        #:force? force?))
 
+(define* (gi-import-registered info
+                               type
+                               import-proc
+                               import-n-method-proc
+                               import-get-method-proc
+                               #:key (with-methods? #t)
+                               (force? #f))
+  (let* ((namespace (g-base-info-get-namespace info))
+         (with-methods? (if (is-namespace-import-exception? namespace)
+                            #f
+                            with-methods?))
+         (g-type (g-registered-type-info-get-g-type info))
+         (name (g-studly-caps-expand (g-type-name g-type)))
+         (key (string->symbol name)))
+    (or (gi-cache-ref type key)
+        (let ((gi-type-inst (case type
+                              ((flag)
+                               (import-proc info #:flag #t))
+                              ((union)
+                               (import-union-1 info g-type name))
+                              (else
+                               (import-proc info)))))
+          (gi-cache-set! (case type
+                           ((struct union) 'boxed)
+                           ((interface) 'iface)
+                           (else type))
+                         key
+                         gi-type-inst)
+          (when with-methods?
+            (gi-import-registered-methods info
+                                          import-n-method-proc
+                                          import-get-method-proc
+                                          #:force? force?))
+          gi-type-inst))))
 
-;;;
-;;; Interface have methods
-;;;
+(define* (gi-import-registered-methods info
+                                       import-n-method-proc
+                                       import-get-method-proc
+                                       #:key (force? #f))
+  (let ((namespace (g-base-info-get-namespace info))
+        (n-method (import-n-method-proc info)))
+    (do ((i 0
+            (+ i 1)))
+        ((= i n-method))
+      (let* ((m-info (import-get-method-proc info i))
+             (name (g-function-info-get-symbol m-info)))
+        ;; Some methods listed here are functions: (a) their flags is an
+        ;; empty list; (b) they do not expect an additional instance
+        ;; argument (their GIargInfo list is complete); (c) they have a
+        ;; GIFuncInfo entry in the namespace (methods do not). We do not
+        ;; (re)import those here.
+        (unless (g-irepository-find-by-name namespace name)
+          (gi-import-function m-info #:force? force?))))))
 
-(define* (gi-import-interface-methods info #:key (force? #f))
-  (let ((namespace (g-base-info-get-namespace info)))
-    (when (or force?
-              (not (is-namespace-import-exception? namespace)))
-      (let ((n-method (g-interface-info-get-n-methods info)))
-        (do ((i 0
-                (+ i 1)))
-            ((= i n-method))
-          (let* ((m-info (g-interface-info-get-method info i))
-                 (namespace (g-base-info-get-namespace m-info))
-                 (name (g-function-info-get-symbol m-info)))
-            ;; Some methods listed here are functions: (a) their flags is an
-            ;; empty list; (b) they do not expect an additional instance
-            ;; argument (their GIargInfo list is complete); (c) they have a
-            ;; GIFuncInfo entry in the namespace (methods do not). We do not
-            ;; (re)import those here.
-            (unless (g-irepository-find-by-name namespace name)
-              (gi-import-function m-info #:force? force?))))))))
+(define (import-union-1 info g-type name)
+  (let ((fields
+         (map (lambda (field)
+                (match field
+                  ((f-name f-type-info)
+                   (let ((f-desc (type-description f-type-info)))
+                     (g-base-info-unref f-type-info)
+                     (list f-name f-desc)))))
+           (gi-union-import info))))
+    (make <gi-union>
+      #:gtype-id g-type
+      #:gi-name name
+      ;; #:scm-name the initialize method does that
+      #:size (g-union-info-get-size info)
+      #:alignment (g-union-info-get-alignment info)
+      #:fields fields
+      #:is-discriminated? (g-union-info-is-discriminated? info)
+      #:discriminator-offset (g-union-info-get-discriminator-offset info))))
 
 
 ;;;
