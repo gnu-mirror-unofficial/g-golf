@@ -51,18 +51,19 @@
 #;(g-export )
 
 (define* (gi-import-object info #:key (with-methods? #t) (force? #f))
-  (let ((namespace (g-base-info-get-namespace info)))
-    (when (or force?
-              (not (is-namespace-import-exception? namespace)))
-      (let ((module (resolve-module '(g-golf hl-api gobject)))
-            (r-info-cpl (reverse! (g-object-class-precedence-list info))))
-        (unless (is-g-object-subclass? r-info-cpl)
-          ;; A 'fundamental type' class, not a GObject subclass.
-          (match r-info-cpl
-            ((parent . rest)
-             (g-object-import-with-supers parent '() module
-                                          #:with-methods? with-methods?
-                                          #:force? force?))))
+  (let* ((namespace (g-base-info-get-namespace info))
+         (with-methods? (if (is-namespace-import-exception? namespace)
+                            #f
+                            with-methods?))
+         (module (resolve-module '(g-golf hl-api gobject)))
+         (r-info-cpl (reverse! (g-object-class-precedence-list info))))
+    (unless (is-g-object-subclass? r-info-cpl)
+      ;; A 'fundamental type' class, not a GObject subclass.
+      (match r-info-cpl
+        ((parent . rest)
+         (g-object-import-with-supers parent '() module
+                                      #:with-methods? with-methods?
+                                      #:force? force?))))
         (let loop ((r-info-cpl r-info-cpl))
           (match r-info-cpl
             ((item)
@@ -78,7 +79,7 @@
                                                module
                                                #:with-methods? with-methods?
                                                #:force? force?))))
-             (loop (cons child rest)))))))))
+             (loop (cons child rest)))))))
 
 (define (is-g-object-subclass? info-cpl)
   (letrec ((is-g-object-info-cpl-item?
@@ -92,29 +93,27 @@
                                       #:key (with-methods? #t) (force? #f))
   (match child
     ((info namespace name)
-     (when (or force?
-               (not (is-namespace-import-exception? namespace)))
-       (unless (member namespace
-                       (g-irepository-get-loaded-namespaces)
-                       string=?)
-         (g-irepository-require namespace))
-       (let* ((r-type (g-registered-type-info-get-g-type info))
-              (gi-name (g-type-name r-type))
-              (c-name (g-name->class-name gi-name)))
-         (unless (module-bound? module c-name)
-           (let ((c-inst (make-class supers
-                                     '()
-                                     #:name c-name
-                                     #:info info)))
-             (module-define! module c-name c-inst)
-             (module-g-export! module `(,c-name))
-             (when with-methods?
-               (gi-import-object-methods info #:force? force?))
-             ;; We do not import signals, they are imported on
-             ;; demand. Visit (g-golf hl-api signal) signal-connect and
-             ;; the %gi-signal-cache related code to see how this is
-             ;; achieved.
-             #;(gi-import-object-signals info))))))))
+     (unless (member namespace
+                     (g-irepository-get-loaded-namespaces)
+                     string=?)
+       (g-irepository-require namespace))
+     (let* ((r-type (g-registered-type-info-get-g-type info))
+            (gi-name (g-type-name r-type))
+            (c-name (g-name->class-name gi-name)))
+       (unless (module-bound? module c-name)
+         (let ((c-inst (make-class supers
+                                   '()
+                                   #:name c-name
+                                   #:info info)))
+           (module-define! module c-name c-inst)
+           (module-g-export! module `(,c-name))
+           (when with-methods?
+             (gi-import-object-methods info #:force? force?))
+           ;; We do not import signals, they are imported on
+           ;; demand. Visit (g-golf hl-api signal) signal-connect and
+           ;; the %gi-signal-cache related code to see how this is
+           ;; achieved.
+           #;(gi-import-object-signals info)))))))
 
 (define (g-object-class-precedence-list info)
   (let  loop ((parent (g-object-info-get-parent info))
@@ -131,23 +130,21 @@
 
 (define* (gi-import-object-methods info
                                    #:key (force? #f))
-  (let ((namespace (g-base-info-get-namespace info)))
-    (when (or force?
-              (not (is-namespace-import-exception? namespace)))
-      (let ((n-method (g-object-info-get-n-methods info)))
-        (do ((i 0
-                (+ i 1)))
-            ((= i n-method))
-          (let* ((m-info (g-object-info-get-method info i))
-                 (namespace (g-base-info-get-namespace m-info))
-                 (name (g-function-info-get-symbol m-info)))
-            ;; Some methods listed here are functions: (a) their flags is an
-            ;; empty list; (b) they do not expect an additional instance
-            ;; argument (their GIargInfo list is complete); (c) they have a
-            ;; GIFuncInfo entry in the namespace (methods do not). We do not
-            ;; (re)import those here.
-            (unless (g-irepository-find-by-name namespace namespace)
-              (gi-import-function m-info #:force? force?))))))))
+  (let ((namespace (g-base-info-get-namespace info))
+        (n-method (g-object-info-get-n-methods info)))
+    (do ((i 0
+            (+ i 1)))
+        ((= i n-method))
+      (let* ((m-info (g-object-info-get-method info i))
+             (namespace (g-base-info-get-namespace m-info))
+             (name (g-function-info-get-symbol m-info)))
+        ;; Some methods listed here are functions: (a) their flags is an
+        ;; empty list; (b) they do not expect an additional instance
+        ;; argument (their GIargInfo list is complete); (c) they have a
+        ;; GIFuncInfo entry in the namespace (methods do not). We do not
+        ;; (re)import those here.
+        (unless (g-irepository-find-by-name namespace namespace)
+          (gi-import-function m-info #:force? force?))))))
 
 #!
 
