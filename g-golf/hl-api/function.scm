@@ -992,8 +992,8 @@
                             #f
                             with-methods?))
          (g-type (g-registered-type-info-get-g-type info))
-         (name (g-studly-caps-expand (g-type-name g-type)))
-         (key (string->symbol name)))
+         (name (g-type-name g-type))
+         (key (string->symbol (g-studly-caps-expand name))))
     (or (gi-cache-ref type key)
         (let ((gi-type-inst (case type
                               ((flag)
