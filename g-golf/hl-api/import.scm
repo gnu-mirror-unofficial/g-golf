@@ -52,7 +52,8 @@
             gi-import
             gi-import-by-name
             gi-import-info
-            gi-import-constant))
+            gi-import-constant
+            gi-find-by-property-name))
 
 
 #;(g-export )
@@ -171,3 +172,27 @@
     (g-base-info-unref type-info)
     (values constant
             gi-name)))
+
+(define (gi-find-by-property-name namespace name)
+  (g-irepository-require namespace)
+  (let loop ((n-info (g-irepository-get-n-infos namespace))
+             (i 0)
+             (results '()))
+    (if (= i n-info)
+        (reverse! results)
+        (let ((info (g-irepository-get-info namespace i)))
+          (case (g-base-info-get-type info)
+            ((object)
+             (if (member name
+                         (gi-object-property-names info)
+                         string=?)
+                 (loop n-info
+                       (+ i 1)
+                       (cons info results))
+                 (loop n-info
+                       (+ i 1)
+                       results)))
+            (else
+             (loop n-info
+                   (+ i 1)
+                   results)))))))
