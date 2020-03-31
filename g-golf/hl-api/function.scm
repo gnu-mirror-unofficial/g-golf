@@ -671,11 +671,15 @@
              ;; we need to keep a reference to string pointers,
              ;; otherwise the C string will be freed, which might happen
              ;; before the C call actually occurred.
-             (let ((string-pointer (string->pointer arg)))
-               (set! (!string-pointer arg-in) string-pointer)
-               ;; don't use 'v-string, which expects a string, calls
-               ;; string->pointer (and does not keep a reference).
-               (gi-argument-set! gi-argument-in 'v-pointer string-pointer)))
+             (if (not arg)
+                 (if may-be-null?
+                     (gi-argument-set! gi-argument-in 'v-pointer #f)
+                     (error "Argument value not allowed: " #f))
+                 (let ((string-pointer (string->pointer arg)))
+                   (set! (!string-pointer arg-in) string-pointer)
+                   ;; don't use 'v-string, which expects a string, calls
+                   ;; string->pointer (and does not keep a reference).
+                   (gi-argument-set! gi-argument-in 'v-pointer string-pointer))))
             (else
              ;; Here starts fundamental types. However, we still need to
              ;; check the forced-type slot-value, and when it is a
