@@ -49,6 +49,7 @@
 
   #:export (gi-object-import
             gi-object-show
+            gi-object-property-names
 
 	    g-object-info-get-abstract
 	    g-object-info-get-parent
@@ -144,6 +145,19 @@
              (g-object-info-get-n-signals info)
              (g-object-info-get-n-vfuncs info)))
     (values)))
+
+(define (gi-object-property-names info)
+  (let loop ((n-prop (g-object-info-get-n-properties info))
+             (i 0)
+             (results '()))
+    (if (= i n-prop)
+        (reverse! results)
+        (let ((g-property (g-object-info-get-property info i)))
+          (loop n-prop
+                (+ i 1)
+                (cons (g-name->scm-name
+                       (g-base-info-get-name g-property))
+                      results))))))
 
 
 ;;;
