@@ -155,8 +155,7 @@
         (let ((g-property (g-object-info-get-property info i)))
           (loop n-prop
                 (+ i 1)
-                (cons (g-name->scm-name
-                       (g-base-info-get-name g-property))
+                (cons (g-base-info-get-name g-property)
                       results))))))
 
 

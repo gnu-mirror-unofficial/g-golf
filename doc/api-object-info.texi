@@ -20,6 +20,7 @@ GIObjectInfo — Structs representing a GObject.
 @table @code
 @c @item @ref{gi-object-import}
 @item @ref{gi-object-show}
+@item @ref{gi-object-property-names}
 @item @ref{g-object-info-get-abstract}
 @item @ref{g-object-info-get-parent}
 @item @ref{g-object-info-get-type-name}
@@ -129,6 +130,17 @@ $3 = #<pointer 0x56396a4fdc00>
           n-vfuncts: 35
 
 @end lisp
+@end deffn
+
+
+@anchor{gi-object-property-names}
+@deffn Procedure gi-object-property-names info
+
+Returns a (possibly empty) list.
+
+Obtains and returns the (possibly empty) list of the (untranslated) GI
+property names for @var{info} (see @ref{g-name->scm-name} to obtain
+their scheme representation).
 @end deffn
 
 
