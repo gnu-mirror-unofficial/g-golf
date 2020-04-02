@@ -1,0 +1,45 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@c @defindex ei
+
+
+@node Utilities__
+@subsection Utilities
+
+
+G-Golf additional utilities.@*
+@c The G-Golf GIR namespace (Typelib) import high level API.
+
+
+@subheading Procedures
+
+@indentedblock
+@table @code
+@item @ref{gi-find-by-property-name}
+@end table
+@end indentedblock
+
+
+@subheading Description
+
+G-Golf additional utilities.
+
+
+@subheading Procedures
+
+
+@anchor{gi-find-by-property-name}
+@deffn Procedure gi-find-by-property-name namespace name
+
+Returns a (possibly empty) list.
+
+Obtains and returns a (possibly empty) list of (pointers to)
+@code{GIObjectInfo} in @var{namespace} that have a property named
+@var{name}. Property names are obtained calling g-base-info-get-name,
+with no translation/transformation - underscore, if any, are kept 'as
+is', and the comparison with @var{name} is case sensitive.
+@end deffn

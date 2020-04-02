@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2019
+;;;; Copyright (C) 2018 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -32,13 +32,15 @@
   #:use-module (g-golf support modules)
   #:use-module (g-golf support goops)
   #:use-module (g-golf hl-api gtype)
+  #:use-module (g-golf hl-api glib)
   #:use-module (g-golf hl-api gobject)
   #:use-module (g-golf hl-api function)
   #:use-module (g-golf hl-api object)
   #:use-module (g-golf hl-api closure)
   #:use-module (g-golf hl-api signal)
-  #:use-module (g-golf hl-api glib)
   #:use-module (g-golf hl-api callback)
+  #:use-module (g-golf hl-api import)
+  #:use-module (g-golf hl-api utils)
 
   #:duplicates (merge-generics
 		replace
@@ -51,10 +53,12 @@
                             (g-golf support utils)
                             (g-golf support goops)
                             (g-golf hl-api gtype)
+                            (g-golf hl-api glib)
                             (g-golf hl-api gobject)
                             (g-golf hl-api function)
                             (g-golf hl-api object)
                             (g-golf hl-api closure)
                             (g-golf hl-api signal)
-                            (g-golf hl-api glib)
-                            (g-golf hl-api callback))
+                            (g-golf hl-api callback)
+                            (g-golf hl-api import)
+                            (g-golf hl-api utils))

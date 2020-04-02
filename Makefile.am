@@ -93,6 +93,7 @@ SOURCES = \
 	g-golf/hl-api/glib.scm			\
 	g-golf/hl-api/callback.scm		\
 	g-golf/hl-api/import.scm		\
+	g-golf/hl-api/utils.scm			\
 	g-golf/hl-api.scm			\
 	g-golf.scm
 

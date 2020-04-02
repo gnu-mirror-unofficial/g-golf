@@ -104,6 +104,7 @@
   #:use-module (g-golf hl-api glib)
   #:use-module (g-golf hl-api callback)
   #:use-module (g-golf hl-api import)
+  #:use-module (g-golf hl-api utils)
 
   #:duplicates (merge-generics
 		replace
@@ -181,7 +182,8 @@
                               (g-golf hl-api signal)
                               (g-golf hl-api glib)
                               (g-golf hl-api callback)
-                              (g-golf hl-api import)))
+                              (g-golf hl-api import)
+                              (g-golf hl-api utils)))
 
 
 ;;;

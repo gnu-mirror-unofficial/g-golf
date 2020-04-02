@@ -90,6 +90,7 @@ g_golf_TEXINFOS = \
   api-hl-api-function.texi	\
   api-hl-api-object.texi	\
   api-hl-api-import.texi	\
+  api-hl-api-utils.texi		\
   indices.texi			\
   fdl.texi
 

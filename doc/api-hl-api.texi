@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -35,6 +35,7 @@ Reference Manual}), in a way that is largely inspired by
 * Function:: The G-Golf GI function and argument high level API.
 @c * Object:: The G-Golf GI object import high level API.
 * Import:: The G-Golf GIR namespace (Typelib) import high level API.
+* Utilities__:: G-Golf additinal utilities.
 
 @end menu
 
@@ -45,3 +46,4 @@ Reference Manual}), in a way that is largely inspired by
 @include api-hl-api-function.texi
 @c @include api-hl-api-object.texi
 @include api-hl-api-import.texi
+@include api-hl-api-utils.texi
