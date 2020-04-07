@@ -655,7 +655,10 @@
                       ((utf8
                         filename)
                        (gi-argument-set! gi-argument-in 'v-pointer
-                                         (scm->gi arg 'strings)))
+                                         (if is-zero-terminated
+                                             (scm->gi-strings arg)
+                                             (scm->gi-n-string arg
+                                                               (list-ref args param-n)))))
                       (else
                        (warning "Unimplemented (prepare args-in) type - array;"
                                 (format #f "~S" type-desc))))))))
