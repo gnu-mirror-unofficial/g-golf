@@ -40,6 +40,7 @@
   #:use-module (g-golf glib mem-alloc)
   #:use-module (g-golf glib glist)
   #:use-module (g-golf glib gslist)
+  #:use-module (g-golf gobject type-info)
 
   #:export (%gi-pointer-size
 	    gi-pointer-new
@@ -57,6 +58,7 @@
             gi-pointers->scm
             gi-glist->scm
             gi-gslist->scm
+            gi-n-gtype->scm
             scm->gi
             scm->gi-boolean
             scm->gi-string
@@ -67,7 +69,8 @@
             scm->gi-n-pointer
             scm->gi-pointers
             #;scm->gi-glist
-            #;scm->gi-gslist))
+            #;scm->gi-gslist
+            scm->gi-n-gtype))
 
 
 (define %gi-pointer-size (sizeof '*))
@@ -127,6 +130,7 @@
     ((pointers) (gi-pointers->scm value))
     ((glist) (gi-glist->scm value cmpl))
     ((gslist) (gi-gslist->scm value cmpl))
+    ((n-gtype) (gi-n-gtype->scm value cmpl))
     (else
      (error "No such type: " type))))
 
@@ -281,6 +285,23 @@
        (else
         (warning "Unimplemented gslist type" i-desc))))))
 
+(define (gi-n-gtype->scm pointer n-gtype)
+  (if (or (not pointer)
+          (null-pointer? pointer)
+          (= n-gtype 0))
+      #f
+      (let loop ((u64 (pointer->bytevector pointer
+                                           (* n-gtype
+                                              (sizeof unsigned-long))))
+                 (i 0)
+                 (results '()))
+        (if (= i n-gtype)
+            (reverse! results)
+            (loop u64
+                  (+ i 1)
+                  (cons (g-type->symbol (u64vector-ref u64 i))
+                        results))))))
+
 
 ;;;
 ;;; scm->gi procedures
@@ -298,6 +319,7 @@
     ((pointers) (scm->gi-pointers value))
     #;((glist) (scm->gi-glist value))
     #;((gslist) (scm->gi-gslist value))
+    ((n-gtype) (scm->gi-n-gtype value cmpl))
     (else
      value)))
 
@@ -399,3 +421,19 @@
                  (bv-ptr-set! w-ptr l-ptr)
                  (loop (gi-pointer-inc w-ptr)
                        rest))))))))
+
+(define* (scm->gi-n-gtype lst #:optional (n-gtype #f))
+  (if (null? lst)
+      %null-pointer
+      (let* ((n-gtype (or n-gtype (length lst)))
+             (u64 (make-u64vector n-gtype 0)))
+        (let loop ((lst lst)
+                   (i 0))
+          (if (null? lst)
+              (bytevector->pointer u64)
+              (match lst
+                ((g-type . rest)
+                 (u64vector-set! u64 i
+                                 (symbol->g-type g-type))
+                 (loop rest
+                       (+ i 1)))))))))

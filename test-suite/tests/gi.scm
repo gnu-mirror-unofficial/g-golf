@@ -97,6 +97,15 @@
                      i-ptrs
                      c)))))))
 
+(define-method (test-utils-n-gtype (self <g-golf-test-gi>))
+  (let ((a '(int double object)))
+    (assert-true
+     (receive (ptr)
+         (scm->gi a 'n-gtype 3)
+       (let ((b (gi->scm ptr 'n-gtype 3)))
+         (and (= (length a) (length b))
+              (every eq? a b)))))))
+
 
 ;;;
 ;;; Repository
