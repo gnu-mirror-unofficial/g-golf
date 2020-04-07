@@ -62,9 +62,12 @@
             scm->gi-string
             scm->gi-n-string
             scm->gi-strings
+            #;scm->gi-csv-string
             scm->gi-pointer
             scm->gi-n-pointer
-            scm->gi-pointers))
+            scm->gi-pointers
+            #;scm->gi-glist
+            #;scm->gi-gslist))
 
 
 (define %gi-pointer-size (sizeof '*))
@@ -293,6 +296,8 @@
     ((pointer) (scm->gi-pointer value))
     ((n-pointer) (scm->gi-n-pointer value cmpl))
     ((pointers) (scm->gi-pointers value))
+    #;((glist) (scm->gi-glist value))
+    #;((gslist) (scm->gi-gslist value))
     (else
      value)))
 
