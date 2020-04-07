@@ -116,8 +116,8 @@
   (case type
     ((boolean) (gi-boolean->scm value))
     ((string) (gi-string->scm value))
-    ((strings) (gi-strings->scm value))
     ((n-string) (gi-n-string->scm value cmpl))
+    ((strings) (gi-strings->scm value))
     ((csv-string) (gi-csv-string->scm value))
     ((pointer) (gi-pointer->scm value))
     ((n-pointer) (gi-n-pointer->scm value cmpl))
@@ -283,15 +283,15 @@
 ;;; scm->gi procedures
 ;;;
 
-(define (scm->gi value type)
+(define* (scm->gi value type #:optional (cmpl #f))
   (case type
     ((boolean) (scm->gi-boolean value))
     ((string) (scm->gi-string value))
-    ((n-string) (scm->gi-n-string value))
+    ((n-string) (scm->gi-n-string value cmpl))
     ((strings) (scm->gi-strings value))
     #;((csv-string) (scm->gi-csv-string value))
     ((pointer) (scm->gi-pointer value))
-    ((n-pointer) (scm->gi-n-pointer value))
+    ((n-pointer) (scm->gi-n-pointer value cmpl))
     ((pointers) (scm->gi-pointers value))
     (else
      value)))
@@ -306,12 +306,13 @@
 ;; reference to the 'inner' pointers mst be kept (and returned to the
 ;; caller). otherwise, they might be GC'ed ...
 
-(define (scm->gi-n-string lst)
+(define* (scm->gi-n-string lst #:optional (n-string #f))
   (if (null? lst)
       (values %null-pointer
               '())
       (let* ((p-size %gi-pointer-size)
-             (n-string (length lst))
+             (n-string (or n-string
+                           (length lst)))
              (bv (make-bytevector (* n-string p-size) 0))
              (o-ptr (bytevector->pointer bv)))
         (let loop ((w-ptr o-ptr)
@@ -357,11 +358,12 @@
       value
       %null-pointer))
 
-(define (scm->gi-n-pointer lst)
+(define* (scm->gi-n-pointer lst #:optional (n-pointer #f))
   (if (null? lst)
       %null-pointer
       (let* ((p-size %gi-pointer-size)
-             (n-pointer (length lst))
+             (n-pointer (or n-pointer
+                            (length lst)))
              (bv (make-bytevector (* n-pointer p-size) 0))
              (o-ptr (bytevector->pointer bv)))
         (let loop ((w-ptr o-ptr)
