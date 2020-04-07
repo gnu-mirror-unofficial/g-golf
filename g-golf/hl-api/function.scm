@@ -659,6 +659,14 @@
                                              (scm->gi-strings arg)
                                              (scm->gi-n-string arg
                                                                (list-ref args param-n)))))
+                      ((gtype)
+                       (gi-argument-set! gi-argument-in 'v-pointer
+                                         (if is-zero-terminated
+                                             (warning
+                                              "Unimplemented (prepare args-in) scm->gi-gtypes."
+                                              "")
+                                             (scm->gi-n-gtype arg
+                                                              (list-ref args param-n)))))
                       (else
                        (warning "Unimplemented (prepare args-in) type - array;"
                                 (format #f "~S" type-desc))))))))
