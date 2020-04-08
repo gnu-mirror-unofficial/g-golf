@@ -645,8 +645,25 @@
                                                %null-pointer
                                                (error "Invalid arg: " arg)))))
                     ((interface)
-                     (gi-argument-set! gi-argument-in 'v-pointer
-                                       (scm->gi arg 'pointer)))))))
+                     ;; Interfaces (class implementation) is missing,
+                     ;; but g-object subclasses that implement
+                     ;; interface(s) may pass their instances as
+                     ;; arguments to functions that expect an interface.
+                     ;; For example a <gtk-list-store> instance is a
+                     ;; valid argument to the
+                     ;; gtk-tree-view-new-with-model function ...  This
+                     ;; means that we need, till interface classes are
+                     ;; fully implemented, to check if the argument the
+                     ;; function is receiving is a pointer - then we
+                     ;; pass it 'blindingly', or an instance, in which
+                     ;; case we must pass its g-inst slot value (which
+                     ;; holds a pointer to the GObject subclass
+                     ;; instance).
+                     (let ((foreign (cond ((not arg) %null-pointer)
+                                          ((pointer? arg) arg)
+                                          (else
+                                           (!g-inst arg)))))
+                       (gi-argument-set! gi-argument-in 'v-pointer foreign)))))))
               ((array)
                (if (not arg)
                    (if may-be-null?
