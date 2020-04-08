@@ -689,7 +689,10 @@
                                                 "Unimplemented (prepare args-in) scm->gi-gtypes."
                                                 "")
                                                (scm->gi-n-gtype arg
-                                                                (list-ref args param-n)))))
+                                                                (list-ref args
+                                                                           (if is-method?
+                                                                               (+ param-n 1)
+                                                                               param-n))))))
                         (else
                          (warning "Unimplemented (prepare args-in) type - array;"
                                   (format #f "~S" type-desc))))))))
