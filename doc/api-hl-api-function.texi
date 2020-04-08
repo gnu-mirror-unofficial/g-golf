@@ -30,6 +30,7 @@ The G-Golf GI function and argument high level API.
 @item @ref{!info_}
 @item @ref{!name}
 @item @ref{!flags}
+@item @ref{!is-method?}
 @item @ref{!n-arg}
 @item @ref{!caller-owns}
 @item @ref{!return-type_}
@@ -99,6 +100,9 @@ Its slots are:
 
 @item @emph{flags}
 #:accessor !flags
+
+@item @emph{is-method?}
+#:accessor !is-method
 
 @item @emph{n-arg}
 #:accessor !n-arg
@@ -259,6 +263,7 @@ respectively.
 @anchor{!info_}
 @anchor{!name}
 @anchor{!flags}
+@anchor{!is-method?}
 @anchor{!n-arg}
 @anchor{!caller-owns}
 @anchor{!return-type_}
@@ -277,6 +282,7 @@ respectively.
 @deffn Accessor !info function
 @deffnx Accessor !name function
 @deffnx Accessor !flags function
+@deffnx Accessor !is-method? function
 @deffnx Accessor !n-arg function
 @deffnx Accessor !caller-owns function
 @deffnx Accessor !return-type function

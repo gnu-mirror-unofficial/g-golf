@@ -40,7 +40,7 @@
 		warn
 		last)
 
-  #:export (is-method?
+  #:export (gi-function-info-is-method?
 
             g-function-info-get-flags
             g-function-info-get-property
@@ -54,10 +54,15 @@
 ;;; High level API
 ;;;
 
-(define* (is-method? info #:optional (flags #f))
+(define* (gi-function-info-is-method? info #:optional (flags #f))
   (let ((flags (or flags
                    (g-function-info-get-flags info))))
-    (memq 'is-method flags)))
+    ;; although the result of the memq result would be sufficient of
+    ;; course, <function> instances store the result return by this
+    ;; procedure, but it also store the flags, not returning a 'strict'
+    ;; boolean would be redundant.
+    (and (memq 'is-method flags)
+         #t)))
 
 
 ;;;
@@ -131,14 +136,13 @@
   (pointer->procedure int
                       (dynamic-func "g_function_info_invoke"
 				    %libgirepository)
-                      (list '*	;; info
-                            '*	;; in-args
-                            int ;; n-in
-                            '*  ;; out-args
-                            int ;; n-out
-                            '*  ;; r-val
-                            '*  ;; g-error
-                            )))
+                      (list '*		;; info
+                            '*		;; in-args
+                            int		;; n-in
+                            '*		;; out-args
+                            int		;; n-out
+                            '*  	;; r-val
+                            '*)))	;; g-error
 
 
 ;;;
