@@ -877,6 +877,9 @@
         filename)
        ;; not sure, but this shouldn't arm.
        (gi->scm (gi-argument-ref gi-argument-out 'v-pointer) 'string))
+      ((gtype)
+       (let ((val (gi-argument-ref gi-argument-out 'v-ulong)))
+         (g-type->symbol val)))
       (else
        ;; Here starts fundamental types. However, we still need to check
        ;; the forced-type slot-value, and when it is a pointer, allocate
@@ -954,6 +957,9 @@
         filename)
        ;; not sure, but this shouldn't arm.
        (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) 'string))
+      ((gtype)
+       (let ((val (gi-argument-ref gi-arg-result 'v-ulong)))
+         (g-type->symbol val)))
       (else
        (gi-argument-ref gi-arg-result
                         (gi-type-tag->field return-type))))))
