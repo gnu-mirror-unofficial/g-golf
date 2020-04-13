@@ -630,13 +630,22 @@
                            (gi-argument-set! gi-argument-in 'v-int f-val)
                            (error "No such flag(s) " arg " in " gi-type))))
                     ((struct)
-                     (gi-argument-set! gi-argument-in 'v-pointer
-                                       (cond ((or (!is-opaque? gi-type)
-                                                  (!is-semi-opaque? gi-type))
-                                              arg)
-                                             (else
-                                              (make-c-struct (!scm-types gi-type)
-                                                             arg)))))
+                     (case name
+                       ((g-value)
+                        ;; Functions and methods that use GValue(s)
+                        ;; should be overridden-ed/manually wrapped to
+                        ;; initialize those g-value(s) - and here, arg
+                        ;; is supposed to (always) be a valid pointer to
+                        ;; an initialized GValue.
+                        (gi-argument-set! gi-argument-in 'v-pointer arg))
+                       (else
+                        (gi-argument-set! gi-argument-in 'v-pointer
+                                          (cond ((or (!is-opaque? gi-type)
+                                                     (!is-semi-opaque? gi-type))
+                                                 arg)
+                                                (else
+                                                 (make-c-struct (!scm-types gi-type)
+                                                                arg)))))))
                     ((object)
                      (gi-argument-set! gi-argument-in 'v-pointer
                                        (if arg
