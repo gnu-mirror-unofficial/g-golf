@@ -36,6 +36,7 @@
   #:use-module (g-golf gi)
   #:use-module (g-golf glib)
   #:use-module (g-golf gobject)
+  #:use-module (g-golf override)
   #:use-module (g-golf hl-api gtype)
 
   #:duplicates (merge-generics
@@ -58,10 +59,13 @@
 
 
 (g-export describe	;; function and argument
-          !name
+          !gi-name
+          !scm-name
           !type-desc
 
           !info		;; function
+          !namespace
+          !override?
           !flags
           !is-method?
           !n-arg
@@ -118,6 +122,69 @@
 
 (define %gi-strip-boolean-result '())
 
+(define (%i-func info f-inst name)
+  (lambda ( . args)
+    (let ((info info)
+          (f-inst f-inst)
+          (name name)
+          (return-type (!return-type f-inst))
+          (n-gi-arg-in (!n-gi-arg-in f-inst))
+          (gi-args-in (!gi-args-in f-inst))
+          (n-gi-arg-out (!n-gi-arg-out f-inst))
+          (gi-args-out (!gi-args-out f-inst))
+          (gi-arg-result (!gi-arg-result f-inst)))
+      (check-n-arg n-gi-arg-in args)
+      (prepare-gi-arguments f-inst args)
+      (with-gerror g-error
+                   (g-function-info-invoke info
+                                           gi-args-in
+                                           n-gi-arg-in
+			                   gi-args-out
+                                           n-gi-arg-out
+			                   gi-arg-result
+                                           g-error))
+      (if (> n-gi-arg-out 0)
+          (case return-type
+            ((boolean)
+             (if (memq name
+                       %gi-strip-boolean-result)
+                 (if (return-value->scm f-inst)
+                     (apply values
+                            (map arg-out->scm (!args-out f-inst)))
+                     (error " " name " failed."))
+                 (apply values
+                        (cons (return-value->scm f-inst)
+                              (map arg-out->scm (!args-out f-inst))))))
+            ((void)
+             (apply values
+                    (map arg-out->scm (!args-out f-inst))))
+            (else
+             (apply values
+                    (cons (return-value->scm f-inst)
+                          (map arg-out->scm (!args-out f-inst))))))
+          (case return-type
+            ((void) (values))
+            (else
+             (return-value->scm f-inst)))))))
+
+(define (%o-func namespace scm-name i-func)
+  (let* ((%import (@@ (g-golf hl-api import) gi-import-by-name))
+         (n-name (string->symbol (string-downcase namespace)))
+         (m-name `(g-golf override ,n-name))
+         (o-module (resolve-module m-name #:ensure #f))
+         (o-name (string-append scm-name "-ov"))
+         (o-func-ref (module-ref o-module
+                                 (string->symbol o-name))))
+    (receive (prereqs exp)
+        (o-func-ref i-func)
+      (when prereqs
+        (for-each (lambda (prereq)
+                    (match prereq
+                      ((namespace name)
+                       (%import namespace name))))
+            prereqs))
+      (primitive-eval exp))))
+
 (define* (gi-import-function info #:key (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
@@ -127,63 +194,28 @@
              (name (string->symbol scm-name)))
         (or (gi-cache-ref 'function name)
             (let* ((module (resolve-module '(g-golf hl-api function)))
-                   (function (make <function> #:info info))
-                   (name (!name function)))
+                   (f-inst (make <function> #:info info))
+                   (i-func (%i-func info f-inst name))
+                   (o-func (and (gi-override? gi-name)
+                                (%o-func namespace scm-name i-func))))
               ;; unlike one may think 'at first glance', we don't unref the function
               ;; info, it is needed by g-function-info-invoke ...
               ;; (g-base-info-unref info)
-              (gi-cache-set! 'function name function)
-              (module-define! module
-                              name
-                              (lambda ( . args)
-                                (let ((info info)
-                                      (function function)
-                                      (name name)
-                                      (return-type (!return-type function))
-                                      (n-gi-arg-in (!n-gi-arg-in function))
-                                      (gi-args-in (!gi-args-in function))
-                                      (n-gi-arg-out (!n-gi-arg-out function))
-                                      (gi-args-out (!gi-args-out function))
-                                      (gi-arg-result (!gi-arg-result function)))
-                                  (check-n-arg n-gi-arg-in args)
-                                  (prepare-gi-arguments function args)
-                                  (with-gerror g-error
-                                               (g-function-info-invoke info
-                                                                       gi-args-in
-                                                                       n-gi-arg-in
-			                                               gi-args-out
-                                                                       n-gi-arg-out
-			                                               gi-arg-result
-                                                                       g-error))
-                                  (if (> n-gi-arg-out 0)
-                                      (case return-type
-                                        ((boolean)
-                                         (if (memq name
-                                                   %gi-strip-boolean-result)
-                                             (if (return-value->scm function)
-                                                 (apply values
-                                                        (map arg-out->scm (!args-out function)))
-                                                 (error " " name " failed."))
-                                             (apply values
-                                                    (cons (return-value->scm function)
-                                                          (map arg-out->scm (!args-out function))))))
-                                        ((void)
-                                         (apply values
-                                                (map arg-out->scm (!args-out function))))
-                                        (else
-                                         (apply values
-                                                (cons (return-value->scm function)
-                                                      (map arg-out->scm (!args-out function))))))
-                                      (case return-type
-                                        ((void) (values))
-                                        (else
-                                         (return-value->scm function)))))))
+              (if o-func
+                  (begin
+                    (set! (!override? f-inst) i-func)
+                    (module-define! module name o-func))
+                  (module-define! module name i-func))
+              (gi-cache-set! 'function name f-inst)
               (module-g-export! module `(,name))
-              function))))))
+              f-inst))))))
 
 (define-class <function> ()
   (info #:accessor !info)
-  (name #:accessor !name)
+  (namespace #:accessor !namespace)
+  (gi-name #:accessor !gi-name)
+  (scm-name #:accessor !scm-name)
+  (override? #:accessor !override? #:init-value #f)
   (flags #:accessor !flags)
   (is-method? #:accessor !is-method?)
   (n-arg #:accessor !n-arg)
@@ -206,9 +238,9 @@
   (let ((info (or (get-keyword #:info initargs #f)
                   (error "Missing #:info initarg: " initargs))))
     (next-method self '())
-    (let* ((gi-name (g-function-info-get-symbol info))
+    (let* ((namespace (g-base-info-get-namespace info))
+           (gi-name (g-function-info-get-symbol info))
            (scm-name (g-name->scm-name gi-name))
-           (name (string->symbol scm-name))
            (flags (g-function-info-get-flags info))
            (is-method? (gi-function-info-is-method? info flags))
            (return-type-info (g-callable-info-get-return-type info))
@@ -217,7 +249,9 @@
       (g-base-info-unref return-type-info)
       (mslot-set! self
                   'info info
-                  'name name
+                  'namespace namespace
+                  'gi-name gi-name
+                  'scm-name scm-name
                   'flags flags
                   'is-method? is-method?
                   'caller-owns (g-callable-info-get-caller-owns info)
@@ -262,7 +296,8 @@
       (!arguments self)))
 
 (define-class <argument> ()
-  (name #:accessor !name #:init-keyword #:name)
+  (gi-name #:accessor !gi-name #:init-keyword #:gi-name)
+  (scm-name #:accessor !scm-name #:init-keyword #:scm-name)
   (closure #:accessor !closure)
   (destroy #:accessor !destroy)
   (direction #:accessor !direction #:init-keyword #:direction)
@@ -296,7 +331,6 @@
        (next-method self '())
        (let* ((gi-name (g-base-info-get-name info))
               (scm-name (g-name->scm-name gi-name))
-              (name (string->symbol scm-name))
               (direction (g-arg-info-get-direction info))
               (type-info (g-arg-info-get-type info))
               (type-tag (g-type-info-get-tag type-info))
@@ -305,7 +339,8 @@
               (forced-type (arg-info-forced-type direction type-tag is-pointer?)))
          (g-base-info-unref type-info)
          (mslot-set! self
-                     'name name
+                     'gi-name gi-name
+                     'scm-name scm-name
                      'closure (g-arg-info-get-closure info)
                      'destroy (g-arg-info-get-destroy info)
                      'direction direction
@@ -1118,14 +1153,15 @@
   (let* ((container (g-base-info-get-container info))
          (gi-name (g-base-info-get-name container))
          (scm-name (g-name->scm-name gi-name))
-         (name (string->symbol scm-name))
+         #;(name (string->symbol scm-name))
          (type (g-base-info-get-type container)))
     (receive (id r-name gi-type confirmed?)
         (registered-type->gi-type container type)
       (g-base-info-unref container)
       (make <argument>
         #:info 'instance
-        #:name name
+        #:gi-name gi-name
+        #:scm-name scm-name
         #:direction 'in
         #:type-tag 'interface
         #:type-desc (list type r-name gi-type id confirmed?)
