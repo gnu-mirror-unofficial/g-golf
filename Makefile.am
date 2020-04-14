@@ -84,6 +84,9 @@ SOURCES = \
 	g-golf/gi/type-info.scm			\
 	g-golf/gi/typelib.scm			\
 	g-golf/gi.scm				\
+	g-golf/override/override.scm		\
+	g-golf/override/gtk.scm			\
+	g-golf/override.scm			\
 	g-golf/hl-api/gtype.scm			\
 	g-golf/hl-api/gobject.scm		\
 	g-golf/hl-api/function.scm		\
