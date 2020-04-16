@@ -64,22 +64,25 @@
          (g-object-import-with-supers parent '() module
                                       #:with-methods? with-methods?
                                       #:force? force?))))
-        (let loop ((r-info-cpl r-info-cpl))
-          (match r-info-cpl
-            ((item)
-             'done)
-            ((parent child . rest)
-             (match parent
-               ((p-info p-namespace p-name)
-                (let* ((p-r-type (g-registered-type-info-get-g-type p-info))
-                       (p-gi-name (g-type-name p-r-type))
-                       (p-c-name (g-name->class-name p-gi-name)))
-                  (g-object-import-with-supers child
-                                               (list (module-ref module p-c-name))
-                                               module
-                                               #:with-methods? with-methods?
-                                               #:force? force?))))
-             (loop (cons child rest)))))))
+    (let loop ((r-info-cpl r-info-cpl))
+      (match r-info-cpl
+        ((item) item) ;; the g-object subclass for info
+        ((parent child . rest)
+         (match parent
+           ((p-info p-namespace p-name)
+            (let* ((p-r-type (g-registered-type-info-get-g-type p-info))
+                   (p-gi-name (g-type-name p-r-type))
+                   (p-c-name (g-name->class-name p-gi-name))
+                   (child-class
+                    (g-object-import-with-supers child
+                                                 (list (module-ref module p-c-name))
+                                                 module
+                                                 #:with-methods? with-methods?
+                                                 #:force? force?)))
+                  (loop (cons (if (null? rest)
+                                  child-class
+                                  child)
+                              rest))))))))))
 
 (define (is-g-object-subclass? info-cpl)
   (letrec ((is-g-object-info-cpl-item?
@@ -100,20 +103,22 @@
      (let* ((r-type (g-registered-type-info-get-g-type info))
             (gi-name (g-type-name r-type))
             (c-name (g-name->class-name gi-name)))
-       (unless (module-bound? module c-name)
-         (let ((c-inst (make-class supers
-                                   '()
-                                   #:name c-name
-                                   #:info info)))
-           (module-define! module c-name c-inst)
-           (module-g-export! module `(,c-name))
-           (when with-methods?
-             (gi-import-object-methods info #:force? force?))
-           ;; We do not import signals, they are imported on
-           ;; demand. Visit (g-golf hl-api signal) signal-connect and
-           ;; the %gi-signal-cache related code to see how this is
-           ;; achieved.
-           #;(gi-import-object-signals info)))))))
+       (if (module-bound? module c-name)
+           (module-ref module c-name)
+           (let ((c-inst (make-class supers
+                                     '()
+                                     #:name c-name
+                                     #:info info)))
+             (module-define! module c-name c-inst)
+             (module-g-export! module `(,c-name))
+             (when with-methods?
+               (gi-import-object-methods info #:force? force?))
+             ;; We do not import signals, they are imported on
+             ;; demand. Visit (g-golf hl-api signal) signal-connect and
+             ;; the %gi-signal-cache related code to see how this is
+             ;; achieved.
+             #;(gi-import-object-signals info)
+             c-inst))))))
 
 (define (g-object-class-precedence-list info)
   (let  loop ((parent (g-object-info-get-parent info))
