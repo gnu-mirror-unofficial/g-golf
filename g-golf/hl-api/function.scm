@@ -65,7 +65,9 @@
 
           !info		;; function
           !namespace
+          !name
           !override?
+          !i-func
           !flags
           !is-method?
           !n-arg
@@ -122,11 +124,11 @@
 
 (define %gi-strip-boolean-result '())
 
-(define (%i-func info f-inst name)
+(define (%i-func f-inst)
   (lambda ( . args)
-    (let ((info info)
-          (f-inst f-inst)
-          (name name)
+    (let ((f-inst f-inst)
+          (info (!info f-inst))
+          (name (!name f-inst))
           (return-type (!return-type f-inst))
           (n-gi-arg-in (!n-gi-arg-in f-inst))
           (gi-args-in (!gi-args-in f-inst))
@@ -167,11 +169,13 @@
             (else
              (return-value->scm f-inst)))))))
 
-(define (%o-func namespace scm-name i-func)
+(define (%o-func f-inst i-func)
   (let* ((%import (@@ (g-golf hl-api import) gi-import-by-name))
+         (namespace (!namespace f-inst))
          (n-name (string->symbol (string-downcase namespace)))
          (m-name `(g-golf override ,n-name))
          (o-module (resolve-module m-name #:ensure #f))
+         (scm-name (!scm-name f-inst))
          (o-name (string-append scm-name "-ov"))
          (o-func-ref (module-ref o-module
                                  (string->symbol o-name))))
@@ -195,15 +199,15 @@
         (or (gi-cache-ref 'function name)
             (let* ((module (resolve-module '(g-golf hl-api function)))
                    (f-inst (make <function> #:info info))
-                   (i-func (%i-func info f-inst name))
-                   (o-func (and (gi-override? gi-name)
-                                (%o-func namespace scm-name i-func))))
-              ;; unlike one may think 'at first glance', we don't unref the function
-              ;; info, it is needed by g-function-info-invoke ...
-              ;; (g-base-info-unref info)
-              (if o-func
-                  (begin
-                    (set! (!override? f-inst) i-func)
+                   (i-func (%i-func f-inst))
+                   (override? (gi-override? gi-name)))
+              ;; Do not (g-base-info-unref info) - unref the function
+              ;; info - it is needed by g-function-info-invoke.
+              (if override?
+                  (let ((o-func (%o-func f-inst i-func)))
+                    (mslot-set! f-inst
+                                'override? #t
+                                'i-func i-func)
                     (module-define! module name o-func))
                   (module-define! module name i-func))
               (gi-cache-set! 'function name f-inst)
@@ -215,7 +219,9 @@
   (namespace #:accessor !namespace)
   (gi-name #:accessor !gi-name)
   (scm-name #:accessor !scm-name)
+  (name #:accessor !name)
   (override? #:accessor !override? #:init-value #f)
+  (i-func #:accessor !i-func #:init-value #f)
   (flags #:accessor !flags)
   (is-method? #:accessor !is-method?)
   (n-arg #:accessor !n-arg)
@@ -241,6 +247,7 @@
     (let* ((namespace (g-base-info-get-namespace info))
            (gi-name (g-function-info-get-symbol info))
            (scm-name (g-name->scm-name gi-name))
+           (name (string->symbol scm-name))
            (flags (g-function-info-get-flags info))
            (is-method? (gi-function-info-is-method? info flags))
            (return-type-info (g-callable-info-get-return-type info))
@@ -252,6 +259,7 @@
                   'namespace namespace
                   'gi-name gi-name
                   'scm-name scm-name
+                  'name name
                   'flags flags
                   'is-method? is-method?
                   'caller-owns (g-callable-info-get-caller-owns info)
