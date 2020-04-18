@@ -153,7 +153,8 @@
         (loop (- n-arg 1)
               (cons (make <argument>
                       #:info (g-callable-info-get-arg info
-                                                      (- n-arg 1)))
+                                                      (- n-arg 1))
+                      #:arg-pos n-arg)
                     args)))))
 
 

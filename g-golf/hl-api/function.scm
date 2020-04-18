@@ -100,6 +100,7 @@
           !is-optional?
           !is-return-value?
           !is-skip?
+          !arg-pos
           !gi-argument-in
           !gi-argument-in-bv-pos
           !gi-argument-out
@@ -321,6 +322,7 @@
   (is-optional? #:accessor !is-optional?)
   (is-return-value? #:accessor !is-return-value?)
   (is-skip? #:accessor !is-skip?)
+  (arg-pos #:accessor !arg-pos #:init-keyword #:arg-pos #:init-value -1)
   (gi-argument-in #:accessor !gi-argument-in #:init-value #f)
   (gi-argument-in-bv-pos #:accessor !gi-argument-in-bv-pos #:init-value #f)
   (gi-argument-out #:accessor !gi-argument-out #:init-value #f)
@@ -546,6 +548,7 @@
                    (list (make-instance-argument info))
                    '())))
     (let loop ((i 0)
+               (arg-pos (length args))
                (arguments args)
                (n-gi-arg-in (length args))
                (args-in args)
@@ -590,29 +593,39 @@
                     gi-args-out
                     gi-args-out-bv))
           (let* ((arg-info (g-callable-info-get-arg info i))
-                 (argument (make <argument> #:info arg-info)))
+                 (argument (make <argument> #:info arg-info
+                                 #:arg-pos arg-pos)))
             (g-base-info-unref arg-info)
             (case (!direction argument)
               ((in)
-               (set! (!gi-argument-in-bv-pos argument) n-gi-arg-in)
+               (mslot-set! argument
+                           'arg-pos arg-pos
+                           'gi-argument-in-bv-pos n-gi-arg-in)
                (loop (+ i 1)
+                     (+ arg-pos 1)
                      (cons argument arguments)
                      (+ n-gi-arg-in 1)
                      (cons argument args-in)
                      n-gi-arg-out
                      args-out))
               ((inout)
-               (set! (!gi-argument-in-bv-pos argument) n-gi-arg-in)
-               (set! (!gi-argument-out-bv-pos argument) n-gi-arg-out)
+               (mslot-set! argument
+                           'arg-pos arg-pos
+                           'gi-argument-in-bv-pos n-gi-arg-in
+                           'gi-argument-out-bv-pos n-gi-arg-out)
                (loop (+ i 1)
+                     (+ arg-pos 1)
                      (cons argument arguments)
                      (+ n-gi-arg-in 1)
                      (cons argument args-in)
                      (+ n-gi-arg-out 1)
                      (cons argument args-out)))
               ((out)
-               (set! (!gi-argument-out-bv-pos argument) n-gi-arg-out)
+               (mslot-set! argument
+                           'arg-pos arg-pos
+                           'gi-argument-out-bv-pos n-gi-arg-out)
                (loop (+ i 1)
+                     (+ arg-pos 1)
                      (cons argument arguments)
                      n-gi-arg-in
                      args-in
@@ -1173,7 +1186,8 @@
         #:direction 'in
         #:type-tag 'interface
         #:type-desc (list type r-name gi-type id confirmed?)
+        #:forced-type 'pointer
         #:is-pointer? #t
         #:may-be-null? #f
-        #:forced-type 'pointer
+        #:arg-pos 0 ;; always the first argument
         #:gi-argument-field 'v-pointer))))
