@@ -72,7 +72,7 @@
   (parse-c-struct g-signal-query
                   %g-signal-query-struct))
 
-(define (g-signal-query-make)
+(define (g-signal-query-new)
   (make-c-struct %g-signal-query-struct
                  (list 0
                        %null-pointer
@@ -83,7 +83,7 @@
                        %null-pointer)))
 
 (define (g-signal-query id)
-  (let ((gsq (g-signal-query-make)))
+  (let ((gsq (g-signal-query-new)))
     (g_signal_query id gsq)
     (match (parse-c-struct gsq
                            %g-signal-query-struct)
