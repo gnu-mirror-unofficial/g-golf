@@ -38,7 +38,10 @@
 		warn
 		last)
 
-  #:export (g-value-size
+  #:export (%g-value-struct
+
+            g-value-size
+            g-value-new
 
             g-value-init
             g-value-unset))
@@ -48,13 +51,19 @@
 ;;; GObject Low level API
 ;;;
 
+(define %g-value-struct
+  (list unsigned-long double double))
+
 ;; from libg-golf
 (define (g-value-size)
   (g_value_size))
 
+(define (g-value-new)
+  (make-c-struct %g-value-struct
+                 (list 0 0 0)))
+
 (define (g-value-init g-type)
-  (let ((g-value (make-c-struct (list unsigned-long double double)
-                                (list 0 0 0))))
+  (let ((g-value (g-value-new)))
     (g_value_init g-value g-type)
     g-value))
 

@@ -85,18 +85,15 @@
 ;;; G-Golf Low Level API
 ;;;
 
-(define %gvalue-struct
-  (list unsigned-long double double))
-
-(define (gvalue-parse g-value)
-  (parse-c-struct g-value %gvalue-struct))
+(define (g-value-parse g-value)
+  (parse-c-struct g-value %g-value-struct))
 
 (define (g-value->g-type-id g-value)
-  (match (gvalue-parse g-value)
+  (match (g-value-parse g-value)
     ((g-type _ _) g-type)))
 
 (define (g-value->g-type g-value)
-  (match (gvalue-parse g-value)
+  (match (g-value-parse g-value)
     ((g-type _ _)
      (g-type->symbol g-type))))
 
