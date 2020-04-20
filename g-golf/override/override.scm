@@ -35,7 +35,7 @@
 
 (define %gi-override
   '("gtk_list_store_set_value"
-    "gtk_tree_model_get_value"))
+    #;"gtk_tree_model_get_value"))
 
 (define (gi-override? name)
   (member name %gi-override string=?))

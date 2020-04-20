@@ -28,7 +28,7 @@
 
 (define-module (g-golf override gtk)
   #:export (gtk-list-store-set-value-ov
-            gtk-tree-model-get-value-ov))
+            #;gtk-tree-model-get-value-ov))
 
 
 (define (gtk-list-store-set-value-ov proc)
@@ -43,13 +43,12 @@
         (g-value-unset g-value)
         (values)))))
 
-(define (gtk-tree-model-get-value-ov proc)
+#;(define (gtk-tree-model-get-value-ov proc)
   (values
    #f
    `(lambda (model iter column)
       (let* ((i-func ,proc)
-             (g-type (gtk-tree-model-get-column-type model column))
-             (g-value (g-value-init (symbol->g-type g-type)))
+             (g-value (g-value-new))
              (dum (i-func model iter column g-value))
              (value (g-value-ref g-value)))
         (g-value-unset g-value)

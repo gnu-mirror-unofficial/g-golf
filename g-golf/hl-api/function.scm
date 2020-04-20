@@ -867,9 +867,7 @@
                              ((struct)
                               (case name
                                 ((g-value)
-                                 (error
-                                  "Functions that accept GValue 'out argument must be overridden: "
-                                  (!name function)))
+                                 (g-value-new)) ;; an empty GValue
                                 (else
                                  (gi-argument-set! gi-argument-out 'v-pointer
                                                    (cond ((!is-opaque? gi-type)
