@@ -823,9 +823,7 @@
     (let loop ((i 0))
       (if (= i n-gi-arg-out)
           #t
-          (let* ((arg-out (list-ref args-out i))
-                 (arg-pos (!arg-pos arg-out))
-                 (arg (list-ref args arg-pos)))
+          (let ((arg-out (list-ref args-out i)))
             (cond ((eq? (!direction arg-out) 'inout)
                    ;; Then we 'merely' copy the content of the gi-argument-in
                    ;; to the gi-argument-out.
@@ -844,8 +842,10 @@
                    ;; pointer, and what ever they point to must have
                    ;; been initialized - see (g-golf override gtk) for
                    ;; some exmples.
-                   (gi-argument-set! (!gi-argument-out arg-out) 'v-pointer
-                                     (scm->gi arg 'pointer)))
+                   (let* ((arg-pos (!arg-pos arg-out))
+                          (arg (list-ref args arg-pos)))
+                     (gi-argument-set! (!gi-argument-out arg-out) 'v-pointer
+                                       (scm->gi arg 'pointer))))
                   (else
                    (let* ((type-tag (!type-tag arg-out))
                           (type-desc (!type-desc arg-out))
@@ -867,7 +867,8 @@
                              ((struct)
                               (case name
                                 ((g-value)
-                                 (g-value-new)) ;; an empty GValue
+                                 (gi-argument-set! gi-argument-out 'v-pointer
+                                                   (g-value-new))) ;; an empty GValue
                                 (else
                                  (gi-argument-set! gi-argument-out 'v-pointer
                                                    (cond ((!is-opaque? gi-type)
