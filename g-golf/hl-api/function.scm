@@ -199,14 +199,12 @@
         (or (gi-cache-ref 'function name)
             (let* ((module (resolve-module '(g-golf hl-api function)))
                    (f-inst (make <function> #:info info))
-                   (i-func (%i-func f-inst))
-                   (override? (gi-override? gi-name)))
+                   (i-func (%i-func f-inst)))
               ;; Do not (g-base-info-unref info) - unref the function
               ;; info - it is needed by g-function-info-invoke.
-              (if override?
+              (if (!override? f-inst)
                   (let ((o-func (%o-func f-inst i-func)))
                     (mslot-set! f-inst
-                                'override? #t
                                 'i-func i-func)
                     (module-define! module name o-func))
                   (module-define! module name i-func))
@@ -248,6 +246,7 @@
            (gi-name (g-function-info-get-symbol info))
            (scm-name (g-name->scm-name gi-name))
            (name (string->symbol scm-name))
+           (override? (gi-override? gi-name))
            (flags (g-function-info-get-flags info))
            (is-method? (gi-function-info-is-method? info flags))
            (return-type-info (g-callable-info-get-return-type info))
@@ -260,6 +259,7 @@
                   'gi-name gi-name
                   'scm-name scm-name
                   'name name
+                  'override? override?
                   'flags flags
                   'is-method? is-method?
                   'caller-owns (g-callable-info-get-caller-owns info)
@@ -269,7 +269,7 @@
       (receive (n-arg args
                 n-gi-arg-in args-in gi-args-in gi-args-in-bv
                 n-gi-arg-out args-out gi-args-out gi-args-out-bv)
-          (function-arguments-and-gi-arguments info is-method?)
+          (function-arguments-and-gi-arguments info is-method? override?)
         (mslot-set! self
                     'n-arg n-arg
                     'arguments args
@@ -535,8 +535,7 @@
              param-tag
              is-pointer?)))))
 
-(define* (function-arguments-and-gi-arguments info
-                                              #:optional (is-method? #f))
+(define (function-arguments-and-gi-arguments info is-method? override?)
   (let* ((n-arg (g-callable-info-get-n-args info))
          (args (if is-method?
                    (list (make-instance-argument info))
@@ -546,6 +545,7 @@
                (arguments args)
                (n-gi-arg-in (length args))
                (args-in args)
+               (n-gi-arg-inout 0)
                (n-gi-arg-out 0)
                (args-out '()))
       (if (= i n-arg)
@@ -587,24 +587,28 @@
                     gi-args-out
                     gi-args-out-bv))
           (let* ((arg-info (g-callable-info-get-arg info i))
-                 (argument (make <argument> #:info arg-info
-                                 #:arg-pos arg-pos)))
+                 (argument (make <argument> #:info arg-info)))
             (g-base-info-unref arg-info)
             (case (!direction argument)
               ((in)
                (mslot-set! argument
-                           'arg-pos arg-pos
+                           'arg-pos (if override?
+                                        arg-pos
+                                        (+ (- arg-pos n-gi-arg-out) n-gi-arg-inout))
                            'gi-argument-in-bv-pos n-gi-arg-in)
                (loop (+ i 1)
                      (+ arg-pos 1)
                      (cons argument arguments)
                      (+ n-gi-arg-in 1)
                      (cons argument args-in)
+                     n-gi-arg-inout
                      n-gi-arg-out
                      args-out))
               ((inout)
                (mslot-set! argument
-                           'arg-pos arg-pos
+                           'arg-pos (if override?
+                                        arg-pos
+                                        (+ (- arg-pos n-gi-arg-out) n-gi-arg-inout))
                            'gi-argument-in-bv-pos n-gi-arg-in
                            'gi-argument-out-bv-pos n-gi-arg-out)
                (loop (+ i 1)
@@ -612,6 +616,7 @@
                      (cons argument arguments)
                      (+ n-gi-arg-in 1)
                      (cons argument args-in)
+                     (+ n-gi-arg-inout 1)
                      (+ n-gi-arg-out 1)
                      (cons argument args-out)))
               ((out)
@@ -623,6 +628,7 @@
                      (cons argument arguments)
                      n-gi-arg-in
                      args-in
+                     n-gi-arg-inout
                      (+ n-gi-arg-out 1)
                      (cons argument args-out)))))))))
 
@@ -660,7 +666,7 @@
           #t
           (let* ((arg-in (list-ref args-in i))
                  (arg-pos (!arg-pos arg-in))
-                 (arg (list-ref args i #;arg-pos))
+                 (arg (list-ref args #;i arg-pos))
                  (type-tag (!type-tag arg-in))
                  (type-desc (!type-desc arg-in))
                  (is-pointer? (!is-pointer? arg-in))
