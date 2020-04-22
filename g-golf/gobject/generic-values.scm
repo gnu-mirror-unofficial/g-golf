@@ -31,6 +31,7 @@
   #:use-module (system foreign)
   #:use-module (g-golf init)
   #:use-module (g-golf support libg-golf)
+  #:use-module (g-golf gobject type-info)
 
   #:duplicates (merge-generics
 		replace
@@ -64,7 +65,10 @@
 
 (define (g-value-init g-type)
   (let ((g-value (g-value-new)))
-    (g_value_init g-value g-type)
+    (g_value_init g-value
+                  (if (integer? g-type)
+                      g-type
+                      (symbol->g-type g-type)))
     g-value))
 
 (define (g-value-unset g-value)
