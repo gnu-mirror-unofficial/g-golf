@@ -17,6 +17,7 @@ type.
 @indentedblock
 @table @code
 @item @ref{g-value-size}
+@item @ref{g-value-new}
 @item @ref{g-value-init}
 @item @ref{g-value-unset}
 @end table
@@ -46,11 +47,11 @@ The @code{GValue} structure is basically a variable container that
 consists of a type identifier and a specific value of that type. The
 type identifier within a GValue structure always determines the type of
 the associated value. To create a undefined GValue structure, simply
-create a zero-filled GValue structure. To initialize the GValue, use the
-@ref{g-value-init} procedure. A GValue cannot be used until it is
-initialized. The basic type operations (such as freeing and copying) are
-determined by the @code{GTypeValueTable} associated with the type ID
-stored in the GValue.
+call @ref{g-value-new}, which create a zero-filled GValue structure. To
+create and initialize a GValue, use the @ref{g-value-init} procedure. A
+GValue cannot be used until it is initialized. The basic type operations
+(such as freeing and copying) are determined by the
+@code{GTypeValueTable} associated with the type ID stored in the GValue.
 
 Please read the @uref{@value{UGOBJECT-Gen-Vals}, Generic Values} section
 from the GObject reference manual for a complete description.
@@ -68,6 +69,16 @@ from the GObject reference manual for a complete description.
 Returns an integer.
 
 Obtains and returns the size of a @code{GValue}.
+@end deffn
+
+
+@anchor{g-value-new}
+@deffn Procedure g-value-new
+
+Returns a pointer to a @code{GValue}.
+
+Creates and returns (a pointer to) an empty (uninitialized)
+@code{GValue}.
 @end deffn
 
 
