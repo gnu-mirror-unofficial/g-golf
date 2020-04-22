@@ -77,7 +77,9 @@ Obtains and returns the size of a @code{GValue}.
 Returns a pointer to a @code{GValue}.
 
 Creates and initializes a @code{GValue} with the default value for
-@var{g-type}.
+@var{g-type}, which can either be an integer - a @code{GType} static or
+dynamic value, or a symbol - a member of the
+@ref{%g-type-fundamental-types}.
 @end deffn
 
 
