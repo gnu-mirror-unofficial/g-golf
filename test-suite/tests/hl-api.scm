@@ -30,11 +30,16 @@
   #:use-module (ice-9 threads)
   #:use-module (oop goops)
   #:use-module (unit-test)
-  #:use-module (g-golf))
+  #:use-module (g-golf)
+
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last))
 
 
 (g-irepository-require "Clutter")
-
 
 (define %grid-layout-info
   (g-irepository-find-by-name "Clutter" "GridLayout"))
@@ -66,6 +71,17 @@
     (assert-true (eq? (!orientation a-grid) 'horizontal))
     (assert (set! (!orientation a-grid) 'vertical))
     (assert-true (eq? (!orientation a-grid) 'vertical))))
+
+
+(define-method (test-g-property-object (self <g-golf-test-hl-api>))
+  (gi-import-by-name "Gtk" "Window")
+  (gi-import-by-name "Gtk" "init")
+  (gtk-init 0 #f)
+  (let ((window1 (make <gtk-window> #:type 'toplevel))
+        (window2 (make <gtk-window> #:type 'toplevel)))
+    (assert (set! (!transient-for window2) window1))
+    (assert-true (eq? (!transient-for window2)
+                      window1))))
 
 
 (define-method (test-accessor-inheritance (self <g-golf-test-hl-api>))
