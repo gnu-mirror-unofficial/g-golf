@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016
+#### Copyright (C) 2016 - 2020
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf
@@ -26,8 +26,8 @@ TESTS = \
 	tests/glib.scm		\
 	tests/gobject.scm	\
 	tests/gi.scm		\
-	tests/hl-api.scm
-
+	tests/hl-api.scm	\
+	tests/override.scm
 
 TEST_EXTENSIONS = .scm
 
