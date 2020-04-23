@@ -200,19 +200,44 @@
                      (gi-property-g-type property)))
 	 (g-value (g-value-init g-type)))
     (g-object-get-property object name g-value)
-    (let ((result (g-value-ref g-value)))
-      (g-value-unset g-value)
-      result)))
+    (%g-inst-get-property-value g-value)))
+
+(define (%g-inst-get-property-value g-value)
+  (let ((value (g-value-ref g-value)))
+    (case (g-value->g-type g-value)
+      ((object)
+       (if (or (not value)
+               (null-pointer? value))
+           #f
+           (or (g-inst-cache-ref value)
+               (let* ((module (resolve-module '(g-golf hl-api object)))
+                      (r-type (g-value->g-type-id g-value))
+                      (info (g-irepository-find-by-gtype r-type))
+                      (name (g-registered-type-info-get-type-name info))
+                      (c-name (g-name->class-name name))
+                      (type (module-ref module c-name)))
+                 (make type #:g-inst value)))))
+      (else
+       value))))
 
 (define* (g-inst-set-property object property value #:optional (g-type #f))
   (let* ((name (g-base-info-get-name property))
          (g-type (or g-type
                      (gi-property-g-type property)))
 	 (g-value (g-value-init g-type)))
-    (g-value-set! g-value value)
+    (g-value-set! g-value
+                  (%g-inst-set-property-value g-type value))
     (g-object-set-property object name g-value)
     (g-value-unset g-value)
-    value))
+    (values)))
+
+(define (%g-inst-set-property-value g-type value)
+  (case (g-type->symbol g-type)
+    ((object)
+     (and value
+          (!g-inst value)))
+    (else
+     value)))
 
 
 ;;;
