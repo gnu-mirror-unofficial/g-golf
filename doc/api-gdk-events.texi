@@ -44,6 +44,8 @@ Events — Functions for handling events from the window system
 @item @ref{!time}
 @item @ref{!window}
 @item @ref{!type}
+@item @ref{!changed-mask}
+@item @ref{!new-window-state}
 
 @item @ref{gdk-event-get-button}
 @item @ref{gdk-event-get-click-count}
@@ -55,6 +57,8 @@ Events — Functions for handling events from the window system
 @item @ref{gdk-event-get-time}
 @item @ref{gdk-event-get-window}
 @item @ref{gdk-event-get-event-type}
+@item @ref{gdk-event-get-changed-mask}
+@item @ref{gdk-event-get-new-window-state}
 @end table
 @end indentedblock
 
@@ -64,6 +68,7 @@ Events — Functions for handling events from the window system
 @indentedblock
 @table @code
 @item @ref{%gdk-event-type}
+@item @ref{%gdk-window-state}
 @end table
 @end indentedblock
 
@@ -131,6 +136,8 @@ Returns the content of the @code{event} slot for @var{inst}.
 @anchor{!time}
 @anchor{!window}
 @anchor{!type}
+@anchor{!changed-mask}
+@anchor{!new-window-state}
 @deffn Method !button (inst <gdk-event>)
 @deffnx Method !click-count (inst <gdk-event>)
 @deffnx Method !coords (inst <gdk-event>)
@@ -146,6 +153,8 @@ Returns the content of the @code{event} slot for @var{inst}.
 @deffnx Method !time (inst <gdk-event>)
 @deffnx Method !window (inst <gdk-event>)
 @deffnx Method !type (inst <gdk-event>)
+@deffnx Method !changed-mask (inst <gdk-event>)
+@deffnx Method !new-window-state (inst <gdk-event>)
 
 Respectively returns the scheme representation of the content of the
 @var{inst} event (struct) element - refered to by its name - or #f if
@@ -158,70 +167,61 @@ The event (struct) elements are:
 @table @code
 
 @item @emph{button}
-
 The button number of the event.
 
 @item @emph{click-count}
-
 The click-count of the event.
 
 @item @emph{coords}
-
 The list of the x and y window relative coordinates of the event.
 
 @item @emph{x}
-
 The x window relative coordinate of the event.
 
 @item @emph{y}
-
 The y window relative coordinate of the event.
 
 @item @emph{keycode}
-
 The raw code (also called hardware keycode) of the key that was pressed
 of released.
 
 @item @emph{keyval}
-
 The key value that was pressed of released (See the gdk/gdkkeysyms.h
 header file for a complete list of GDK key codes.
 
 @item @emph{keyname}
-
 The key name that was pressed of released (There is actually no such
 element in any (gdk) event, this method calls @ref{gdk-keyval-name} on
 the keyval of the event).
 
 @item @emph{root-coords}
-
 The list of the x and y root window relative coordinates of the event.
 
 @item @emph{root-x}
-
 The root x window relative coordinate of the event.
 
 @item @emph{root-y}
-
 The root y window relative coordinate of the event.
 
 @item @emph{state}
-
 A list representing the state of the modifier keys (e.g. Control, Shift
 and Alt) and the pointer buttons (see the @ref{gdk-event-get-state}
 description for some more information about @code{GdkModifierType}).
 
 @item @emph{time}
-
 The time of the event in milliseconds.
 
 @item @emph{window}
-
 The (a pointer to the) @code{GdkWindow} of the event.
 
 @item @emph{type}
-
 The type of the event.
+
+@item @emph{changed-mask}
+The mask specifying what flags have changed.
+
+@item @emph{new-window-state}
+The new window state, a combination of @ref{%gdk-window-state} bits.
 
 @end table
 @end indentedblock
@@ -335,6 +335,26 @@ Extracts and returns (a pointer to) the @code{GdkWindow} associated with
 Returns the event type (symbol) name.
 
 Obtains and returns the @ref{%gdk-event-type} (symbol) name for
+@var{event}.
+@end deffn
+
+
+@anchor{gdk-event-get-changed-mask}
+@deffn Procedure gdk-event-get-changed-mask event
+
+Returns a list of flags.
+
+Obtains and returns a list of @ref{%gdk-window-state} flags that have
+changed for @var{event}.
+@end deffn
+
+
+@anchor{gdk-event-get-new-window-state}
+@deffn Procedure gdk-event-get-new-window-state event
+
+Returns a list of flags.
+
+Obtains and returns a list of @ref{%gdk-window-state} flags for
 @var{event}.
 @end deffn
 
@@ -532,6 +552,80 @@ A tablet pad group mode change. This event type was added in 3.22.
 
 @item event-last
 marks the end of the GdkEventType enumeration. Added in 2.18
+
+@end table
+@end indentedblock
+@end indentedblock
+@end defivar
+
+
+@anchor{%gdk-window-state}
+@defivar <gi-flag> %gdk-window-state
+
+Specifies the state of a toplevel window.
+
+An instance of @code{<gi-flag>}, who's members are the scheme
+representation of the @code{GdkWindowState}.
+
+@indentedblock
+@emph{gi-name}: GdkWindowState @*
+@emph{scm-name}: gdk-window-state @*
+@emph{enum-set}:
+@indentedblock
+@table @code
+
+@item withdrawn
+The window is not shown.
+
+@item iconified
+The window is minimized.
+
+@item maximized
+The window is maximized.
+
+@item sticky
+The window is sticky
+
+@item fullscreen
+The window is maximized without decorations.
+
+@item above
+The window is kept above other windows.
+
+@item below
+The window is kept below other windows.
+
+@item focused
+The window is presented as focused (with active decorations).
+
+@item tiled
+The window is in a tiled state, Since 3.10. Since 3.22.23, this is
+deprecated in favor of per-edge information.
+
+@item top-tiled
+Whether the top edge is tiled, Since 3.22.23
+
+@item top-resizable
+Whether the top edge is resizable, Since 3.22.23
+
+
+@item right-tiled
+Whether the right edge is tiled, Since 3.22.23
+
+@item right-resizable
+Whether the right edge is resizable, Since 3.22.23
+
+@item bottom-tiled
+Whether the bottom edge is tiled, Since 3.22.23
+
+@item bottom-resizable
+Whether the bottom edge is resizable, Since 3.22.23
+
+@item left-tiled
+Whether the left edge is tiled, Since 3.22.23
+
+@item left-resizable
+Whether the left edge is resizable, Since 3.22.23
 
 @end table
 @end indentedblock

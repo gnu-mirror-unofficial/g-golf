@@ -32,6 +32,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gtk/gtk.h>
 /* #include <girepository.h> */
 
 /*
@@ -78,7 +79,7 @@ float_to_int (float f)
 uint
 g_source_ref_count (GSource *source)
 {
-    return (source->ref_count);
+  return (source->ref_count);
 }
 
 
@@ -98,27 +99,27 @@ g_value_size ()
 GType
 g_object_type (GObject *obj)
 {
-    GType type;
+  GType type;
 
-    type = G_OBJECT_TYPE (obj);
+  type = G_OBJECT_TYPE (obj);
 
-    return (type);
+  return (type);
 }
 
 const gchar*
 g_object_type_name (GObject *obj)
 {
-    const gchar *name;
+  const gchar *name;
 
-    name = G_OBJECT_TYPE_NAME (obj);
+  name = G_OBJECT_TYPE_NAME (obj);
 
-    return (name);
+  return (name);
 }
 
 uint
 g_object_ref_count (GObject *obj)
 {
-    return (obj->ref_count);
+  return (obj->ref_count);
 }
 
 size_t
@@ -132,7 +133,31 @@ g_closure_size ()
 uint
 g_closure_ref_count (GClosure *closure)
 {
-    return (closure->ref_count);
+  return (closure->ref_count);
+}
+
+
+/*
+ * Gdk
+ *
+*/
+
+GdkWindowState
+gdk_event_get_changed_mask (GdkEvent *event)
+{
+  if (event->any.type != GDK_WINDOW_STATE)
+    return 0;
+
+  return (((GdkEventWindowState *) event)->changed_mask);
+}
+
+GdkWindowState
+gdk_event_get_new_window_state (GdkEvent *event)
+{
+  if (event->any.type != GDK_WINDOW_STATE)
+    return 0;
+
+  return (((GdkEventWindowState *) event)->new_window_state);
 }
 
 

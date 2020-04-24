@@ -62,8 +62,12 @@
             gdk-event-get-time
             gdk-event-get-window
             gdk-event-get-event-type
+            ;; from libg-golf
+            gdk-event-get-changed-mask
+            gdk-event-get-new-window-state
 
-            %gdk-event-type))
+            %gdk-event-type
+            %gdk-window-state))
 
 
 (g-export !event
@@ -81,7 +85,9 @@
           !state
           !time
           !window
-          !type)
+          !type
+          !changed-mask
+          !new-window-state)
 
 
 (define-class <gdk-event> ()
@@ -135,6 +141,12 @@
 
 (define-method (!type (self <gdk-event>))
   (gdk-event-get-event-type (!event self)))
+
+(define-method (!changed-mask (self <gdk-event>))
+  (gdk-event-get-changed-mask (!event self)))
+
+(define-method (!new-window-state (self <gdk-event>))
+  (gdk-event-get-new-window-state (!event self)))
 
 
 ;;;
@@ -207,6 +219,24 @@
 (define (gdk-event-get-event-type event)
   (enum->symbol %gdk-event-type
                 (gdk_event_get_event_type event)))
+
+;; From libg-golf
+
+(define (gdk-event-get-changed-mask event)
+  (let ((changed-mask (gdk_event_get_changed_mask event)))
+    (case changed-mask
+      ((0)
+       #f) ;; the event does not implement the field
+      (else
+       (gi-integer->gflags %gdk-window-state changed-mask)))))
+
+(define (gdk-event-get-new-window-state event)
+  (let ((new-window-state (gdk_event_get_new_window_state event)))
+    (case new-window-state
+      ((0)
+       #f) ;; the event does not implement the field
+      (else
+       (gi-integer->gflags %gdk-window-state new-window-state)))))
 
 
 ;;;
@@ -288,6 +318,7 @@
 ;;;
 
 (define %gdk-event-type #f)
+(define %gdk-window-state #f)
 
 (eval-when (expand load eval)
   (let ((gdk-event-type
@@ -343,6 +374,30 @@
                         (pad-ring . 45)
                         (pad-strip . 46)
                         (pad-group-mode . 47)
-                        (event-last . 48)))))
+                        (event-last . 48))))
+        (gdk-window-state
+         (make <gi-flag>
+           #:gi-name  "GdkWindowState"
+           #:enum-set '((withdrawn . 1)
+                        (iconified . 2)
+                        (maximized . 4)
+                        (sticky . 8)
+                        (fullscreen . 16)
+                        (above . 32)
+                        (below . 64)
+                        (focused . 128)
+                        (tiled . 256)
+                        (top-tiled . 512)
+                        (top-resizable . 1024)
+                        (right-tiled . 2048)
+                        (right-resizable . 4096)
+                        (bottom-tiled . 8192)
+                        (bottom-resizable . 16384)
+                        (left-tiled . 32768)
+                        (left-resizable . 65536)))))
+
     (set! %gdk-event-type gdk-event-type)
-    (gi-cache-set! 'enum 'gdk-event-type gdk-event-type)))
+    (gi-cache-set! 'enum 'gdk-event-type gdk-event-type)
+
+    (set! %gdk-window-state gdk-window-state)
+    (gi-cache-set! 'flag 'gdk-window-state gdk-window-state)))
