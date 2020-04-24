@@ -901,6 +901,10 @@
                          filename)
                         ;; not sure, but this shouldn't arm.
                         (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))
+                       ((int32)
+                        (gi-argument-set! gi-argument-out 'v-pointer
+                                          (bytevector->pointer
+                                           (make-s32vector 1 0))))
                        (else
                         ;; not sure, but this shouldn't arm.
                         (gi-argument-set! gi-argument-out 'v-ulong 0))))))
