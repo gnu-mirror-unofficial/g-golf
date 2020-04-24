@@ -173,7 +173,9 @@
                              (g-property (get-keyword #:g-property slot-opts #f))
                              (g-type (get-keyword #:g-type slot-opts #f)))
                         (%g_value_init g-value g-type)
-                        (g-value-set! g-value init-val)
+                        (g-value-set! g-value
+                                      (%g-inst-construct-property-value g-type
+                                                                        init-val))
                         (loop (+ i 1)
                               (cons (g-base-info-get-name g-property) names)
                               (gi-pointer-inc g-value %g-value-size)
@@ -182,6 +184,14 @@
                                       n-prop
                                       (scm->gi names 'strings)
                                       g-values))))
+
+(define (%g-inst-construct-property-value g-type value)
+  (case (g-type->symbol g-type)
+    ((object)
+     (and value
+          (!g-inst value)))
+    (else
+     value)))
 
 (define-method (slot-definition-init-value-pairs (self <gtype-instance>)
                                                  initargs)
