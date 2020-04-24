@@ -984,13 +984,14 @@
        ;; gi-argument to a pointer to the alocated mem.
        (case forced-type
          ((pointer)
-          (case type-tag
-            ((int32)
-             (let* ((pointer (gi-argument-ref gi-argument-out field))
-                    (s32 (pointer->bytevector pointer (sizeof int))))
-               (s32vector-ref s32 0)))
-            (else
-             (warning "Unimplemeted (pointer to) type-tag: " type-tag))))
+          (let ((foreign (gi-argument-ref gi-argument-out 'v-pointer)))
+            (and foreign
+                 (case type-tag
+                   ((int32)
+                    (let ((s32 (pointer->bytevector foreign (sizeof int))))
+                      (s32vector-ref s32 0)))
+                   (else
+                    (warning "Unimplemeted (pointer to) type-tag: " type-tag))))))
          (else
           (gi-argument-ref gi-argument-out field)))))))
 
