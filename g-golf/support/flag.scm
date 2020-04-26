@@ -29,7 +29,6 @@
 (define-module (g-golf support flag)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-60)
   #:use-module (oop goops)
   #:use-module (g-golf support goops)
   #:use-module (g-golf support g-export)

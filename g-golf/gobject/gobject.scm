@@ -29,7 +29,6 @@
 (define-module (g-golf gobject gobject)
   #:use-module (oop goops)
   #:use-module (system foreign)
-  #:use-module (rnrs arithmetic bitwise)
   #:use-module (g-golf init)
   #:use-module (g-golf support libg-golf)
   #:use-module (g-golf support enum)

@@ -27,6 +27,8 @@
 
 
 (define-module (tests support)
+  #:use-module ((srfi srfi-60)
+                #:select (list->integer))
   #:use-module (oop goops)
   #:use-module (unit-test)
   #:use-module (g-golf)
