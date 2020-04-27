@@ -119,7 +119,8 @@
      (g-value-get-boxed g-value))
     ((pointer)
      (g-value-get-pointer g-value))
-    ((object)
+    ((object
+      interface)
      (g-value-get-object g-value))
     (else
      (error "Not implemented:" (g-value->g-type g-value)))))
@@ -146,7 +147,8 @@
      (g-value-set-boxed g-value value))
     ((pointer)
      (g-value-set-pointer g-value value))
-    ((object)
+    ((object
+      interface)
      (g-value-set-object g-value value))
     (else
      (error "Not implemented:" (g-value->g-type g-value)))))

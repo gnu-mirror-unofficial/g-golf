@@ -217,6 +217,18 @@
                       (c-name (g-name->class-name name))
                       (type (module-ref module c-name)))
                  (make type #:g-inst value)))))
+      ((interface)
+       (if (or (not value)
+               (null-pointer? value))
+           #f
+           (or (g-inst-cache-ref value)
+               (let* ((module (resolve-module '(g-golf hl-api object)))
+                      (r-type (g-value->g-type-id g-value))
+                      (info (g-irepository-find-by-gtype r-type))
+                      (name (g-registered-type-info-get-type-name info))
+                      (c-name (g-name->class-name name))
+                      (type (module-ref module c-name)))
+                 (make type #:g-inst value)))))
       (else
        value))))
 
@@ -236,6 +248,12 @@
     ((object)
      (and value
           (!g-inst value)))
+    ((interface)
+     (and value
+          (if (pointer? value)
+              value
+              ;; It is (should be) an instance
+              (!g-inst value))))
     (else
      value)))
 

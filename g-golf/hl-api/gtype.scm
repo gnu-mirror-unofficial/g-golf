@@ -190,6 +190,11 @@
     ((object)
      (and value
           (!g-inst value)))
+    ((interface)
+     (if (pointer? value)
+         value
+         ;; It is (should be) an instance
+         (!g-inst value)))
     (else
      value)))
 
