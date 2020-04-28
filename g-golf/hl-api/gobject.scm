@@ -244,18 +244,21 @@
     (values)))
 
 (define (%g-inst-set-property-value g-type value)
-  (case (g-type->symbol g-type)
-    ((object)
-     (and value
-          (!g-inst value)))
-    ((interface)
-     (and value
-          (if (pointer? value)
-              value
-              ;; It is (should be) an instance
-              (!g-inst value))))
-    (else
-     value)))
+  (let ((g-type (if (symbol? g-type)
+                    g-type
+                    (g-type->symbol g-type))))
+    (case g-type
+      ((object)
+       (and value
+            (!g-inst value)))
+      ((interface)
+       (and value
+            (if (pointer? value)
+                value
+                ;; It is (should be) an instance
+                (!g-inst value))))
+      (else
+       value))))
 
 
 ;;;
