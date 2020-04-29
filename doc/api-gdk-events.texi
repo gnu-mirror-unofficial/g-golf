@@ -115,7 +115,7 @@ a @code{GdkEvent}.
 
 
 @anchor{!event}
-@deffn Accessor !event inst
+@deffn Accessor !event (inst <gdk-event>)
 
 Returns the content of the @code{event} slot for @var{inst}.
 @end deffn
