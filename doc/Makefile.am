@@ -84,6 +84,7 @@ g_golf_TEXINFOS = \
   api-support-union.texi	\
   api-support-utils.texi	\
   api-hl-api.texi		\
+  api-hl-api-events.texi	\
   api-hl-api-gtype.texi		\
   api-hl-api-gobject.texi	\
   api-hl-api-closure.texi	\

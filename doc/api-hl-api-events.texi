@@ -1,0 +1,217 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@c @defindex tl
+
+
+@node Events_
+@subsection Events
+
+G-Golf Events high level API.@*
+The G-Golf integration with Gdk Events.
+
+
+@subheading Class
+
+@indentedblock
+@table @code
+@item @ref{<gdk-event>}
+@end table
+@end indentedblock
+
+
+@subheading Accessors and Methods
+
+@indentedblock
+@table @code
+@item @ref{!event}
+
+@item @ref{!button}
+@item @ref{!click-count}
+@item @ref{!coords}
+@item @ref{!x}
+@item @ref{!y}
+@item @ref{!keycode}
+@item @ref{!keyval}
+@item @ref{!keyname}
+@item @ref{!root-coords}
+@item @ref{!root-x}
+@item @ref{!root-x}
+@item @ref{!state}
+@item @ref{!time}
+@item @ref{!window}
+@item @ref{!type}
+@item @ref{!changed-mask}
+@item @ref{!new-window-state}
+@end table
+@end indentedblock
+
+
+@c @subheading Types and Values
+
+@c @indentedblock
+@c @table @code
+@c @item @ref{%gdk-event-type}
+@c @item @ref{%gdk-window-state}
+@c @end table
+@c @end indentedblock
+
+
+@c @subheading Struct Hierarchy
+
+@c @indentedblock
+@c GIBaseInfo           	       		@*
+@c @ @ +--- GIRegisteredTypeInfo  		@*
+@c @ @ @ @ @ @ @ @ @ @ @  +--- GIEnumInfo
+@c @end indentedblock
+
+
+@subheading Description
+
+This section describes classes, procedures, accessors and methods for
+the G-Golf integration with events from the window system.
+
+
+@subheading Classes
+
+@anchor{<gdk-event>}
+@deftp Class <gdk-event>
+
+The superclass of all Gdk type of event. Its slots are:
+
+@indentedblock
+@table @code
+@item @emph{event}
+#:accessor !event @*
+#:init-keyword #:event
+
+A pointer to a @code{GdkEvent}.
+@end table
+@end indentedblock
+
+@end deftp
+
+
+@subheading Accessors and Methods
+
+@c Note: in this section, the @var{event} argument is [must be] a
+@c pointer to a @code{GdkEvent}.
+
+
+@anchor{!event}
+@deffn Accessor !event (inst <gdk-event>)
+
+Returns the content of the @code{event} slot for @var{inst}.
+@end deffn
+
+
+@anchor{!button}
+@anchor{!click-count}
+@anchor{!coords}
+@anchor{!x}
+@anchor{!y}
+@anchor{!keycode}
+@anchor{!keyval}
+@anchor{!keyname}
+@anchor{!root-coords}
+@anchor{!root-x}
+@anchor{!root-y}
+@anchor{!state}
+@anchor{!time}
+@anchor{!window}
+@anchor{!type}
+@anchor{!changed-mask}
+@anchor{!new-window-state}
+@deffn Method !button (inst <gdk-event>)
+@deffnx Method !click-count (inst <gdk-event>)
+@deffnx Method !coords (inst <gdk-event>)
+@deffnx Method !x (inst <gdk-event>)
+@deffnx Method !y (inst <gdk-event>)
+@deffnx Method !keycode (inst <gdk-event>)
+@deffnx Method !keyval (inst <gdk-event>)
+@deffnx Method !keyname (inst <gdk-event>)
+@deffnx Method !root-coords (inst <gdk-event>)
+@deffnx Method !root-x (inst <gdk-event>)
+@deffnx Method !root-y (inst <gdk-event>)
+@deffnx Method !state (inst <gdk-event>)
+@deffnx Method !time (inst <gdk-event>)
+@deffnx Method !window (inst <gdk-event>)
+@deffnx Method !type (inst <gdk-event>)
+@deffnx Method !changed-mask (inst <gdk-event>)
+@deffnx Method !new-window-state (inst <gdk-event>)
+
+Respectively returns the scheme representation of the content of the
+@var{inst} event (struct) element - refered to by its name - or #f if
+the event (struct) does not deliver the element.
+
+The event (struct) elements are:
+
+@indentedblock
+@table @code
+
+@item @emph{button}
+The button number of the event.
+
+@item @emph{click-count}
+The click-count of the event.
+
+@item @emph{coords}
+The list of the x and y window relative coordinates of the event.
+
+@item @emph{x}
+The x window relative coordinate of the event.
+
+@item @emph{y}
+The y window relative coordinate of the event.
+
+@item @emph{keycode}
+The raw code (also called hardware keycode) of the key that was pressed
+of released.
+
+@item @emph{keyval}
+The key value that was pressed of released (See the gdk/gdkkeysyms.h
+header file for a complete list of GDK key codes.
+
+@item @emph{keyname}
+The key name that was pressed of released (There is actually no such
+element in any (gdk) event, this method calls @ref{gdk-keyval-name} on
+the keyval of the event).
+
+@item @emph{root-coords}
+The list of the x and y root window relative coordinates of the event.
+
+@item @emph{root-x}
+The root x window relative coordinate of the event.
+
+@item @emph{root-y}
+The root y window relative coordinate of the event.
+
+@item @emph{state}
+A list representing the state of the modifier keys (e.g. Control, Shift
+and Alt) and the pointer buttons (see the @ref{gdk-event-get-state}
+description for some more information about @code{GdkModifierType}).
+
+@item @emph{time}
+The time of the event in milliseconds.
+
+@item @emph{window}
+The (a pointer to the) @code{GdkWindow} of the event.
+
+@item @emph{type}
+The type of the event.
+
+@item @emph{changed-mask}
+The mask specifying what flags have changed.
+
+@item @emph{new-window-state}
+The new window state, a combination of @ref{%gdk-window-state} bits.
+
+@end table
+@end indentedblock
+@end deffn
+
+
+@c @subheading Types and Values
