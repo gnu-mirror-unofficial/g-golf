@@ -1,7 +1,8 @@
 @c -*-texinfo-*-
-@c This is part of the GNU G-Golf Reference Manual.  Copyright (C) 2019
-@c Free Software Foundation, Inc.  See the file g-golf.texi for copying
-@c conditions.
+
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2019 - 2020 Free Software Foundation, Inc.  See the
+@c file g-golf.texi for copying conditions.
 
 
 @c @defindex ei
@@ -75,7 +76,7 @@ of selective import instead, see @ref{gi-import-by-name} here below.
 
 
 @anchor{gi-import-by-name}
-@deffn Procedure gi-import-by-name namespace name [#:recur #t]
+@deffn Procedure gi-import-by-name namespace name [#:with-method #t]
 
 Returns the object or constant returned by @ref{gi-import-info} called
 upon the GIBaseInfo @code{info} named @var{name} in @var{namespace}.
@@ -85,23 +86,18 @@ Obtains and imports the GIBaseInfo @code{info} named @var{name} in
 sensitive. It is an error to call this procedure using an invalid
 @var{namespace} or @var{name}.
 
-The optional keyword @var{#:recur} argument - which is #t by default -
-is passed to the @code{gi-import-enum}, @code{gi-import-flag} and
-@code{gi-import-struct}. When @var{#:recur} is #f, then the enum, flag
-or struct @code{info} will be imported without their respective
-methods. This is likely to only be the case if/when you intend to
-selectively import an enum, gflag or struct from GLib or GObject, which
-is what G-Golf itself does, for example, in the top level (g-golf)
-module:
+The optional keyword @var{#:with-method} argument - which is #t by
+default - is passed to the @code{gi-import-enum}, @code{gi-import-flag}
+and @code{gi-import-struct}. When @var{#:with-method} is #f, then the
+enum, flag or struct @code{info} will be imported without their
+respective methods. This is likely to only be the case if/when you
+intend to selectively import an enum, gflag or struct from GLib or
+GObject, which is what G-Golf itself does, for example, in the top level
+(g-golf) module:
 
 @lisp
-(gi-import-by-name "GLib" "IOChannel" #:recur #f)
+(gi-import-by-name "GLib" "IOChannel" #:with-method #f)
 @end lisp
-
-As mentioned above, early in the development cycle, or when your
-application is more stable, at your best convenience, you may consider
-making a series of selective import instead, see gi-import-by-name here
-below.
 @end deffn
 
 
@@ -145,9 +141,9 @@ Slots are:
 @anchor{gi-import-enum}
 @anchor{gi-import-flag}
 @anchor{gi-import-struct}
-@deffn Procedure gi-import-enum info [#:recur #t]
-@deffnx Procedure gi-import-flag info [#:recur #t]
-@deffnx Procedure gi-import-struct info [#:recur #t]
+@deffn Procedure gi-import-enum info [#:with-method #t]
+@deffnx Procedure gi-import-flag info [#:with-method #t]
+@deffnx Procedure gi-import-struct info [#:with-method #t]
 
 Returns a @ref{<gi-enum>}, a @ref{<gi-flag>} or a @ref{<gi-struct>}
 instance, respectively.
@@ -158,10 +154,10 @@ returned @code{'flags} and a @code{GIStructInfo} respectively. It is an
 error to call any of these procedures upon an invalid @var{info}
 argument.
 
-The optional keyword @var{#:recur} argument - which is #t by default -
-is passed using #f, then @var{info} will be imported without its
-respective methods. A description and an example ware also given here
-above, as part of the @ref{gi-import-by-name} documentation entry.
+The optional keyword @var{#:with-method} argument - which is #t by
+default - is passed using #f, then @var{info} will be imported without
+its respective methods. A description and an example ware also given
+here above, as part of the @ref{gi-import-by-name} documentation entry.
 
 Every imported @ref{<gi-enum>}, @ref{<gi-flag>} and @ref{<gi-struct>}
 instance is cached under the @code{'enum}, @code{'flag} and
