@@ -21,9 +21,12 @@
 ####
 
 
-AUTOMAKE_OPTIONS = gnu
+# AUTOMAKE_OPTIONS = gnu
 
 info_TEXINFOS = g-golf.texi
+
+DOC_CSS = \
+	$(wildcard css/*)
 
 g_golf_TEXINFOS = \
   version.texi			\
@@ -93,6 +96,14 @@ g_golf_TEXINFOS = \
   api-hl-api-import.texi	\
   api-hl-api-utils.texi		\
   indices.texi			\
-  fdl.texi
+  fdl.texi			\
+  $(DOC_CSS)
 
-# api-gdk-event-structures.texi
+nobase_doc_DATA = \
+	$(DOC_CSS)
+
+EXTRA_DIST = \
+	$(DOC_CSS)
+
+AM_MAKEINFOHTMLFLAGS = \
+	-c DOCTYPE='<!DOCTYPE html>' --css-ref=../css/manual.css
