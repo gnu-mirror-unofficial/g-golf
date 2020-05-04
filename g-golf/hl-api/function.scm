@@ -404,14 +404,20 @@
 (define (type-description-interface info)
   (let* ((info (g-type-info-get-interface info))
          (type (g-base-info-get-type info)))
-    (if (is-registered? type)
-        (receive (id name gi-type confirmed?)
-            (registered-type->gi-type info type)
-          (g-base-info-unref info)
-          (list type name gi-type id confirmed?))
-        (begin
-          (g-base-info-unref info)
-          type))))
+    (case type
+      ((callback)
+       (g-base-info-unref info)
+       ;; skeleton - wip
+       (list type #f #f #f #f))
+      (else
+       (if (is-registered? type)
+           (receive (id name gi-type confirmed?)
+               (registered-type->gi-type info type)
+             (g-base-info-unref info)
+             (list type name gi-type id confirmed?))
+           (begin
+             (g-base-info-unref info)
+             type))))))
 
 (define (registered-type->gi-type info type)
   (let* ((id (g-registered-type-info-get-g-type info))
@@ -657,6 +663,12 @@
           (prepare-gi-args-out function args))
         (error "Wrong number of arguments: " args))))
 
+(define %allow-none-exceptions
+  '("child-setup-data-destroy"))
+
+(define ($is-an-allow-none-exception? name)
+  (member name %allow-none-exceptions string=?))
+
 (define (prepare-gi-args-in function args)
   (let ((is-method? (!is-method? function))
         (n-gi-arg-in (!n-gi-arg-in function))
@@ -735,7 +747,14 @@
                                           ((pointer? arg) arg)
                                           (else
                                            (!g-inst arg)))))
-                       (gi-argument-set! gi-argument-in 'v-pointer foreign)))))))
+                       (gi-argument-set! gi-argument-in 'v-pointer foreign)))
+                    ((callback)
+                     (let ((name (!scm-name arg-in)))
+                       (if (not arg)
+                           (if (or may-be-null?
+                                   ($is-an-allow-none-exception? name))
+                               (gi-argument-set! gi-argument-in 'v-pointer #f)
+                               (error "Argument value not allowed: " name #f)))))))))
               ((array)
                (if (not arg)
                    (if may-be-null?
