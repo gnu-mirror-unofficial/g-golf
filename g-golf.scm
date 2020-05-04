@@ -195,6 +195,9 @@
 (gi-import-by-name "GLib" "IOChannel"
                    #:with-methods? #f #:force? #t)
 
+(gi-import-by-name "GLib" "SpawnFlags"
+                   #:with-methods? #f #:force? #t)
+
 ;; Some (if not all) GObject subclasses also are subcllasses of
 ;; GInitiallyUnowned.
 
