@@ -28,10 +28,26 @@
 
 (define-module (g-golf override gtk)
   #:export (gtk-list-store-set-value-ov
+            gtk-tree-store-set-value-ov
             gtk-tree-model-get-value-ov))
 
 
 (define (gtk-list-store-set-value-ov proc)
+  (values
+   '(("Gtk" "TreeModel"))
+   `(lambda (store iter column value)
+      (let* ((i-func ,proc)
+             (g-value-set-value
+              ,(@@ (g-golf hl-api gobject) %g-inst-set-property-value))
+             (g-type (gtk-tree-model-get-column-type store column))
+             (g-value (g-value-init (symbol->g-type g-type))))
+        (g-value-set! g-value
+                      (g-value-set-value g-type value))
+        (i-func store iter column g-value)
+        (g-value-unset g-value)
+        (values)))))
+
+(define (gtk-tree-store-set-value-ov proc)
   (values
    '(("Gtk" "TreeModel"))
    `(lambda (store iter column value)
