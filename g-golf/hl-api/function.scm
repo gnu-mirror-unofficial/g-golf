@@ -419,6 +419,36 @@
              (g-base-info-unref info)
              type))))))
 
+(define (type-description-array info)
+  (let* ((type (g-type-info-get-array-type info))
+         (fixed-size (g-type-info-get-array-fixed-size info))
+         (is-zero-terminated (g-type-info-is-zero-terminated info))
+         (param-n (g-type-info-get-array-length info))
+         (param-type (g-type-info-get-param-type info 0))
+         (param-tag (g-type-info-get-tag param-type)))
+    (g-base-info-unref param-type)
+    (list type
+          fixed-size
+          is-zero-terminated
+          param-n
+          param-tag)))
+
+(define (type-description-glist info type-tag)
+  (let* ((param-type (g-type-info-get-param-type info 0))
+         (param-tag (g-type-info-get-tag param-type))
+         (is-pointer? (g-type-info-is-pointer param-type)))
+    (case param-tag
+      ((interface)
+       (let ((i-desc (type-description-interface param-type)))
+         (g-base-info-unref param-type)
+         i-desc))
+      (else
+       (g-base-info-unref param-type)
+       (list param-tag
+             #f
+             #f
+             is-pointer?)))))
+
 (define (registered-type->gi-type info type)
   (let* ((id (g-registered-type-info-get-g-type info))
          (gi-name (g-type-name id))
@@ -507,39 +537,6 @@
             object
             struct
             union)))
-
-(define (type-description-array info)
-  (let* ((type (g-type-info-get-array-type info))
-         (fixed-size (g-type-info-get-array-fixed-size info))
-         (is-zero-terminated (g-type-info-is-zero-terminated info))
-         (param-n (g-type-info-get-array-length info))
-         (param-type (g-type-info-get-param-type info 0))
-         (param-tag (g-type-info-get-tag param-type)))
-    (g-base-info-unref param-type)
-    (list type
-          fixed-size
-          is-zero-terminated
-          param-n
-          param-tag)))
-
-(define (type-description-glist info type-tag)
-  (let* ((param-type (g-type-info-get-param-type info 0))
-         (param-tag (g-type-info-get-tag param-type))
-         (is-pointer? (g-type-info-is-pointer param-type)))
-    (case param-tag
-      ((interface)
-       (let ((i-desc (type-description-interface param-type)))
-         (g-base-info-unref param-type)
-         (list type-tag
-               'interface
-               i-desc
-               is-pointer?)))
-      (else
-       (g-base-info-unref param-type)
-       (list type-tag
-             #f
-             param-tag
-             is-pointer?)))))
 
 (define (function-arguments-and-gi-arguments info is-method? override?)
   (let* ((n-arg (g-callable-info-get-n-args info))
@@ -929,165 +926,115 @@
                         (gi-argument-set! gi-argument-out 'v-ulong 0))))))
             (loop (+ i 1)))))))
 
-(define (arg-out->scm arg-out)
-  (let* ((type-tag (!type-tag arg-out))
-         (type-desc (!type-desc arg-out))
-         (is-pointer? (!is-pointer? arg-out))
-         (may-be-null? (!may-be-null? arg-out))
-         (is-caller-allocate? (!is-caller-allocate? arg-out))
-         (forced-type (!forced-type arg-out))
-         (gi-argument-out (!gi-argument-out arg-out))
-         (field (!gi-argument-field arg-out)))
-    (case type-tag
-      ((interface)
-       (match type-desc
-         ((type name gi-type g-type confirmed?)
-          (case type
-            ((enum)
-             (let ((val (gi-argument-ref gi-argument-out 'v-int)))
-               (or (enum->symbol gi-type val)
-                   (error "No such " name " value: " val))))
-            ((flags)
-             (let ((val (gi-argument-ref gi-argument-out 'v-int)))
-               (gi-integer->gflags gi-type val)))
-            ((struct)
-             (let ((foreign (gi-argument-ref gi-argument-out 'v-pointer)))
-               (case name
-                 ((g-value)
-                  (g-value-ref foreign))
-                 (else
-                  (if (or (!is-opaque? gi-type)
-                          (!is-semi-opaque? gi-type))
-                      foreign
-                      (parse-c-struct foreign (!scm-types gi-type)))))))
-            ((object)
-             (let ((foreign (gi-argument-ref gi-argument-out 'v-pointer)))
-               (and foreign
-                    ;; See the comment in registered-type->gi-type which
-                    ;; describes the role of confirmed? in the pattern.
-                    (if confirmed?
-                        (make gi-type
-                          #:g-inst (gi-argument-ref gi-argument-out 'v-pointer))
-                        (let* ((module (resolve-module '(g-golf hl-api object)))
-                               (type (g-object-type foreign))
-                               (gi-name (g-object-type-name foreign))
-                               (c-name (g-name->class-name gi-name))
-                               (class (module-ref module c-name)))
-                          (set! (!type-desc arg-out)
-                                (list 'object c-name class type #t))
-                          (make class #:g-inst foreign))))))
-            ((interface)
-             (gi-argument-ref gi-argument-out 'v-pointer))))))
-      ((array)
-       (match type-desc
-         ((array fixed-size is-zero-terminated param-n param-tag)
-          (case param-tag
-            ((utf8
-              filename)
-             (gi->scm (gi-argument-ref gi-argument-out 'v-pointer) 'strings))
-            (else
-             (warning "Unimplemented (arg-out->scm) type - array;"
-                      (format #f "~S" type-desc)))))))
-      ((glist
-        gslist
-        ghash
-        error)
-       (warning "Unimplemented type" (symbol->string type-tag)))
-      ((utf8
-        filename)
-       ;; not sure, but this shouldn't arm.
-       (gi->scm (gi-argument-ref gi-argument-out 'v-pointer) 'string))
-      ((gtype)
-       (let ((val (gi-argument-ref gi-argument-out 'v-ulong)))
-         (g-type->symbol val)))
-      (else
-       ;; Here starts fundamental types. However, we still need to check
-       ;; the forced-type slot-value, and when it is a pointer, allocate
-       ;; mem for the type-tag, then set the value and initialize the
-       ;; gi-argument to a pointer to the alocated mem.
-       (case forced-type
-         ((pointer)
-          (let ((foreign (gi-argument-ref gi-argument-out 'v-pointer)))
-            (and foreign
-                 (case type-tag
-                   ((int32)
-                    (let ((s32 (pointer->bytevector foreign (sizeof int))))
-                      (s32vector-ref s32 0)))
-                   (else
-                    (warning "Unimplemeted (pointer to) type-tag: " type-tag))))))
-         (else
-          (gi-argument-ref gi-argument-out field)))))))
+(define (arg-out->scm argument)
+  (let ((type-tag (!type-tag argument))
+        (type-desc (!type-desc argument))
+        (gi-argument (!gi-argument-out argument))
+        (forced-type (!forced-type argument)))
+    (gi-argument->scm type-tag
+                      type-desc
+                      gi-argument
+                      argument		;; the type-desc instance 'owner'
+                      #:forced-type forced-type)))
 
 (define (return-value->scm function)
-  (let ((return-type (!return-type function))
+  (let ((type-tag (!return-type function))
         (type-desc (!type-desc function))
-        (gi-arg-result (!gi-arg-result function)))
-    (case return-type
-      ((interface)
-       (match type-desc
-         ((type name gi-type g-type confirmed?)
-          (case type
-            ((enum)
-             (let ((val (gi-argument-ref gi-arg-result 'v-int)))
-               (or (enum->symbol gi-type val)
-                   (error "No such " name " value: " val))))
-            ((flags)
-             (let ((val (gi-argument-ref gi-arg-result 'v-int)))
-               (gi-integer->gflags gi-type val)))
-            ((struct)
-             (let ((foreign (gi-argument-ref gi-arg-result 'v-pointer)))
-               (case name
-                 ((g-value)
-                  (g-value-ref foreign))
+        (gi-argument (!gi-arg-result function)))
+    (gi-argument->scm type-tag
+                      type-desc
+                      gi-argument
+                      function)))	;; the type-desc instance 'owner'
+
+(define* (gi-argument->scm type-tag type-desc gi-argument funarg
+                           #:key (forced-type #f))
+  ;; forced-type is only used for 'inout and 'out arguments, in which
+  ;; case it is 'pointer - see 'simple' types below.
+
+  ;; funarg is the instance that owns the type-desc, which might need to
+  ;; be updated - see the comment in the 'interface/'object section of
+  ;; the code below, as well as the comment in registered-type->gi-type
+  ;; which explains why/when this might happen.
+  (case type-tag
+    ((interface)
+     (match type-desc
+       ((type name gi-type g-type confirmed?)
+        (case type
+          ((enum)
+           (let ((val (gi-argument-ref gi-argument 'v-int)))
+             (or (enum->symbol gi-type val)
+                 (error "No such " name " value: " val))))
+          ((flags)
+           (let ((val (gi-argument-ref gi-argument 'v-int)))
+             (gi-integer->gflags gi-type val)))
+          ((struct)
+           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+             (case name
+               ((g-value)
+                (g-value-ref foreign))
+               (else
+                (if (or (!is-opaque? gi-type)
+                        (!is-semi-opaque? gi-type))
+                    foreign
+                    (parse-c-struct foreign (!scm-types gi-type)))))))
+          ((object)
+           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+             (and foreign
+                  ;; See the comment in registered-type->gi-type which
+                  ;; describes the role of confirmed? in the pattern.
+                  (if confirmed?
+                      (make gi-type
+                        #:g-inst (gi-argument-ref gi-argument 'v-pointer))
+                      (let* ((module (resolve-module '(g-golf hl-api object)))
+                             (type (g-object-type foreign))
+                             (gi-name (g-object-type-name foreign))
+                             (c-name (g-name->class-name gi-name))
+                             (class (module-ref module c-name)))
+                        (set! (!type-desc funarg)
+                              (list 'object c-name class type #t))
+                        (make class #:g-inst foreign))))))
+          ((interface)
+           (gi-argument-ref gi-argument 'v-pointer))))))
+    ((array)
+     (match type-desc
+       ((array fixed-size is-zero-terminated param-n param-tag)
+        (case param-tag
+          ((utf8
+            filename)
+           (gi->scm (gi-argument-ref gi-argument 'v-pointer) 'strings))
+          (else
+           (warning "Unimplemented (arg-out->scm) type - array;"
+                    (format #f "~S" type-desc)))))))
+    ((glist
+      gslist
+      ghash
+      error)
+     (warning "Unimplemented type" (symbol->string type-tag)))
+    ((utf8
+      filename)
+     ;; not sure, but this shouldn't arm.
+     (gi->scm (gi-argument-ref gi-argument 'v-pointer) 'string))
+    ((gtype)
+     (let ((val (gi-argument-ref gi-argument 'v-ulong)))
+       (g-type->symbol val)))
+    (else
+     ;; Here starts 'simple' types, but we still need to check the
+     ;; forced-type: when it is 'pointer (which happens for 'inout and
+     ;; 'out arguments, not for returned values), the the gi-argument
+     ;; holds a pointer to the value, otherwise, it holds the value.
+     (case forced-type
+       ((pointer)
+        (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+          (and foreign
+               (case type-tag
+                 ((int32)
+                  (let ((s32 (pointer->bytevector foreign (sizeof int))))
+                    (s32vector-ref s32 0)))
                  (else
-                  (if (or (!is-opaque? gi-type)
-                          (!is-semi-opaque? gi-type))
-                      foreign
-                      (parse-c-struct foreign (!scm-types gi-type)))))))
-            ((object)
-             (let ((foreign (gi-argument-ref gi-arg-result 'v-pointer)))
-               (and foreign
-                    ;; See the comment in registered-type->gi-type which
-                    ;; describes the role of confirmed? in the pattern.
-                    (if confirmed?
-                        (make gi-type
-                          #:g-inst (gi-argument-ref gi-arg-result 'v-pointer))
-                        (let* ((module (resolve-module '(g-golf hl-api object)))
-                               (type (g-object-type foreign))
-                               (gi-name (g-object-type-name foreign))
-                               (c-name (g-name->class-name gi-name))
-                               (class (module-ref module c-name)))
-                          (set! (!type-desc function)
-                                (list 'object c-name class type #t))
-                          (make class #:g-inst foreign))))))
-            ((interface)
-             (gi-argument-ref gi-arg-result 'v-pointer))))))
-      ((array)
-       (match type-desc
-         ((array fixed-size is-zero-terminated param-n param-tag)
-          (case param-tag
-            ((utf8
-              filename)
-             (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) 'strings))
-            (else
-             (warning "Unimplemented (return-value->scm) type - array;"
-                      (format #f "~S" type-desc)))))))
-      ((glist
-        gslist)
-       (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) return-type type-desc))
-      ((ghash
-        error)
-       (warning "Unimplemented type" (symbol->string return-type)))
-      ((utf8
-        filename)
-       ;; not sure, but this shouldn't arm.
-       (gi->scm (gi-argument-ref gi-arg-result 'v-pointer) 'string))
-      ((gtype)
-       (let ((val (gi-argument-ref gi-arg-result 'v-ulong)))
-         (g-type->symbol val)))
-      (else
-       (gi-argument-ref gi-arg-result
-                        (gi-type-tag->field return-type))))))
+                  (warning "Unimplemeted (pointer to) type-tag: " type-tag))))))
+       (else
+        (gi-argument-ref gi-argument
+                         (gi-type-tag->field type-tag)))))))
 
 
 ;;;
