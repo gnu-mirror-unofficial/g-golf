@@ -41,6 +41,12 @@
   #:use-module (g-golf glib gslist)
   #:use-module (g-golf gobject type-info)
 
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
+
   #:export (%gi-pointer-size
 	    gi-pointer-new
 	    gi-pointer-inc
@@ -127,8 +133,8 @@
     ((pointer) (gi-pointer->scm value))
     ((n-pointer) (gi-n-pointer->scm value cmpl))
     ((pointers) (gi-pointers->scm value))
-    ((glist) (gi-glist->scm value cmpl))
-    ((gslist) (gi-gslist->scm value cmpl))
+    ((glist) (gi-glist->scm value))
+    ((gslist) (gi-gslist->scm value))
     ((n-gtype) (gi-n-gtype->scm value cmpl))
     (else
      (error "No such type: " type))))
@@ -212,77 +218,31 @@
                                                   result)))))))
         (gi-pointers->scm-1 pointer '()))))
 
-(define (gi-glist->scm g-list type-desc)
-  ;; The reason g-list, which is supposed to be a pointer, can be #f is
-  ;; that the caller may have already processed its value, which is what
-  ;; gi-argument-ref does for 'v-pointer fields for example. In this
-  ;; case, gi-pointer->scm has been called, which returns #f its
-  ;; argument is a %null-pointer.
-  (if (or (not g-list)
-          (null-pointer? g-list))
-      '()
-      (let ((result (gi-glist-1->scm g-list type-desc)))
-        (g-list-free g-list)
-        result)))
+(define (gi-glist->scm g-list)
+  (glist-gslist->scm g-list
+                     g-list-next
+                     g-list-data))
 
-(define (gi-glist-1->scm g-list type-desc)
-  (match type-desc
-    ((_ interface? i-desc is-pointer?)
-     (if interface?
-         (gi-glist-interface->scm g-list i-desc)
-         (warning "Unimplemented glist type" type-desc)))))
+(define (gi-gslist->scm g-slist)
+  (glist-gslist->scm g-slist
+                     g-slist-next
+                     g-slist-data))
 
-(define (gi-glist-interface->scm g-list i-desc)
-  (match i-desc
-    ((type name gi-type g-type confirmed?)
-     (case type
-       ((object)
-        (let loop ((g-list g-list)
-                   (result '()))
-          (if (null-pointer? g-list)
+(define (glist-gslist->scm g-first next-acc data-acc)
+  ;; The reason g-first can be #f is that the caller may have already
+  ;; processed its value, which is what gi-argument-ref does for
+  ;; 'v-pointer fields for example. In this case, gi-pointer->scm has
+  ;; been called, which returns #f its argument is a %null-pointer.
+  (if (or (not g-first)
+          (null-pointer? g-first))
+      #f
+      (let loop ((g-next g-first)
+                 (result '()))
+          (if (null-pointer? g-next)
               (reverse! result)
-              (loop (g-list-next g-list)
-                    (cons (make gi-type
-                            #:g-inst (g-list-data g-list))
-                          result)))))
-       (else
-        (warning "Unimplemented glist type" i-desc))))))
-
-(define (gi-gslist->scm g-slist type-desc)
-  ;; The reason g-slist, which is supposed to be a pointer, can be #f is
-  ;; that the caller may have already processed its value, which is what
-  ;; gi-argument-ref does for 'v-pointer fields for example. In this
-  ;; case, gi-pointer->scm has been called, which returns #f its
-  ;; argument is a %null-pointer.
-  (if (or (not g-slist)
-          (null-pointer? g-slist))
-      '()
-      (let ((result (gi-gslist-1->scm g-slist type-desc)))
-        (g-slist-free g-slist)
-        result)))
-
-(define (gi-gslist-1->scm g-slist type-desc)
-  (match type-desc
-    ((_ interface? i-desc is-pointer?)
-     (if interface?
-         (gi-gslist-interface->scm g-slist i-desc)
-         (warning "Unimplemented gslist type" type-desc)))))
-
-(define (gi-gslist-interface->scm g-slist i-desc)
-  (match i-desc
-    ((type name gi-type g-type confirmed?)
-     (case type
-       ((object)
-        (let loop ((g-slist g-slist)
-                   (result '()))
-          (if (null-pointer? g-slist)
-              (reverse! result)
-              (loop (g-slist-next g-slist)
-                    (cons (make gi-type
-                            #:g-inst (g-slist-data g-slist))
-                          result)))))
-       (else
-        (warning "Unimplemented gslist type" i-desc))))))
+              (loop (next-acc g-next)
+                    (cons (data-acc g-next)
+                          result))))))
 
 (define (gi-n-gtype->scm pointer n-gtype)
   (if (or (not pointer)
