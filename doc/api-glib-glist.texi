@@ -54,7 +54,7 @@ Returns a pointer.
 
 Obtains and returns a pointer to the data in @var{g-list}, or any integer
 value, in which case, it is the responsibility of the caller to apply
-the appropirate type conversion procedure.
+the appropriate type conversion procedure.
 @end deffn
 
 
