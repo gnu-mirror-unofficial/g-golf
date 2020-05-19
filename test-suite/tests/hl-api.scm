@@ -190,4 +190,22 @@
     (cancel-thread thread)))
 
 
+;;;
+;;; GList - GSList
+;;;
+
+(define-method (test-glist-gslist->scm (self <g-golf-test-hl-api>))
+  (gi-import-by-name "Gtk" "RadioMenuItem")
+  (gi-import-by-name "Gtk" "init")
+  (gtk-init 0 #f)
+  (let ((item-1 (make <gtk-radio-menu-item>  #:label "Item 1"))
+        (item-2 (make <gtk-radio-menu-item>  #:label "Item 2")))
+    (gtk-radio-menu-item-join-group item-1 item-2)
+    (let ((lst1 (assert (gtk-radio-menu-item-get-group item-1)))
+          (lst2 (assert (gtk-radio-menu-item-get-group item-2))))
+      (assert-true (equal? lst1
+                           lst2
+                           (list item-1 item-2))))))
+
+
 (exit-with-summary (run-all-defined-test-cases))
