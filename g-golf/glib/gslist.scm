@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -51,11 +51,11 @@
 
 (define (g-slist-data g-slist)
   (match (g-slist-parse g-slist)
-    ((data _ _) data)))
+    ((data _) data)))
 
 (define (g-slist-next g-slist)
   (match (g-slist-parse g-slist)
-    ((_ next _) next)))
+    ((_ next) next)))
 
 (define (g-slist-free g-slist)
   (g_slist_free g-slist))
