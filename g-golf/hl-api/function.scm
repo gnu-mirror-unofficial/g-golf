@@ -784,9 +784,24 @@
                         (else
                          (warning "Unimplemented (prepare args-in) type - array;"
                                   (format #f "~S" type-desc))))))))
-              ((glist
-                gslist
-                ghash
+              ((glist)
+               (if (and may-be-null? (not arg))
+                   (gi-argument-set! gi-argument-in 'v-pointer #f)
+                   (warning "Unimplemented type" (symbol->string type-tag))))
+              ((gslist)
+               (if (not arg)
+                   (if may-be-null?
+                       (gi-argument-set! gi-argument-in 'v-pointer #f)
+                       (error "Argument value not allowed: " #f))
+                   (match type-desc
+                     ((type name gi-type g-type confirmed?)
+                      (case type
+                        ((object)
+                         (gi-argument-set! gi-argument-in 'v-pointer
+                                           (scm->gi-gslist (map !g-inst arg))))
+                        (else
+                         (warning "Unimplemented gslist subtype" type-desc)))))))
+              ((ghash
                 error)
                (if (and may-be-null? (not arg))
                    (gi-argument-set! gi-argument-in 'v-pointer #f)
