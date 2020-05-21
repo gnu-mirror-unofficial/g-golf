@@ -74,7 +74,7 @@
             scm->gi-n-pointer
             scm->gi-pointers
             #;scm->gi-glist
-            #;scm->gi-gslist
+            scm->gi-gslist
             scm->gi-n-gtype))
 
 
@@ -277,7 +277,7 @@
     ((n-pointer) (scm->gi-n-pointer value cmpl))
     ((pointers) (scm->gi-pointers value))
     #;((glist) (scm->gi-glist value))
-    #;((gslist) (scm->gi-gslist value))
+    ((gslist) (scm->gi-gslist value))
     ((n-gtype) (scm->gi-n-gtype value cmpl))
     (else
      value)))
@@ -380,6 +380,19 @@
                  (bv-ptr-set! w-ptr l-ptr)
                  (loop (gi-pointer-inc w-ptr)
                        rest))))))))
+
+(define (scm->gi-gslist lst)
+  (if (or (not lst)
+          (null? lst))
+      %null-pointer
+      (let loop ((items (reverse lst))
+                 (g-slist #f))
+        (match items
+          (()
+           g-slist)
+          ((x . rest)
+           (loop rest
+                 (g-slist-prepend g-slist x)))))))
 
 (define* (scm->gi-n-gtype lst #:optional (n-gtype #f))
   (if (null? lst)
