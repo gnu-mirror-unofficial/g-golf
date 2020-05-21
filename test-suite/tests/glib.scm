@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -130,6 +130,29 @@
   (assert-true (string=? (g-quark-to-string
                           (g-quark-from-string "destroy"))
                          "destroy")))
+
+
+;;;
+;;; GSList
+;;;
+
+(define-method (test-g-slist-append (self <g-golf-test-glib>))
+  (let* ((a (string->pointer "hello"))
+         (b (string->pointer "world!"))
+         (g-first (assert (g-slist-append #f a)))
+         (g-first (assert (g-slist-append g-first b))))
+    (assert-true (equal? (list "hello" "world!")
+                         (map pointer->string
+                           (gi->scm g-first 'gslist))))))
+
+(define-method (test-g-slist-prepend (self <g-golf-test-glib>))
+  (let* ((a (string->pointer "hello"))
+         (b (string->pointer "world!"))
+         (g-first (assert (g-slist-prepend #f b)))
+         (g-first (assert (g-slist-prepend g-first a))))
+    (assert-true (equal? (list "hello" "world!")
+                         (map pointer->string
+                           (gi->scm g-first 'gslist))))))
 
 
 (exit-with-summary (run-all-defined-test-cases))

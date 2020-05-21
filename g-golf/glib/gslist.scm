@@ -30,10 +30,13 @@
   #:use-module (ice-9 match)
   #:use-module (system foreign)
   #:use-module (g-golf init)
+  #:use-module (g-golf gi utils)
 
   #:export (g-slist-data
             g-slist-next
-            
+
+            g-slist-append
+            g-slist-prepend
             g-slist-free
             g-slist-length
             g-slist-nth-data))
@@ -57,6 +60,14 @@
   (match (g-slist-parse g-slist)
     ((_ next) next)))
 
+(define (g-slist-append g-slist data)
+  (g_slist_append (scm->gi g-slist 'pointer)
+                  (scm->gi data 'pointer)))
+
+(define (g-slist-prepend g-slist data)
+  (g_slist_prepend (scm->gi g-slist 'pointer)
+                   (scm->gi data 'pointer)))
+
 (define (g-slist-free g-slist)
   (g_slist_free g-slist))
 
@@ -73,6 +84,20 @@
 ;;;
 ;;; Glib Bindings
 ;;;
+
+(define g_slist_append
+  (pointer->procedure '*
+                      (dynamic-func "g_slist_append"
+				    %libglib)
+                      (list '*		;; g-slist
+                            '*)))	;; data
+
+(define g_slist_prepend
+  (pointer->procedure '*
+                      (dynamic-func "g_slist_prepend"
+				    %libglib)
+                      (list '*		;; g-slist
+                            '*)))	;; data
 
 (define g_slist_free
   (pointer->procedure void

@@ -21,6 +21,8 @@ direction
 @table @code
 @item @ref{g-slist-data}
 @item @ref{g-slist-next}
+@item @ref{g-slist-append}
+@item @ref{g-slist-prepend}
 @item @ref{g-slist-free}
 @item @ref{g-slist-length}
 @item @ref{g-slist-nth-data}
@@ -63,6 +65,33 @@ Returns a pointer or #f.
 
 Obtains and returns the next element in @var{g-slist}, or #f if there are
 no more elements.
+@end deffn
+
+
+@anchor{g-slist-append}
+@deffn Procedure g-slist-append g-slist data
+
+Returns a pointer.
+
+Adds @var{data} - which is (must be) a pointer - to the end of
+@var{g-slist} and returns a pointer to the (possibly new) start of the
+list (so make sure you store the new value).
+
+Note that @ref{g-slist-append} has to traverse the entire list to find
+the end, which is inefficient when adding multiple elements. A common
+idiom to avoid the inefficiency is to prepend the elements and reverse
+the list when all elements have been added.
+@end deffn
+
+
+@anchor{g-slist-prepend}
+@deffn Procedure g-slist-prepend g-slist data
+
+Returns a pointer.
+
+Adds @var{data} - which is (must be) a pointer - to the start of
+@var{g-slist} and returns a pointer to the (possibly new) start of the
+list (so make sure you store the new value).
 @end deffn
 
 
