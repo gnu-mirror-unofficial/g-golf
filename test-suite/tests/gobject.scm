@@ -60,6 +60,27 @@
 (define-class <g-golf-test-gobject> (<test-case>))
 
 
+;;;
+;;; type info
+;;;
+
+(define-method (test-g-type-name (self <g-golf-test-gobject>))
+  (assert-equal "ClutterActorAlign" (g-type-name %align-info-g-type))
+  (assert-equal "gfloat" (g-type-name 56)))
+
+(define-method (test-g-type-class-* (self <g-golf-test-gobject>))
+  (let* ((container (gi-import-by-name "Gtk" "Container"))
+         (g-type (!gtype-id container))
+         (g-class (assert (g-type-class-ref g-type))))
+    (assert (g-type-class-peek g-type))
+    (assert (g-type-ensure g-type))
+    (assert (g-type-class-unref g-class))))
+
+
+;;;
+;;; Genric values
+;;;
+
 (define-method (test-g-value-size (self <g-golf-test-gobject>))
   (assert (g-value-size)))
 
@@ -173,11 +194,6 @@
 ;; clutter-actor-new, which requires "libclutter-1.0", something G-Golf
 ;; does not need to depend upon.  As soon as G-Golf can make instances,
 ;; we will add a proper test here.
-
-
-(define-method (test-g-type-name (self <g-golf-test-gobject>))
-  (assert-equal "ClutterActorAlign" (g-type-name %align-info-g-type))
-  (assert-equal "gfloat" (g-type-name 56)))
 
 
 (exit-with-summary (run-all-defined-test-cases))

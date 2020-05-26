@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2018 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -18,7 +18,11 @@ Type Information — The GLib Runtime type identification and management system
 @item @ref{g-type->symbol}
 @item @ref{symbol->g-type}
 @item @ref{g-type-name}
+@item @ref{g-type-class-ref}
+@item @ref{g-type-class-peek}
+@item @ref{g-type-class-unref}
 @item @ref{g-type-fundamental}
+@item @ref{g-type-ensure}
 @end table
 @end indentedblock
 
@@ -90,12 +94,59 @@ should not be passed in and will most likely lead to a crash.
 @end deffn
 
 
+@anchor{g-type-class-ref}
+@deffn Procedure g-type-class-ref g-type
+
+Returns a pointer.
+
+Obtains and returns a pointer to the @code{GTypeClass} structure for
+@var{g-type} (a GObject class GType). The reference count of the class
+is incremented, and the class is @samp{created} (instanciated) if/when
+it doesn't exist already.
+@end deffn
+
+
+@anchor{g-type-class-peek}
+@deffn Procedure g-type-class-peek g-type
+
+Returns a pointer.
+
+Obtains and returns a pointer to the @code{GTypeClass} structure for
+@var{g-type} (a GObject class GType). The reference count of the class
+isn't incremented. As a consequence, this function may return @code{#f}
+- if the class of the type passed in does not currently exist (hasn't
+been referenced before).
+@end deffn
+
+
+@anchor{g-type-class-unref}
+@deffn Procedure g-type-class-unref g-class
+
+Returns nothing.
+
+Decrements the reference count for @var{g-class} (a pointer to a
+@code{GTypeClass} structure). Once the last reference count of a class
+has been released, it may be finalized by the type system. Attempting to
+further dereference a finalized class is invalid.
+@end deffn
+
+
 @anchor{g-type-fundamental}
 @deffn Procedure g-type-fundamental g-type
 
 Returns a type ID.
 
 Extracts the fundamental type ID portion for @var{g-type}.
+@end deffn
+
+
+@anchor{g-type-ensure}
+@deffn Procedure g-type-ensure g-type
+
+Returns nothing.
+
+Ensures that the indicated @var{g-type} has been registered with the
+type system, and that its @code{_class_init} method has been run.
 @end deffn
 
 

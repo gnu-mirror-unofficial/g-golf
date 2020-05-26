@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -43,8 +43,14 @@
 
   #:export (g-type->symbol
             symbol->g-type
+
             g-type-name
+            g-type-class-ref
+            g-type-class-peek
+            g-type-class-unref
             g-type-fundamental
+            g-type-ensure
+
 	    %g-type-fundamental-flags
             %g-type-fundamental-types))
 
@@ -81,8 +87,20 @@
 (define (g-type-name g-type)
   (gi->scm (g_type_name g-type) 'string))
 
+(define (g-type-class-ref g-type)
+  (gi->scm (g_type_class_ref g-type) 'pointer))
+
+(define (g-type-class-peek g-type)
+  (gi->scm (g_type_class_peek g-type) 'pointer))
+
+(define (g-type-class-unref g-class)
+  (g_type_class_unref g-class))
+
 (define (g-type-fundamental g-type)
   (g_type_fundamental g-type))
+
+(define (g-type-ensure g-type)
+  (g_type_ensure g-type))
 
 
 ;;;
@@ -95,9 +113,33 @@
 				    %libgobject)
                       (list int64)))
 
+(define g_type_class_ref
+  (pointer->procedure '*
+                      (dynamic-func "g_type_class_ref"
+				    %libgobject)
+                      (list unsigned-long)))
+
+(define g_type_class_peek
+  (pointer->procedure '*
+                      (dynamic-func "g_type_class_peek"
+				    %libgobject)
+                      (list unsigned-long)))
+
+(define g_type_class_unref
+  (pointer->procedure void
+                      (dynamic-func "g_type_class_unref"
+				    %libgobject)
+                      (list '*)))
+
 (define g_type_fundamental
   (pointer->procedure size_t
                       (dynamic-func "g_type_fundamental"
+				    %libgobject)
+                      (list unsigned-long)))
+
+(define g_type_ensure
+  (pointer->procedure void
+                      (dynamic-func "g_type_ensure"
 				    %libgobject)
                       (list unsigned-long)))
 
