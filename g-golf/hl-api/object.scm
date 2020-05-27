@@ -148,7 +148,7 @@
         ;; argument (their GIargInfo list is complete); (c) they have a
         ;; GIFuncInfo entry in the namespace (methods do not). We do not
         ;; (re)import those here.
-        (unless (g-irepository-find-by-name namespace namespace)
+        (unless (g-irepository-find-by-name namespace name)
           (gi-import-function m-info #:force? force?))))))
 
 #!
