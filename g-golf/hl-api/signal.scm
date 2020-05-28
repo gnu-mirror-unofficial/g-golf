@@ -106,7 +106,7 @@
   ;; Below, i- stands for instance-, o- for object-, s- for signal-
   (let* ((i-class (class-of inst))
          (i-class-name (class-name i-class))
-         (i-type (!gtype-id i-class))
+         (i-type (!g-type i-class))
          (s-id (or (g-signal-lookup (symbol->string s-name) i-type)
                    (error "No such signal: " i-class-name s-name)))
          (g-signal (g-signal-query s-id)))

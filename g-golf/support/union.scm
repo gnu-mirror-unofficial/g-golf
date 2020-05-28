@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -57,7 +57,7 @@
             <gi-union>))
 
 
-(g-export !gtype-id
+(g-export !g-type
           !gi-name
           !scm-name
           !size
@@ -97,7 +97,7 @@
 
 
 (define-class <gi-union> ()
-  (gtype-id #:accessor !gtype-id #:init-keyword #:gtype-id)
+  (g-type #:accessor !g-type #:init-keyword #:g-type)
   (gi-name #:accessor !gi-name #:init-keyword #:gi-name)
   (scm-name #:accessor !scm-name)
   (size #:accessor !size #:init-keyword #:size)

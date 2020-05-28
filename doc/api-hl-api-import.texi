@@ -131,7 +131,7 @@ $4 = #<<gi-flag> 5642cb13c5d0>
 #<<gi-flag> 5642cb13c5d0> is an instance of class <gi-flag>
 Slots are:
      enum-set = ((mapped . 2) (realized . 4) (reactive . 8) (visible . 16) (no-layout . 32))
-     gtype-id = 94844874149456
+     g-type = 94844874149456
      gi-name = "ClutterActorFlags"
      scm-name = "clutter-actor-flags"
 @end lisp

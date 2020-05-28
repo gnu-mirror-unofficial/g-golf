@@ -32,7 +32,7 @@ types.
 @item @ref{enum->symbols}
 @item @ref{enum->name}
 @item @ref{enum->names}
-@item @ref{!gtype-id_}
+@item @ref{!g-type_}
 @item @ref{!gi-name}
 @item @ref{!scm-name}
 @end table
@@ -103,9 +103,9 @@ The @code{<gi-enum>} class is a subclass of @code{<enum>}.  Its
 
 @indentedblock
 @table @code
-@item @emph{gtype-id}
-#:accessor !gtype-id	   @*
-#:init-keyword #:gtype-id  @*
+@item @emph{g-type}
+#:accessor !g-type	   @*
+#:init-keyword #:g-type  @*
 #:init-value #f
 
 @item @emph{gi-name}
@@ -166,13 +166,13 @@ names for @var{inst}, respectively.
 @end deffn
 
 
-@anchor{!gtype-id_}
+@anchor{!g-type_}
 @anchor{!gi-name}
 @anchor{!scm-name}
-@deffn Accessor !gtype-id (inst <gi-enum>)
+@deffn Accessor !g-type (inst <gi-enum>)
 @deffnx Accessor !gi-name (inst <gi-enum>)
 @deffnx Accessor !scm-name (inst <gi-enum>)
 
-Returns the content of the gtype-id, gi-name or scm-name slot for
+Returns the content of the g-type, gi-name or scm-name slot for
 @var{inst}, respectively.
 @end deffn

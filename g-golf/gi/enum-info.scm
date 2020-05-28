@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -64,7 +64,7 @@
          (name (g-type-name id))
 	 (e-vals (gi-enum-value-values info)))
     (make (if flag <gi-flag> <gi-enum>)
-      #:gtype-id id
+      #:g-type id
       #:gi-name name
       #:enum-set e-vals)))
 

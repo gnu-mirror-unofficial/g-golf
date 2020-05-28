@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2019
+;;;; Copyright (C) 2018 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -59,7 +59,7 @@
 (g-export !info
           !derived
           !namespace
-          !gtype-id
+          !g-type
           !gtype-name
           !scm-name
           
@@ -86,7 +86,7 @@
 		               (g-base-info-get-namespace (!info self))))
 	     #:slot-set! (lambda (self value)
 		           (values)))
-  (gtype-id #:accessor !gtype-id
+  (g-type #:accessor !g-type
 	    #:allocation #:virtual
 	    #:slot-ref (lambda (self)
                           (and (not (boolean? (!info self)))
@@ -149,9 +149,9 @@
 (define-method (g-inst-construct (self <gtype-instance>)
                                  g-property-initargs)
   (if (null? g-property-initargs)
-      (g-object-new (!gtype-id (class-of self)))
+      (g-object-new (!g-type (class-of self)))
       (let* ((class (class-of self))
-             (g-type (!gtype-id class))
+             (g-type (!g-type class))
              (slot-def-init-val-pairs
               (slot-definition-init-value-pairs self g-property-initargs))
              (n-prop (length slot-def-init-val-pairs))

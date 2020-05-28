@@ -1206,7 +1206,7 @@
                      (list f-name f-desc)))))
            (gi-union-import info))))
     (make <gi-union>
-      #:gtype-id g-type
+      #:g-type g-type
       #:gi-name name
       ;; #:scm-name the initialize method does that
       #:size (g-union-info-get-size info)

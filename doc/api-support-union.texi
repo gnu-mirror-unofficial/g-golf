@@ -25,7 +25,7 @@ types.
 @item @ref{make-c-union}
 @item @ref{c-union-ref}
 @item @ref{c-union-set!}
-@item @ref{!gtype-id__}
+@item @ref{!g-type__}
 @item @ref{!gi-name__}
 @item @ref{!scm-name___}
 @item @ref{!size_}
@@ -58,9 +58,9 @@ The @code{<gi-union>} class. Its @code{class-direct-slots} are:
 
 @indentedblock
 @table @code
-@item @emph{gtype-id}
-#:accessor !gtype-id @*
-#:init-keyword #:gtype-id
+@item @emph{g-type}
+#:accessor !g-type @*
+#:init-keyword #:g-type
 
 @item @emph{gi-name}
 #:accessor !gi-name @*
@@ -137,7 +137,7 @@ given its @var{size} and @var{type}.
 @end deffn
 
 
-@anchor{!gtype-id__}
+@anchor{!g-type__}
 @anchor{!gi-name__}
 @anchor{!scm-name___}
 @anchor{!size_}
@@ -146,7 +146,7 @@ given its @var{size} and @var{type}.
 @anchor{!is-discriminated?}
 @anchor{!discriminator-offset}
 @anchor{!discriminator}
-@deffn Accessor !gtype-id (inst <gi-union>)
+@deffn Accessor !g-type (inst <gi-union>)
 @deffnx Accessor !gi-name (inst <gi-union>)
 @deffnx Accessor !scm-name (inst <gi-union>)
 @deffnx Accessor !size (inst <gi-union>)

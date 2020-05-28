@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -61,7 +61,7 @@
 	  enum->symbols
 	  enum->name
 	  enum->names
-          !gtype-id
+          !g-type
           !gi-name
           !scm-name)
 
@@ -130,8 +130,8 @@
 ;;;
 
 (define-class <gi-enum> (<enum>)
-  (gtype-id #:accessor !gtype-id
-            #:init-keyword #:gtype-id
+  (g-type #:accessor !g-type
+            #:init-keyword #:g-type
             #:init-value #f)
   (gi-name #:accessor !gi-name
            #:init-keyword #:gi-name)

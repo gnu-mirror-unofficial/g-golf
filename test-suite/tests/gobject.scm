@@ -70,7 +70,7 @@
 
 (define-method (test-g-type-class-* (self <g-golf-test-gobject>))
   (let* ((container (gi-import-by-name "Gtk" "Container"))
-         (g-type (!gtype-id container))
+         (g-type (!g-type container))
          (g-class (assert (g-type-class-ref g-type))))
     (assert (g-type-class-peek g-type))
     (assert (g-type-ensure g-type))
@@ -174,7 +174,7 @@
   (let* ((port (open "/dev/tty" O_RDONLY))
          (fd (fileno port))
          (channel (g-io-channel-unix-new fd))
-         (g-value (g-value-init (slot-ref %g-io-channel 'gtype-id))))
+         (g-value (g-value-init (slot-ref %g-io-channel 'g-type))))
     (assert (g-value-set! g-value channel))
     (assert-true (eq? (pointer-address (g-value-ref g-value))
                       (pointer-address channel)))

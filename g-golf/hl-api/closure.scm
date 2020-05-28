@@ -160,13 +160,13 @@
 (define (prepare-return-val g-value type)
   (cond ((or (is-a? type <gi-flag>)
              (is-a? type <gi-enum>))
-         (let ((gtype-id (!gtype-id type)))
-           (%g_value_init g-value (or gtype-id
+         (let ((g-type (!g-type type)))
+           (%g_value_init g-value (or g-type
                                       (symbol->g-type 'int)))))
         #;((boxed))
         #;((param))
         ((gobject-class? type)
-         (%g_value_init g-value (!gtype-id type)))
+         (%g_value_init g-value (!g-type type)))
         (else
          (%g_value_init g-value (symbol->g-type type)))))
 
@@ -175,20 +175,20 @@
          (%g_value_init g-value (symbol->g-type type))
          (g-value-set! g-value (scm->gi val 'boolean)))
         ((is-a? type <gi-flag>)
-         (let ((gtype-id (!gtype-id type)))
-           (if gtype-id
+         (let ((g-type (!g-type type)))
+           (if g-type
                (begin
-                 (%g_value_init g-value gtype-id)
+                 (%g_value_init g-value g-type)
                  (g-value-set! g-value val))
                (begin
                  (%g_value_init g-value (symbol->g-type 'int))
                  (g-value-set! g-value
                                (gi-gflags->integer type val))))))
         ((is-a? type <gi-enum>)
-         (let ((gtype-id (!gtype-id type)))
-           (if gtype-id
+         (let ((g-type (!g-type type)))
+           (if g-type
                (begin
-                 (%g_value_init g-value gtype-id)
+                 (%g_value_init g-value g-type)
                  (g-value-set! g-value val))
                (begin
                  (%g_value_init g-value (symbol->g-type 'int))
@@ -202,7 +202,7 @@
         #;((boxed))
         #;((param))
         ((gobject-class? type)
-         (%g_value_init g-value (!gtype-id type))
+         (%g_value_init g-value (!g-type type))
          (g-value-set! g-value (!g-inst val)))
         (else
          (%g_value_init g-value (symbol->g-type type))
@@ -211,11 +211,11 @@
 (define (return-val->scm type g-value)
   (let ((val (g-value-ref g-value)))
     (cond ((is-a? type <gi-flag>)
-           (if (!gtype-id type)
+           (if (!g-type type)
                val
                (gi-integer->gflags type val)))
           ((is-a? type <gi-enum>)
-           (if (!gtype-id type)
+           (if (!g-type type)
                val
                (enum->symbol type val)))
           ((gobject-class? type)

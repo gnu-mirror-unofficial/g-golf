@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -67,7 +67,7 @@
          (name (g-type-name id))
          (field-types (gi-struct-field-types info)))
     (make <gi-struct>
-      #:gtype-id id
+      #:g-type id
       #:gi-name name
       #:alignment (g-struct-info-get-alignment info)
       #:size (g-struct-info-get-size info)

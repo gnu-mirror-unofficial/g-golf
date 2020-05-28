@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019 - 2020b
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -42,7 +42,7 @@
   #:export (<gi-struct>))
 
 
-(g-export !gtype-id
+(g-export !g-type
           !gi-name
           !scm-name
           !alignment
@@ -57,8 +57,8 @@
 
 
 (define-class <gi-struct> ()
-  (gtype-id #:accessor !gtype-id
-            #:init-keyword #:gtype-id
+  (g-type #:accessor !g-type
+            #:init-keyword #:g-type
             #:init-value #f)
   (gi-name #:accessor !gi-name
            #:init-keyword #:gi-name)
