@@ -32,8 +32,8 @@ The base of the GObject type system.
 @item @ref{!info}
 @item @ref{!namespace}
 @item @ref{!g-type}
-@item @ref{!gtype-name}
-@item @ref{!scm-name_}
+@item @ref{!g-name}
+@item @ref{!derived}
 @item @ref{!g-inst}
 @item @ref{unref}
 @end table
@@ -63,13 +63,17 @@ have an @code{info} slot, holding a pointer to a
 #:accessor !g-type @*
 #:allocation #:virtual
 
-@item @emph{gtype-name}
-#:accessor !gtype-name @*
+@item @emph{g-name}
+#:accessor !g-name @*
 #:allocation #:virtual
 
-@item @emph{scm-name}
-#:accessor !scm-name @*
-#:allocation #:virtual
+@item @emph{derived}
+#:accessor !derived	 @*
+#:init-keyword #:derived @*
+#:init-value #f
+
+A class is derived when it is user defined (not imported), and inherit
+a GObject subclass.
 @end table
 @end indentedblock
 
@@ -79,13 +83,13 @@ have an @code{info} slot, holding a pointer to a
 @anchor{!info}
 @anchor{!namespace}
 @anchor{!g-type}
-@anchor{!gtype-name}
-@anchor{!scm-name_}
+@anchor{!g-name}
+@anchor{!derived}
 @deffn Accessor !info class
 @deffnx Accessor !namespace class
 @deffnx Accessor !g-type class
-@deffnx Accessor !gtype-name class
-@deffnx Accessor !scm-name class
+@deffnx Accessor !g-name class
+@deffnx Accessor !derived class
 
 Returns the content of their respective slot for @var{class}.
 @end deffn

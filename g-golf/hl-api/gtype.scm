@@ -60,8 +60,7 @@
           !derived
           !namespace
           !g-type
-          !gtype-name
-          !scm-name
+          !g-name
           
           !g-inst
           unref
@@ -93,21 +92,13 @@
 		               (g-registered-type-info-get-g-type (!info self))))
 	    #:slot-set! (lambda (self value)
 		          (values)))
-  (gtype-name #:accessor !gtype-name
+  (g-name #:accessor !g-name
 	      #:allocation #:virtual
 	      #:slot-ref (lambda (self)
                            (and (not (boolean? (!info self)))
 		                (g-object-info-get-type-name (!info self))))
 	      #:slot-set! (lambda (self value)
-		            (values)))
-  (scm-name #:accessor !scm-name
-	    #:allocation #:virtual
-	    #:slot-ref (lambda (self)
-                         (and (not (boolean? (!info self)))
-		              (g-name->scm-name (!gtype-name self))))
-	    #:slot-set! (lambda (self value)
-		          (values))))
-
+		            (values))))
 
 (define-method (initialize (self <gtype-class>) initargs)
   (let ((info (or (get-keyword #:info initargs #f)
