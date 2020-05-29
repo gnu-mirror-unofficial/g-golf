@@ -78,33 +78,19 @@
         #:init-keyword #:info)
   (derived #:accessor !derived
            #:init-keyword #:derived #:init-value #f)
-  (namespace #:accessor !namespace
-	     #:allocation #:virtual
-	     #:slot-ref (lambda (self)
-                          (and (not (boolean? (!info self)))
-		               (g-base-info-get-namespace (!info self))))
-	     #:slot-set! (lambda (self value)
-		           (values)))
-  (g-type #:accessor !g-type
-	    #:allocation #:virtual
-	    #:slot-ref (lambda (self)
-                          (and (not (boolean? (!info self)))
-		               (g-registered-type-info-get-g-type (!info self))))
-	    #:slot-set! (lambda (self value)
-		          (values)))
-  (g-name #:accessor !g-name
-	      #:allocation #:virtual
-	      #:slot-ref (lambda (self)
-                           (and (not (boolean? (!info self)))
-		                (g-object-info-get-type-name (!info self))))
-	      #:slot-set! (lambda (self value)
-		            (values))))
+  (namespace #:accessor !namespace)
+  (g-type #:accessor !g-type)
+  (g-name #:accessor !g-name))
 
 (define-method (initialize (self <gtype-class>) initargs)
   (let ((info (or (get-keyword #:info initargs #f)
                   (error "Missing #:info initarg: " initargs))))
-    (next-method)))
-
+    (next-method)
+    (unless (boolean? info) ;; it is #t for gtype instances
+      (mslot-set! self
+                  'namespace (g-base-info-get-namespace info)
+                  'g-type (g-registered-type-info-get-g-type info)
+                  'g-name (g-object-info-get-type-name info)))))
 
 ;; The root class of all instantiable GType classes.
 

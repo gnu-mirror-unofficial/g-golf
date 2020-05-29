@@ -57,15 +57,12 @@ have an @code{info} slot, holding a pointer to a
 
 @item @emph{namespace}
 #:accessor !namespace @*
-#:allocation #:virtual
 
 @item @emph{g-type}
 #:accessor !g-type @*
-#:allocation #:virtual
 
 @item @emph{g-name}
 #:accessor !g-name @*
-#:allocation #:virtual
 
 @item @emph{derived}
 #:accessor !derived	 @*
@@ -77,6 +74,10 @@ a GObject subclass.
 @end table
 @end indentedblock
 
+The @var{#:info} #:init-keyword is mandatory, other slots are
+initialized automatically. All slots are immutable (to be precise, they
+are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
+'Slots are not Immutable').
 @end deftp
 
 
