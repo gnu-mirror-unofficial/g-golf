@@ -60,12 +60,11 @@
 
 (g-export describe	;; function and argument
           !g-name
-          !scm-name
+          !name
           !type-desc
 
           !info		;; function
           !namespace
-          !name
           !override?
           !i-func
           !flags
@@ -175,8 +174,8 @@
          (n-name (string->symbol (string-downcase namespace)))
          (m-name `(g-golf override ,n-name))
          (o-module (resolve-module m-name #:ensure #f))
-         (scm-name (!scm-name f-inst))
-         (o-name (string-append scm-name "-ov"))
+         (f-name (!name f-inst))
+         (o-name (string-append (symbol->string f-name) "-ov"))
          (o-func-ref (module-ref o-module
                                  (string->symbol o-name))))
     (receive (prereqs exp)
@@ -194,8 +193,7 @@
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
       (let* ((g-name (g-function-info-get-symbol info))
-             (scm-name (g-name->scm-name g-name))
-             (name (string->symbol scm-name)))
+             (name (string->symbol (g-name->scm-name g-name))))
         (or (gi-cache-ref 'function name)
             (let* ((module (resolve-module '(g-golf hl-api function)))
                    (f-inst (make <function> #:info info))
@@ -216,7 +214,6 @@
   (info #:accessor !info)
   (namespace #:accessor !namespace)
   (g-name #:accessor !g-name)
-  (scm-name #:accessor !scm-name)
   (name #:accessor !name)
   (override? #:accessor !override? #:init-value #f)
   (i-func #:accessor !i-func #:init-value #f)
@@ -244,8 +241,7 @@
     (next-method self '())
     (let* ((namespace (g-base-info-get-namespace info))
            (g-name (g-function-info-get-symbol info))
-           (scm-name (g-name->scm-name g-name))
-           (name (string->symbol scm-name))
+           (name (string->symbol (g-name->scm-name g-name)))
            (override? (gi-override? g-name))
            (flags (g-function-info-get-flags info))
            (is-method? (gi-function-info-is-method? info flags))
@@ -257,7 +253,6 @@
                   'info info
                   'namespace namespace
                   'g-name g-name
-                  'scm-name scm-name
                   'name name
                   'override? override?
                   'flags flags
@@ -305,7 +300,7 @@
 
 (define-class <argument> ()
   (g-name #:accessor !g-name #:init-keyword #:g-name)
-  (scm-name #:accessor !scm-name #:init-keyword #:scm-name)
+  (name #:accessor !name #:init-keyword #:name)
   (closure #:accessor !closure)
   (destroy #:accessor !destroy)
   (direction #:accessor !direction #:init-keyword #:direction)
@@ -339,7 +334,7 @@
       (else
        (next-method self '())
        (let* ((g-name (g-base-info-get-name info))
-              (scm-name (g-name->scm-name g-name))
+              (name (string->symbol (g-name->scm-name g-name)))
               (direction (g-arg-info-get-direction info))
               (type-info (g-arg-info-get-type info))
               (type-tag (g-type-info-get-tag type-info))
@@ -349,7 +344,7 @@
          (g-base-info-unref type-info)
          (mslot-set! self
                      'g-name g-name
-                     'scm-name scm-name
+                     'name name
                      'closure (g-arg-info-get-closure info)
                      'destroy (g-arg-info-get-destroy info)
                      'direction direction
@@ -661,10 +656,10 @@
         (error "Wrong number of arguments: " args))))
 
 (define %allow-none-exceptions
-  '("child-setup-data-destroy"))
+  '(child-setup-data-destroy))
 
 (define ($is-an-allow-none-exception? name)
-  (member name %allow-none-exceptions string=?))
+  (memq name %allow-none-exceptions))
 
 (define (prepare-gi-args-in function args)
   (let ((is-method? (!is-method? function))
@@ -746,7 +741,7 @@
                                            (!g-inst arg)))))
                        (gi-argument-set! gi-argument-in 'v-pointer foreign)))
                     ((callback)
-                     (let ((name (!scm-name arg-in)))
+                     (let ((name (!name arg-in)))
                        (if (not arg)
                            (if (or may-be-null?
                                    ($is-an-allow-none-exception? name))
@@ -1223,8 +1218,7 @@
 (define (make-instance-argument info)
   (let* ((container (g-base-info-get-container info))
          (g-name (g-base-info-get-name container))
-         (scm-name (g-name->scm-name g-name))
-         #;(name (string->symbol scm-name))
+         (name (string->symbol (g-name->scm-name g-name)))
          (type (g-base-info-get-type container)))
     (receive (id r-name gi-type confirmed?)
         (registered-type->gi-type container type)
@@ -1232,7 +1226,7 @@
       (make <argument>
         #:info 'instance
         #:g-name g-name
-        #:scm-name scm-name
+        #:name name
         #:direction 'in
         #:type-tag 'interface
         #:type-desc (list type r-name gi-type id confirmed?)
