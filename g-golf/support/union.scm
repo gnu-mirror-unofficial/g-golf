@@ -58,7 +58,7 @@
 
 
 (g-export !g-type
-          !gi-name
+          !g-name
           !scm-name
           !size
           !alignment
@@ -98,7 +98,7 @@
 
 (define-class <gi-union> ()
   (g-type #:accessor !g-type #:init-keyword #:g-type)
-  (gi-name #:accessor !gi-name #:init-keyword #:gi-name)
+  (g-name #:accessor !g-name #:init-keyword #:g-name)
   (scm-name #:accessor !scm-name)
   (size #:accessor !size #:init-keyword #:size)
   (alignment #:accessor !alignment #:init-keyword #:alignment)
@@ -114,7 +114,7 @@
 
 (define-method (initialize (self <gi-union>) initargs)
   (next-method)
-  (let ((gi-name (get-keyword #:gi-name initargs #f)))
-    (and gi-name
+  (let ((g-name (get-keyword #:g-name initargs #f)))
+    (and g-name
          (slot-set! self
-                    'scm-name (g-name->scm-name gi-name)))))
+                    'scm-name (g-name->scm-name g-name)))))

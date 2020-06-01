@@ -186,7 +186,7 @@ An instance of @code{<gi-enum>}, who's members are the scheme
 representation of the direction of a @code{GIArgInfo}:
 
 @indentedblock
-@emph{gi-name}: GIDirection  @*
+@emph{g-name}: GIDirection  @*
 @emph{scm-name}: gi-direction  @*
 @emph{enum-set}:
 @indentedblock
@@ -214,7 +214,7 @@ representation of the scope of a @code{GIArgInfo}. Scope type of a
 invoked and is used to decide when the invoke structs can be freed.
 
 @indentedblock
-@emph{gi-name}: GIScopeType  @*
+@emph{g-name}: GIScopeType  @*
 @emph{scm-name}: gi-scope-type  @*
 @emph{enum-set}:
 @indentedblock
@@ -257,7 +257,7 @@ An instance of @code{<gi-enum>}, who's members are the scheme
 representation of the @code{GITransfer}:
 
 @indentedblock
-@emph{gi-name}: GITransfer  @*
+@emph{g-name}: GITransfer  @*
 @emph{scm-name}: gi-transfer  @*
 @emph{enum-set}:
 @indentedblock

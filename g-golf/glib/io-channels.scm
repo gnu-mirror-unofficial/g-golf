@@ -111,7 +111,7 @@
 
 #;(define %g-io-condition
   (make <gi-flag>
-    #:gi-name "gio-condition"
+    #:g-name "gio-condition"
     #:enum-set '(in
                  out
                  pri
@@ -123,7 +123,7 @@
 
 (eval-when (expand load eval)
   (let ((g-io-condition (make <gi-flag>
-                          #:gi-name  "GIOCondition"
+                          #:g-name  "GIOCondition"
                           #:enum-set '((in . 1)
                                        (out . 4)
                                        (pri . 2)

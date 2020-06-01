@@ -200,7 +200,7 @@ An instance of @code{<gi-enum>}, who's members are the scheme
 representation of the type of a @code{GIBaseInfo} struct:
 
 @indentedblock
-@emph{gi-name}: GIInfoType  @*
+@emph{g-name}: GIInfoType  @*
 @emph{scm-name}: gi-info-type @*
 @emph{enum-set}:
 @indentedblock

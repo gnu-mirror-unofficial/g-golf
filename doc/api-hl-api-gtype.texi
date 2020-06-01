@@ -32,7 +32,7 @@ The base of the GObject type system.
 @item @ref{!info}
 @item @ref{!namespace}
 @item @ref{!g-type}
-@item @ref{!g-name}
+@item @ref{!g-name___}
 @item @ref{!derived}
 @item @ref{!g-inst}
 @item @ref{unref}
@@ -84,7 +84,7 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @anchor{!info}
 @anchor{!namespace}
 @anchor{!g-type}
-@anchor{!g-name}
+@anchor{!g-name___}
 @anchor{!derived}
 @deffn Accessor !info class
 @deffnx Accessor !namespace class

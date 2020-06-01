@@ -71,8 +71,8 @@
          (match parent
            ((p-info p-namespace p-name)
             (let* ((p-r-type (g-registered-type-info-get-g-type p-info))
-                   (p-gi-name (g-type-name p-r-type))
-                   (p-c-name (g-name->class-name p-gi-name))
+                   (p-g-name (g-type-name p-r-type))
+                   (p-c-name (g-name->class-name p-g-name))
                    (child-class
                     (g-object-import-with-supers child
                                                  (list (module-ref module p-c-name))
@@ -101,8 +101,8 @@
                      string=?)
        (g-irepository-require namespace))
      (let* ((r-type (g-registered-type-info-get-g-type info))
-            (gi-name (g-type-name r-type))
-            (c-name (g-name->class-name gi-name)))
+            (g-name (g-type-name r-type))
+            (c-name (g-name->class-name g-name)))
        (if (module-bound? module c-name)
            (module-ref module c-name)
            (let ((c-inst (make-class supers

@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2020b
+;;;; Copyright (C) 2019 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -43,7 +43,7 @@
 
 
 (g-export !g-type
-          !gi-name
+          !g-name
           !scm-name
           !alignment
           !size
@@ -60,8 +60,8 @@
   (g-type #:accessor !g-type
             #:init-keyword #:g-type
             #:init-value #f)
-  (gi-name #:accessor !gi-name
-           #:init-keyword #:gi-name)
+  (g-name #:accessor !g-name
+           #:init-keyword #:g-name)
   (scm-name #:accessor !scm-name)
   (alignment #:accessor !alignment
              #:init-keyword #:alignment)
@@ -80,12 +80,12 @@
 
 (define-method (initialize (self <gi-struct>) initargs)
   (next-method)
-  (let ((gi-name (get-keyword #:gi-name initargs))
+  (let ((g-name (get-keyword #:g-name initargs))
         (field-types (get-keyword #:field-types initargs #f)))
-    (and gi-name
+    (and g-name
          (mslot-set! self
-                     'gi-name gi-name
-                     'scm-name (g-name->scm-name gi-name)))
+                     'g-name g-name
+                     'scm-name (g-name->scm-name g-name)))
     (and field-types
          (mslot-set! self
                      'scm-types (map gi-type-tag->ffi field-types)

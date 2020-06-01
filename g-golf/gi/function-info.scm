@@ -151,7 +151,7 @@
 
 (define %g-function-info-flags
   (make <gi-flag>
-    #:gi-name "GIFunctionInfoFlags"
+    #:g-name "GIFunctionInfoFlags"
     #:enum-set '((is-method . 1)
                  (is-constructor . 2)
                  (is-getter . 4)

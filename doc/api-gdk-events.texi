@@ -215,7 +215,7 @@ An instance of @code{<gi-enum>}, who's members are the scheme
 representation of the @code{GdkEventType}.
 
 @indentedblock
-@emph{gi-name}: GdkEventType @*
+@emph{g-name}: GdkEventType @*
 @emph{scm-name}: gdk-event-type @*
 @emph{enum-set}:
 @indentedblock
@@ -407,7 +407,7 @@ An instance of @code{<gi-flag>}, who's members are the scheme
 representation of the @code{GdkWindowState}.
 
 @indentedblock
-@emph{gi-name}: GdkWindowState @*
+@emph{g-name}: GdkWindowState @*
 @emph{scm-name}: gdk-window-state @*
 @emph{enum-set}:
 @indentedblock

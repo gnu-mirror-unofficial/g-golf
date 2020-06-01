@@ -184,7 +184,7 @@
 
 (define %g-signal-flags
   (make <gi-flag>
-    #:gi-name "GsignalFlags"
+    #:g-name "GsignalFlags"
     #:enum-set '((run-first . 1)
                  (run-last . 2)
                  (run-cleanup . 4)

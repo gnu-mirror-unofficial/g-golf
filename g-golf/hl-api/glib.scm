@@ -186,7 +186,7 @@
     (map g-base-info-unref infos)
     (set! %g-priorities
           (make <gi-enum>
-            #:gi-name "G_PRIORITIES"
+            #:g-name "G_PRIORITIES"
             #:enum-set priorities))))
 
 (define (ensure-priority priority)

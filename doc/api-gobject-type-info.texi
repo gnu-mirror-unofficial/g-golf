@@ -163,7 +163,7 @@ An instance of @code{<gi-enum>}, who's members are the scheme
 representation of the @code{GTypeFundamentalFlags}:
 
 @indentedblock
-@emph{gi-name}: GTypeFundamentalFlags  @*
+@emph{g-name}: GTypeFundamentalFlags  @*
 @emph{scm-name}: g-type-fundamental-flags  @*
 @emph{enum-set}:
 @indentedblock
@@ -195,7 +195,7 @@ defined using @code{G_TYPE_MAKE_FUNDAMENTAL}, which starts
 with @code{G_TYPE_INVALID} and ends with @code{G_TYPE_OBJECT}.
 
 @indentedblock
-@emph{gi-name}: #f@footnote{There is no corresponding @code{enum} in
+@emph{g-name}: #f@footnote{There is no corresponding @code{enum} in
 GOject.  These fundamental types (in GObject) are defined using a macro,
 @code{G_TYPE_MAKE_FUNDAMENTAL}, that applies bitwise arithmetic shift
 given by @code{G_TYPE_FUNDAMENTAL_SHIFT} (which we also have to apply,

@@ -180,7 +180,7 @@
 
 (define %gi-info-type
   (make <gi-enum>
-    #:gi-name "GIInfoType"
+    #:g-name "GIInfoType"
     #:enum-set '(invalid
                  function
                  callback

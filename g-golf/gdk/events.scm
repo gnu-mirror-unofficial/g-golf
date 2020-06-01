@@ -323,7 +323,7 @@
 (eval-when (expand load eval)
   (let ((gdk-event-type
          (make <gi-enum>
-           #:gi-name  "GdkEventType"
+           #:g-name  "GdkEventType"
            #:enum-set '((nothing . -1)
                         (delete . 0)
                         (destroy . 1)
@@ -377,7 +377,7 @@
                         (event-last . 48))))
         (gdk-window-state
          (make <gi-flag>
-           #:gi-name  "GdkWindowState"
+           #:g-name  "GdkWindowState"
            #:enum-set '((withdrawn . 1)
                         (iconified . 2)
                         (maximized . 4)

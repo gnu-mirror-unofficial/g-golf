@@ -176,14 +176,14 @@
 
 (define %gi-direction
   (make <gi-enum>
-    #:gi-name "GIDirection"
+    #:g-name "GIDirection"
     #:enum-set '(in
                  out
                  inout)))
 
 (define %gi-scope-type
   (make <gi-enum>
-    #:gi-name "GIScopeType"
+    #:g-name "GIScopeType"
     #:enum-set '(invalid
                  call
                  async
@@ -191,7 +191,7 @@
 
 (define %gi-transfer
   (make <gi-enum>
-    #:gi-name "GITransfer"
+    #:g-name "GITransfer"
     #:enum-set '(nothing
                  container
                  everything)))

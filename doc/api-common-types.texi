@@ -32,7 +32,7 @@ a @code{GITypeInfo}:
 
 
 @indentedblock
-@emph{gi-name}: GITypeTag  @*
+@emph{g-name}: GITypeTag  @*
 @emph{scm-name}: gi-type-tag @*
 @emph{enum-set}:
 @indentedblock
@@ -71,7 +71,7 @@ a @code{GITypeInfo}:
 
 
 @indentedblock
-@emph{gi-name}: GIArrayType  @*
+@emph{g-name}: GIArrayType  @*
 @emph{scm-name}: gi-array-type @*
 @emph{enum-set}:
 @indentedblock

@@ -68,7 +68,7 @@
          (field-types (gi-struct-field-types info)))
     (make <gi-struct>
       #:g-type id
-      #:gi-name name
+      #:g-name name
       #:alignment (g-struct-info-get-alignment info)
       #:size (g-struct-info-get-size info)
       #:is-gtype-struct? (g-struct-info-is-gtype-struct info)

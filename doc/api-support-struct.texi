@@ -24,7 +24,7 @@ types.
 
 @indentedblock
 @table @code
-@item @ref{!gi-name_}
+@item @ref{!g-name_}
 @item @ref{!scm-name__}
 @item @ref{!alignment}
 @item @ref{!size}
@@ -55,9 +55,9 @@ The @code{<gi-struct>} class is a subclass of @code{<struct>}.  Its
 
 @indentedblock
 @table @code
-@item @emph{gi-name}
-#:accessor !gi-name @*
-#:init-keyword #:gi-name
+@item @emph{g-name}
+#:accessor !g-name @*
+#:init-keyword #:g-name
 
 @item @emph{scm-name}
 #:accessor !scm-name
@@ -103,7 +103,7 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 
 @subheading Procedures and Accessors
 
-@anchor{!gi-name_}
+@anchor{!g-name_}
 @anchor{!scm-name__}
 @anchor{!alignment}
 @anchor{!size}
@@ -112,7 +112,7 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @anchor{!field-types}
 @anchor{!scm-types}
 @anchor{!init-vals}
-@deffn Accessor !gi-name (inst <gi-struct>)
+@deffn Accessor !g-name (inst <gi-struct>)
 @deffnx Accessor !scm-name (inst <gi-struct>)
 @deffnx Accessor !alignment (inst <gi-struct>)
 @deffnx Accessor !size (inst <gi-struct>)

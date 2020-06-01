@@ -189,7 +189,7 @@ An instance of @code{<gi-flag>}, who's members are the scheme
 representation of the @code{GIFunctionInfoFlags}:
 
 @indentedblock
-@emph{gi-name}: GIFunctionInfoFlags  @*
+@emph{g-name}: GIFunctionInfoFlags  @*
 @emph{scm-name}: gi-function-info-flags  @*
 @emph{enum-set}:
 @indentedblock

@@ -60,7 +60,7 @@
 
 (define %gi-type-tag
   (make <gi-enum>
-    #:gi-name "GITypeTag"
+    #:g-name "GITypeTag"
     #:enum-set '(void
                  boolean
                  int8
@@ -86,7 +86,7 @@
 
 (define %gi-array-type
   (make <gi-enum>
-    #:gi-name "GIArrayType"
+    #:g-name "GIArrayType"
     #:enum-set '(c
                  array
                  ptr-array

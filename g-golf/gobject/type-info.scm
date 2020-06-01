@@ -150,7 +150,7 @@
 
 (define %g-type-fundamental-flags
   (make <gi-flag>
-    #:gi-name "GTypeFundamentalFlags"
+    #:g-name "GTypeFundamentalFlags"
     #:enum-set '((classed . 1)
                  (instantiable . 2)
                  (derivable . 4)
@@ -160,7 +160,7 @@
   ;; manually built, from the list of fundamental types starting with
   ;; G_TYPE_INVALID -> G_TYPE_OBJECT
   (make <gi-enum>
-    #:gi-name "GTypeFundamentalTypes"
+    #:g-name "GTypeFundamentalTypes"
     #:enum-set '(invalid
                  none
                  interface

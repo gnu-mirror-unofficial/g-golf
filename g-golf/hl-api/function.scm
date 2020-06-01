@@ -59,7 +59,7 @@
 
 
 (g-export describe	;; function and argument
-          !gi-name
+          !g-name
           !scm-name
           !type-desc
 
@@ -193,8 +193,8 @@
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
-      (let* ((gi-name (g-function-info-get-symbol info))
-             (scm-name (g-name->scm-name gi-name))
+      (let* ((g-name (g-function-info-get-symbol info))
+             (scm-name (g-name->scm-name g-name))
              (name (string->symbol scm-name)))
         (or (gi-cache-ref 'function name)
             (let* ((module (resolve-module '(g-golf hl-api function)))
@@ -215,7 +215,7 @@
 (define-class <function> ()
   (info #:accessor !info)
   (namespace #:accessor !namespace)
-  (gi-name #:accessor !gi-name)
+  (g-name #:accessor !g-name)
   (scm-name #:accessor !scm-name)
   (name #:accessor !name)
   (override? #:accessor !override? #:init-value #f)
@@ -243,10 +243,10 @@
                   (error "Missing #:info initarg: " initargs))))
     (next-method self '())
     (let* ((namespace (g-base-info-get-namespace info))
-           (gi-name (g-function-info-get-symbol info))
-           (scm-name (g-name->scm-name gi-name))
+           (g-name (g-function-info-get-symbol info))
+           (scm-name (g-name->scm-name g-name))
            (name (string->symbol scm-name))
-           (override? (gi-override? gi-name))
+           (override? (gi-override? g-name))
            (flags (g-function-info-get-flags info))
            (is-method? (gi-function-info-is-method? info flags))
            (return-type-info (g-callable-info-get-return-type info))
@@ -256,7 +256,7 @@
       (mslot-set! self
                   'info info
                   'namespace namespace
-                  'gi-name gi-name
+                  'g-name g-name
                   'scm-name scm-name
                   'name name
                   'override? override?
@@ -304,7 +304,7 @@
       (!arguments self)))
 
 (define-class <argument> ()
-  (gi-name #:accessor !gi-name #:init-keyword #:gi-name)
+  (g-name #:accessor !g-name #:init-keyword #:g-name)
   (scm-name #:accessor !scm-name #:init-keyword #:scm-name)
   (closure #:accessor !closure)
   (destroy #:accessor !destroy)
@@ -338,8 +338,8 @@
          (next-method self split-rest)))
       (else
        (next-method self '())
-       (let* ((gi-name (g-base-info-get-name info))
-              (scm-name (g-name->scm-name gi-name))
+       (let* ((g-name (g-base-info-get-name info))
+              (scm-name (g-name->scm-name g-name))
               (direction (g-arg-info-get-direction info))
               (type-info (g-arg-info-get-type info))
               (type-tag (g-type-info-get-tag type-info))
@@ -348,7 +348,7 @@
               (forced-type (arg-info-forced-type direction type-tag is-pointer?)))
          (g-base-info-unref type-info)
          (mslot-set! self
-                     'gi-name gi-name
+                     'g-name g-name
                      'scm-name scm-name
                      'closure (g-arg-info-get-closure info)
                      'destroy (g-arg-info-get-destroy info)
@@ -451,8 +451,8 @@
 
 (define (registered-type->gi-type info type)
   (let* ((id (g-registered-type-info-get-g-type info))
-         (gi-name (g-type-name id))
-         (name (string->symbol (g-studly-caps-expand gi-name))))
+         (g-name (g-type-name id))
+         (name (string->symbol (g-studly-caps-expand g-name))))
     (case type
       ((enum)
        (values id
@@ -480,7 +480,7 @@
                #t))
       ((object)
        (let ((module (resolve-module '(g-golf hl-api object)))
-             (c-name (g-name->class-name gi-name)))
+             (c-name (g-name->class-name g-name)))
          ;; In the code below, it is necessary to make sure c-name has
          ;; been defined before to (maybe) get its value, because it
          ;; could be that c-name hasn't been defined yet, due to the
@@ -1207,7 +1207,7 @@
            (gi-union-import info))))
     (make <gi-union>
       #:g-type g-type
-      #:gi-name name
+      #:g-name name
       ;; #:scm-name the initialize method does that
       #:size (g-union-info-get-size info)
       #:alignment (g-union-info-get-alignment info)
@@ -1222,8 +1222,8 @@
 
 (define (make-instance-argument info)
   (let* ((container (g-base-info-get-container info))
-         (gi-name (g-base-info-get-name container))
-         (scm-name (g-name->scm-name gi-name))
+         (g-name (g-base-info-get-name container))
+         (scm-name (g-name->scm-name g-name))
          #;(name (string->symbol scm-name))
          (type (g-base-info-get-type container)))
     (receive (id r-name gi-type confirmed?)
@@ -1231,7 +1231,7 @@
       (g-base-info-unref container)
       (make <argument>
         #:info 'instance
-        #:gi-name gi-name
+        #:g-name g-name
         #:scm-name scm-name
         #:direction 'in
         #:type-tag 'interface

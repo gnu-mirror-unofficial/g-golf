@@ -159,8 +159,8 @@
            #f)))))
 
 (define* (gi-import-constant info)
-  (let* ((gi-name (g-base-info-get-name info))
-         ;; (scm-name (g-name->scm-name gi-name))
+  (let* ((g-name (g-base-info-get-name info))
+         ;; (scm-name (g-name->scm-name g-name))
          ;; (name (string->symbol scm-name))
          (type-info (g-constant-info-get-type info))
          (type-tag (g-type-info-get-tag type-info))
@@ -170,4 +170,4 @@
          (constant (gi-argument-ref value field)))
     (g-base-info-unref type-info)
     (values constant
-            gi-name)))
+            g-name)))

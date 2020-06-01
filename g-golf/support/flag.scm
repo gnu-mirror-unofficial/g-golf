@@ -60,11 +60,11 @@
 
 #;(define-method (initialize (self <gi-enum>) initargs)
   (next-method)
-  (let ((gi-name (get-keyword #:gi-name initargs #f)))
-    (and gi-name
-         (set! (!gi-name self) gi-name)
+  (let ((g-name (get-keyword #:g-name initargs #f)))
+    (and g-name
+         (set! (!g-name self) g-name)
          (set! (!scm-name self)
-               (g-name->scm-name gi-name)))))
+               (g-name->scm-name g-name)))))
 
 (define (gi-gflags->integer gflags flags)
   (let ((enum-set (!enum-set gflags)))

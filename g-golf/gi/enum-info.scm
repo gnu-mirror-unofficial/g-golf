@@ -65,7 +65,7 @@
 	 (e-vals (gi-enum-value-values info)))
     (make (if flag <gi-flag> <gi-enum>)
       #:g-type id
-      #:gi-name name
+      #:g-name name
       #:enum-set e-vals)))
 
 (define (gi-enum-value-values info)

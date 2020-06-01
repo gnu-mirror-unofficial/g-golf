@@ -132,7 +132,7 @@ $4 = #<<gi-flag> 5642cb13c5d0>
 Slots are:
      enum-set = ((mapped . 2) (realized . 4) (reactive . 8) (visible . 16) (no-layout . 32))
      g-type = 94844874149456
-     gi-name = "ClutterActorFlags"
+     g-name = "ClutterActorFlags"
      scm-name = "clutter-actor-flags"
 @end lisp
 @end deffn
