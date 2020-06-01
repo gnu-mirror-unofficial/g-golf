@@ -91,7 +91,7 @@
                                    (g-name (g-base-info-get-name g-property))
                                    (g-flags (g-property-info-get-flags g-property))
 	                           (g-type (gi-property-g-type g-property))
-                                   (scm-name (g-name->scm-name g-name))
+                                   (scm-name (g-name->name g-name 'as-string))
                                    (s-name (string->symbol scm-name))
                                    (k-name (with-input-from-string
                                                (string-append "#:" scm-name)

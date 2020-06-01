@@ -80,8 +80,7 @@
 		    (get-enum-values info
 				     n
 				     (+ i 1)
-				     (cons (cons (string->symbol
-                                                  (g-name->scm-name g-name))
+				     (cons (cons (g-name->name g-name)
                                                  value)
 					   v-set)))))))
     (get-enum-values info

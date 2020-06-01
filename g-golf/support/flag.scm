@@ -64,7 +64,7 @@
     (and g-name
          (set! (!g-name self) g-name)
          (set! (!scm-name self)
-               (g-name->scm-name g-name)))))
+               (g-name->name g-name 'as-string)))))
 
 (define (gi-gflags->integer gflags flags)
   (let ((enum-set (!enum-set gflags)))

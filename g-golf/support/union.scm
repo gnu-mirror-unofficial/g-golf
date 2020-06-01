@@ -117,4 +117,4 @@
   (let ((g-name (get-keyword #:g-name initargs #f)))
     (and g-name
          (slot-set! self
-                    'scm-name (g-name->scm-name g-name)))))
+                    'scm-name (g-name->name g-name 'as-string)))))

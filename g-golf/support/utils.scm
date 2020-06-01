@@ -46,7 +46,7 @@
             g-studly-caps-expand
 	    %g-name-transform-exceptions
             %g-studly-caps-expand-token-exceptions
-	    g-name->scm-name
+	    g-name->name
 	    g-name->class-name
 	    #;gi-class-name->method-name
             gi-type-tag->ffi
@@ -157,14 +157,18 @@
     ;; ("GEnum" . "genum")  ;; no sure yet
     ("GObject" . "gobject")))
 
-(define (g-name->scm-name name)
-  (or (assoc-ref %g-name-transform-exceptions name)
-      (g-studly-caps-expand name)))
+(define* (g-name->name g-name #:optional (as-string? #f))
+  (let ((scm-name (or (assoc-ref %g-name-transform-exceptions g-name)
+                      (g-studly-caps-expand g-name))))
+    (if as-string?
+        scm-name
+        (string->symbol scm-name))))
 
-(define (g-name->class-name name)
-  (string->symbol (string-append "<"
-				 (g-name->scm-name name)
-				 ">")))
+(define (g-name->class-name g-name)
+  (let ((scm-name (g-name->name g-name 'as-string)))
+    (string->symbol (string-append "<"
+                                   scm-name
+                                   ">"))))
 
 ;; Not sure this is used but let's keep it as well
 #;(define (gi-class-name->method-name class-name name)

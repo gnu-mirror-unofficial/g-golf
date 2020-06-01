@@ -146,16 +146,16 @@
                 (g-studly-caps-expand "WebKitWebContent"))
   (assert-equal '<webkit-web-content>
 		(g-name->class-name "WebKitWebContent"))
-  (assert-equal "webkit-network-proxy-settings-new"
-                (g-name->scm-name "webkit_network_proxy_settings_new"))
+  (assert-equal 'webkit-network-proxy-settings-new
+                (g-name->name "webkit_network_proxy_settings_new"))
   (assert-equal "bluefox"
-                (g-name->scm-name "BLuefox"))
+                (g-name->name "BLuefox" 'as-string))
   (assert-equal "clutter-actor"
-		(g-name->scm-name "ClutterActor"))
+		(g-name->name "ClutterActor" 'as-string))
   (assert-equal '<clutter-actor>
 		(g-name->class-name "ClutterActor"))
-  (assert-equal "g-variant-type-checked-"
-                (g-name->scm-name "g_variant_type_checked_")))
+  (assert-equal 'g-variant-type-checked-
+                (g-name->name "g_variant_type_checked_")))
 
 
 (exit-with-summary (run-all-defined-test-cases))

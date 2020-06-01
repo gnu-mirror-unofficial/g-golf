@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -13,7 +13,7 @@
 @indentedblock
 @table @code
 @item @ref{g-studly-caps-expand}
-@item @ref{g-name->scm-name}
+@item @ref{g-name->name}
 @item @ref{g-name->class-name}
 @item @ref{gi-type-tag->ffi}
 @item @ref{gi-type-tag->init-val}
@@ -46,7 +46,7 @@ G-Golf utilities low level API.@*
 Returns a string.
 
 Given a @samp{@uref{@value{UWIKI-CAMELCASE}, Camel Case}} string, this
-procedure@footnote{This procedure, as well as @ref{g-name->scm-name} and
+procedure@footnote{This procedure, as well as @ref{g-name->name} and
 @ref{g-name->class-name} come from @uref{@value{UGG}, Guile-Gnome},
 where there are named @code{GStudlyCapsExpand},
 @code{gtype-name->scm-name} and @code{gtype-name->class-name}, in the
@@ -74,16 +74,20 @@ $3 = "webkit-web-context"
 @end deffn
 
 
-@anchor{g-name->scm-name}
+@anchor{g-name->name}
 @anchor{g-name->class-name}
-@deffn Procedure g-name->scm-name name
-@deffnx Procedure g-name->class-name name
+@deffn Procedure g-name->name g-name [as-string? #f]
+@deffnx Procedure g-name->class-name g-name
 
-Returns a string - a symbol - respectively.
+Return a symbol name (or a string for the former, if the optional
+parameter is not @code{#f}).
 
-The former obtains the scheme name for @var{name}, by looking for a
-possible entry in @ref{%g-name-transform-exceptions}, then, if it
-failed, by calling @ref{g-studly-caps-expand}.
+The former first obtains a string, the scheme representation for
+@var{g-name}, by looking for a possible entry in
+@ref{%g-name-transform-exceptions}, then, if it failed, by calling
+@ref{g-studly-caps-expand}. It then either returns that string, if the
+optional @var{as-string?} is not @code{#f}, or its symbol name, by
+calling @code{string->symbol}.
 
 The later uses the former, surrounds the result using @code{#\<} and
 @code{#\>} characters then calls @code{string->symbol}. For example:
@@ -126,8 +130,8 @@ will either be @code{0} (zero), or @code{%null-pointer}.
 @defvar %g-name-transform-exceptions
 
 Contains an alist where each @code{key} is a GType name exception for
-the @ref{g-name->scm-name} procedure, and the corresponding
-@code{value} the string that @ref{g-name->scm-name} will return
+the @ref{g-name->name} procedure, and the corresponding
+@code{value} the string that @ref{g-name->name} will return
 instead. As an example, it could be defined as:
 
 @lisp

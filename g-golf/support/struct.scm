@@ -85,7 +85,7 @@
     (and g-name
          (mslot-set! self
                      'g-name g-name
-                     'scm-name (g-name->scm-name g-name)))
+                     'scm-name (g-name->name g-name 'as-string)))
     (and field-types
          (mslot-set! self
                      'scm-types (map gi-type-tag->ffi field-types)

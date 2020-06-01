@@ -160,8 +160,7 @@
 
 (define* (gi-import-constant info)
   (let* ((g-name (g-base-info-get-name info))
-         ;; (scm-name (g-name->scm-name g-name))
-         ;; (name (string->symbol scm-name))
+         ;; (name (g-name->name g-name))
          (type-info (g-constant-info-get-type info))
          (type-tag (g-type-info-get-tag type-info))
          (field (gi-type-tag->field type-tag))

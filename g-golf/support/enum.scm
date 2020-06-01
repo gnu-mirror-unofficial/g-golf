@@ -143,4 +143,4 @@
     (and g-name
          (set! (!g-name self) g-name)
          (set! (!scm-name self)
-               (g-name->scm-name g-name)))))
+               (g-name->name g-name 'as-string)))))
