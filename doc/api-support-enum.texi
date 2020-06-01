@@ -34,7 +34,7 @@ types.
 @item @ref{enum->names}
 @item @ref{!g-type_}
 @item @ref{!g-name}
-@item @ref{!scm-name}
+@item @ref{!name__}
 @end table
 @end indentedblock
 
@@ -112,12 +112,12 @@ The @code{<gi-enum>} class is a subclass of @code{<enum>}.  Its
 #:accessor !g-name @*
 #:init-keyword #:g-name
 
-@item @emph{scm-name}
-#:accessor !scm-name
+@item @emph{name}
+#:accessor !name
 @end table
 @end indentedblock
 
-The @code{scm-name} slot is automatically initialized.
+The @code{name} slot is automatically initialized.
 
 Instances of the @code{<gi-enum>} class are immutable (to be precise,
 there are not meant to be mutated, see @ref{GOOPS Notes and
@@ -168,11 +168,11 @@ names for @var{inst}, respectively.
 
 @anchor{!g-type_}
 @anchor{!g-name}
-@anchor{!scm-name}
+@anchor{!name__}
 @deffn Accessor !g-type (inst <gi-enum>)
 @deffnx Accessor !g-name (inst <gi-enum>)
-@deffnx Accessor !scm-name (inst <gi-enum>)
+@deffnx Accessor !name (inst <gi-enum>)
 
-Returns the content of the g-type, g-name or scm-name slot for
-@var{inst}, respectively.
+Returns the content of the g-type, g-name or name slot for @var{inst},
+respectively.
 @end deffn

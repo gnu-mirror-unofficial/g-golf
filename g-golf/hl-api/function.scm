@@ -1203,7 +1203,7 @@
     (make <gi-union>
       #:g-type g-type
       #:g-name name
-      ;; #:scm-name the initialize method does that
+      ;; #:name the initialize method does that
       #:size (g-union-info-get-size info)
       #:alignment (g-union-info-get-alignment info)
       #:fields fields

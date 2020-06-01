@@ -200,20 +200,20 @@
   (let ((gi-enum (g-value-get-gi-enum g-value))
         (val (g_value_get_enum g-value)))
     (or (enum->symbol gi-enum val)
-        (error "No such " (!scm-name gi-enum) " value: " val))))
+        (error "No such " (!name gi-enum) " value: " val))))
 
 (define-method (g-value-set-enum g-value (val <integer>))
   (let ((gi-enum (g-value-get-gi-enum g-value)))
     (if (enum->symbol gi-enum val)
         (g_value_set_enum g-value val)
-        (error "No such " (!scm-name gi-enum) " value: " val))))
+        (error "No such " (!name gi-enum) " value: " val))))
 
 (define-method (g-value-set-enum g-value (sym <symbol>))
   (let* ((gi-enum (g-value-get-gi-enum g-value))
          (val (enum->value gi-enum sym)))
     (if val
         (g_value_set_enum g-value val)
-        (error "No such " (!scm-name gi-enum) " key: " sym))))
+        (error "No such " (!name gi-enum) " key: " sym))))
 
 (define (g-value-get-gi-flag g-value)
   (let* ((id (g-value->g-type-id g-value))
@@ -226,14 +226,14 @@
   (let ((gflags (g-value-get-gi-flag g-value))
         (val (g_value_get_flags g-value)))
     (or (gi-integer->gflags gflags val)
-        (error "No such " (!scm-name gflags) " value: " val))))
+        (error "No such " (!name gflags) " value: " val))))
 
 (define (g-value-set-flags g-value flags)
   (let* ((gflags (g-value-get-gi-flag g-value))
          (val (gi-gflags->integer gflags flags)))
     (if val
         (g_value_set_flags g-value val)
-        (error "No such " (!scm-name gflags) " key: " flags))))
+        (error "No such " (!name gflags) " key: " flags))))
 
 (define (g-value-get-string g-value)
   (let ((pointer (g_value_get_string g-value)))
@@ -256,7 +256,7 @@
   (let ((gi-boxed (g-value-get-gi-boxed g-value))
         (value (g_value_get_boxed g-value)))
     (cond ((is-a? gi-boxed <gi-union>)
-           (if (string=? (!scm-name gi-boxed) "gdk-event")
+           (if (eq? (!name gi-boxed) 'gdk-event)
                (make <gdk-event> #:event value)
                value))
           ((or (!is-opaque? gi-boxed)

@@ -25,7 +25,7 @@ types.
 @indentedblock
 @table @code
 @item @ref{!g-name_}
-@item @ref{!scm-name__}
+@item @ref{!name____}
 @item @ref{!alignment}
 @item @ref{!size}
 @item @ref{!is-gtype-struct?}
@@ -59,8 +59,8 @@ The @code{<gi-struct>} class is a subclass of @code{<struct>}.  Its
 #:accessor !g-name @*
 #:init-keyword #:g-name
 
-@item @emph{scm-name}
-#:accessor !scm-name
+@item @emph{name}
+#:accessor !name
 
 @item @emph{alignment}
 #:accessor !alignment @*
@@ -92,7 +92,7 @@ The @code{<gi-struct>} class is a subclass of @code{<struct>}.  Its
 @end table
 @end indentedblock
 
-The @code{scm-name} and @code{scm-types} slots are automatically
+The @code{name} and @code{scm-types} slots are automatically
 initialized.
 
 Instances of the @code{<gi-struct>} are immutable (to be precise, there
@@ -104,7 +104,7 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @subheading Procedures and Accessors
 
 @anchor{!g-name_}
-@anchor{!scm-name__}
+@anchor{!name____}
 @anchor{!alignment}
 @anchor{!size}
 @anchor{!is-gtype-struct?}
@@ -113,7 +113,7 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @anchor{!scm-types}
 @anchor{!init-vals}
 @deffn Accessor !g-name (inst <gi-struct>)
-@deffnx Accessor !scm-name (inst <gi-struct>)
+@deffnx Accessor !name (inst <gi-struct>)
 @deffnx Accessor !alignment (inst <gi-struct>)
 @deffnx Accessor !size (inst <gi-struct>)
 @deffnx Accessor !is-gtype-struct? (inst <gi-struct>)

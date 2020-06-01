@@ -63,7 +63,7 @@
 	  enum->names
           !g-type
           !g-name
-          !scm-name)
+          !name)
 
 
 (define-class <enum> ()
@@ -135,12 +135,12 @@
             #:init-value #f)
   (g-name #:accessor !g-name
            #:init-keyword #:g-name)
-  (scm-name #:accessor !scm-name))
+  (name #:accessor !name))
 
 (define-method (initialize (self <gi-enum>) initargs)
   (next-method)
   (let ((g-name (get-keyword #:g-name initargs #f)))
     (and g-name
          (set! (!g-name self) g-name)
-         (set! (!scm-name self)
-               (g-name->name g-name 'as-string)))))
+         (set! (!name self)
+               (g-name->name g-name)))))

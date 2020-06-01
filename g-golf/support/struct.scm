@@ -44,7 +44,7 @@
 
 (g-export !g-type
           !g-name
-          !scm-name
+          !name
           !alignment
           !size
           !is-gtype-struct?
@@ -62,7 +62,7 @@
             #:init-value #f)
   (g-name #:accessor !g-name
            #:init-keyword #:g-name)
-  (scm-name #:accessor !scm-name)
+  (name #:accessor !name)
   (alignment #:accessor !alignment
              #:init-keyword #:alignment)
   (size #:accessor !size
@@ -85,7 +85,7 @@
     (and g-name
          (mslot-set! self
                      'g-name g-name
-                     'scm-name (g-name->name g-name 'as-string)))
+                     'name (g-name->name g-name)))
     (and field-types
          (mslot-set! self
                      'scm-types (map gi-type-tag->ffi field-types)

@@ -63,8 +63,8 @@
   (let ((g-name (get-keyword #:g-name initargs #f)))
     (and g-name
          (set! (!g-name self) g-name)
-         (set! (!scm-name self)
-               (g-name->name g-name 'as-string)))))
+         (set! (!name self)
+               (g-name->name g-name)))))
 
 (define (gi-gflags->integer gflags flags)
   (let ((enum-set (!enum-set gflags)))

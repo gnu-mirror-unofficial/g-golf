@@ -27,7 +27,7 @@ types.
 @item @ref{c-union-set!}
 @item @ref{!g-type__}
 @item @ref{!g-name__}
-@item @ref{!scm-name___}
+@item @ref{!name___}
 @item @ref{!size_}
 @item @ref{!alignment_}
 @item @ref{!fields}
@@ -66,8 +66,8 @@ The @code{<gi-union>} class. Its @code{class-direct-slots} are:
 #:accessor !g-name @*
 #:init-keyword #:g-name
 
-@item @emph{scm-name}
-#:accessor !scm-name
+@item @emph{name}
+#:accessor !name
 
 @item @emph{size}
 #:accessor !size @*
@@ -96,7 +96,7 @@ The @code{<gi-union>} class. Its @code{class-direct-slots} are:
 @end table
 @end indentedblock
 
-The @code{scm-name} slot is automatically initialized.
+The @code{name} slot is automatically initialized.
 
 Instances of the @code{<gi-union>} are immutable (to be precise, there
 are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
@@ -139,7 +139,7 @@ given its @var{size} and @var{type}.
 
 @anchor{!g-type__}
 @anchor{!g-name__}
-@anchor{!scm-name___}
+@anchor{!name___}
 @anchor{!size_}
 @anchor{!alignment_}
 @anchor{!fields}
@@ -148,7 +148,7 @@ given its @var{size} and @var{type}.
 @anchor{!discriminator}
 @deffn Accessor !g-type (inst <gi-union>)
 @deffnx Accessor !g-name (inst <gi-union>)
-@deffnx Accessor !scm-name (inst <gi-union>)
+@deffnx Accessor !name (inst <gi-union>)
 @deffnx Accessor !size (inst <gi-union>)
 @deffnx Accessor !alignment (inst <gi-union>)
 @deffnx Accessor !fields (inst <gi-union>)
