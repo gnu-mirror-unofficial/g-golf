@@ -191,8 +191,8 @@
 
 (define (g-value-get-gi-enum g-value)
   (let* ((id (g-value->g-type-id g-value))
-         (name (g-studly-caps-expand (g-type-name id)))
-         (key (string->symbol name)))
+         (g-name (g-studly-caps-expand (g-type-name id)))
+         (key (string->symbol g-name)))
     (or (gi-cache-ref 'enum key)
         (error "No such enum type: " key))))
 
@@ -217,8 +217,8 @@
 
 (define (g-value-get-gi-flag g-value)
   (let* ((id (g-value->g-type-id g-value))
-         (name (g-studly-caps-expand (g-type-name id)))
-         (key (string->symbol name)))
+         (g-name (g-studly-caps-expand (g-type-name id)))
+         (key (string->symbol g-name)))
     (or (gi-cache-ref 'flag key)
         (error "No such flag type: " key))))
 
@@ -247,8 +247,8 @@
 
 (define (g-value-get-gi-boxed g-value)
   (let* ((id (g-value->g-type-id g-value))
-         (name (g-studly-caps-expand (g-type-name id)))
-         (key (string->symbol name)))
+         (g-name (g-studly-caps-expand (g-type-name id)))
+         (key (string->symbol g-name)))
     (or (gi-cache-ref 'boxed key)
         (error "No such boxed type: " key))))
 

@@ -61,11 +61,11 @@
 
 (define* (gi-enum-import info #:key (flag #f))
   (let* ((id (g-registered-type-info-get-g-type info))
-         (name (g-type-name id))
+         (g-name (g-type-name id))
 	 (e-vals (gi-enum-value-values info)))
     (make (if flag <gi-flag> <gi-enum>)
       #:g-type id
-      #:g-name name
+      #:g-name g-name
       #:enum-set e-vals)))
 
 (define (gi-enum-value-values info)
@@ -74,14 +74,14 @@
 	      (if (= i n)
 		  (reverse! v-set)
 		  (let* ((value-info (g-enum-info-get-value info i))
-			 (name (g-base-info-get-name value-info))
+			 (g-name (g-base-info-get-name value-info))
 			 (value (g-value-info-get-value value-info)))
 		    (g-base-info-unref value-info)
 		    (get-enum-values info
 				     n
 				     (+ i 1)
 				     (cons (cons (string->symbol
-                                                  (g-studly-caps-expand name))
+                                                  (g-name->scm-name g-name))
                                                  value)
 					   v-set)))))))
     (get-enum-values info

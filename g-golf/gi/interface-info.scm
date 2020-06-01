@@ -72,9 +72,9 @@
 
 (define (gi-interface-import info)
   (let* ((id (g-registered-type-info-get-g-type info))
-         (name (g-type-name id))
-         (key (string->symbol (g-studly-caps-expand name))))
-    (list 'interface key name id #t)))
+         (g-name (g-type-name id))
+         (key (string->symbol (g-name->scm-name g-name))))
+    (list 'interface key g-name id #t)))
 
 (define %iface-fmt
   "

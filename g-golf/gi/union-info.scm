@@ -67,11 +67,11 @@
 ;;;
 
 (define* (gi-union-import info #:key (flag #f))
-  (let* ((id (g-registered-type-info-get-g-type info))
-         (name (g-type-name id))
-	 (u-fields (gi-union-field-desc info)))
+  (let (#;(id (g-registered-type-info-get-g-type info))
+        #;(g-name (g-type-name id))
+        (u-fields (gi-union-field-desc info)))
     ;; The union fields need to be further processed, but the
-    ;; functionlty to do so is part of the (g-golf hl-api function)
+    ;; functionality to do so is part of the (g-golf hl-api function)
     ;; module. For this reason, unlike for gi-struct-import, we do not
     ;; create the <gi-union> instance and let this to be done by the
     ;; caller.

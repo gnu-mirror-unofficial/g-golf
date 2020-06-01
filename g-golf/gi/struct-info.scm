@@ -64,11 +64,11 @@
 
 (define (gi-struct-import info)
   (let* ((id (g-registered-type-info-get-g-type info))
-         (name (g-type-name id))
+         (g-name (g-type-name id))
          (field-types (gi-struct-field-types info)))
     (make <gi-struct>
       #:g-type id
-      #:g-name name
+      #:g-name g-name
       #:alignment (g-struct-info-get-alignment info)
       #:size (g-struct-info-get-size info)
       #:is-gtype-struct? (g-struct-info-is-gtype-struct info)

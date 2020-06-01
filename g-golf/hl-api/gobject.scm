@@ -195,11 +195,11 @@
   #;(install-signals! class))
 
 (define* (g-inst-get-property object property #:optional (g-type #f))
-  (let* ((name (g-base-info-get-name property))
+  (let* ((p-name (g-base-info-get-name property))
          (g-type (or g-type
                      (gi-property-g-type property)))
 	 (g-value (g-value-init g-type)))
-    (g-object-get-property object name g-value)
+    (g-object-get-property object p-name g-value)
     (%g-inst-get-property-value g-value)))
 
 (define (%g-inst-get-property-value g-value)
@@ -213,8 +213,8 @@
                (let* ((module (resolve-module '(g-golf hl-api object)))
                       (r-type (g-value->g-type-id g-value))
                       (info (g-irepository-find-by-gtype r-type))
-                      (name (g-registered-type-info-get-type-name info))
-                      (c-name (g-name->class-name name))
+                      (g-name (g-registered-type-info-get-type-name info))
+                      (c-name (g-name->class-name g-name))
                       (type (module-ref module c-name)))
                  (make type #:g-inst value)))))
       ((interface)
@@ -225,21 +225,21 @@
                (let* ((module (resolve-module '(g-golf hl-api object)))
                       (r-type (g-value->g-type-id g-value))
                       (info (g-irepository-find-by-gtype r-type))
-                      (name (g-registered-type-info-get-type-name info))
-                      (c-name (g-name->class-name name))
+                      (g-name (g-registered-type-info-get-type-name info))
+                      (c-name (g-name->class-name g-name))
                       (type (module-ref module c-name)))
                  (make type #:g-inst value)))))
       (else
        value))))
 
 (define* (g-inst-set-property object property value #:optional (g-type #f))
-  (let* ((name (g-base-info-get-name property))
+  (let* ((p-name (g-base-info-get-name property))
          (g-type (or g-type
                      (gi-property-g-type property)))
 	 (g-value (g-value-init g-type)))
     (g-value-set! g-value
                   (%g-inst-set-property-value g-type value))
-    (g-object-set-property object name g-value)
+    (g-object-set-property object p-name g-value)
     (g-value-unset g-value)
     (values)))
 
