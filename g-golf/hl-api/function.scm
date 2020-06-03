@@ -1015,28 +1015,29 @@
       gslist)
      (let* ((g-first (gi-argument-ref gi-argument 'v-pointer))
             (lst (gi->scm g-first type-tag)))
-       (and lst ;; see gi->scm for why/when ...
-            (match type-desc
-              ((type name gi-type g-type confirmed?)
-               (case type
-                 ((object)
-                  (if confirmed?
-                      (map (lambda (item)
-                             (make gi-type #:g-inst item))
-                        lst)
-                      (match lst
-                        ((x . rest)
-                         (receive (class name g-type)
-                             (g-object-find-class x)
-                           (set! (!type-desc funarg)
-                                 (list 'object name class g-type #t))
-                           (map (lambda (item)
-                                  (make class #:g-inst item))
-                             lst))))))
-                 (else
-                  (warning "Unprocessed g-list/g-slist"
-                           (format #f "~S" type-desc))
-                  lst)))))))
+       (if (null? lst)
+           lst
+           (match type-desc
+             ((type name gi-type g-type confirmed?)
+              (case type
+                ((object)
+                 (if confirmed?
+                     (map (lambda (item)
+                            (make gi-type #:g-inst item))
+                       lst)
+                     (match lst
+                       ((x . rest)
+                        (receive (class name g-type)
+                            (g-object-find-class x)
+                          (set! (!type-desc funarg)
+                                (list 'object name class g-type #t))
+                          (map (lambda (item)
+                                 (make class #:g-inst item))
+                            lst))))))
+                (else
+                 (warning "Unprocessed g-list/g-slist"
+                          (format #f "~S" type-desc))
+                 lst)))))))
     ((ghash
       error)
      (warning "Unimplemented type" (symbol->string type-tag)))

@@ -235,7 +235,7 @@
   ;; been called, which returns #f its argument is a %null-pointer.
   (if (or (not g-first)
           (null-pointer? g-first))
-      #f
+      '()
       (let loop ((g-next g-first)
                  (result '()))
           (if (null-pointer? g-next)
