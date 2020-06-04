@@ -198,13 +198,24 @@
 (gi-import-by-name "GLib" "SpawnFlags"
                    #:with-methods? #f #:force? #t)
 
-;; Some (if not all) GObject subclasses also are subcllasses of
+;; Some (if not all) GObject subclasses also are subclasses of
 ;; GInitiallyUnowned.
 
 (gi-import-by-name "GObject" "InitiallyUnowned"
                    #:with-methods? #f #:force? #t)
 
-;; Required by "Clutter" "ParamSpecUnit"
+;; Although at this stage, G-Golf would properly import "GObject"
+;; "ParamSpec", it's ok to manually import it here anyway: (a) some
+;; namespace define classes that inherit from it, like "Clutter"
+;; "ParamSpecUnit" and (b) it is the returned type of some gtk class
+;; methods, like gtk-container-class-find-child-property. In all use
+;; cases - see (g-golf hl-api function) gi-argument->scm - G-Golf never
+;; create <g-param> instances, and 'blindingly' receive and pass
+;; GParamSpec pointers as received from GObject (just like opaque
+;; structures). Note that the base info name is "ParamSpec" but the
+;; registered type name is "GParam", hence the class is imported as
+;; <g-param>.
+
 (gi-import-by-name "GObject" "ParamSpec"
                    #:with-methods? #f #:force? #t)
 
