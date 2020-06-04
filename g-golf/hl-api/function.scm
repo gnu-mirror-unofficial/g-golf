@@ -447,7 +447,7 @@
 (define (registered-type->gi-type info type)
   (let* ((id (g-registered-type-info-get-g-type info))
          (g-name (g-type-name id))
-         (name (string->symbol (g-studly-caps-expand g-name))))
+         (name (g-name->name g-name)))
     (case type
       ((enum)
        (values id
