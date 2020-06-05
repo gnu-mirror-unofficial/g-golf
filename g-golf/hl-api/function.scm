@@ -698,7 +698,10 @@
                            (error "No such flag(s) " arg " in " gi-type))))
                     ((struct)
                      (case name
-                       ((g-value)
+                       ((void
+                         g-value)
+                        ;; Struct for which the (symbol) name is void
+                        ;; should be considerd opaque.
                         ;; Functions and methods that use GValue(s)
                         ;; should be overridden-ed/manually wrapped to
                         ;; initialize those g-value(s) - and here, arg
@@ -989,16 +992,19 @@
                     (parse-c-struct foreign (!scm-types gi-type)))))))
           ((object)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
-             (and foreign
-                  ;; See the comment in registered-type->gi-type which
-                  ;; describes the role of confirmed? in the pattern.
-                  (if confirmed?
-                      (make gi-type #:g-inst foreign)
-                      (receive (class name g-type)
-                          (g-object-find-class foreign)
-                        (set! (!type-desc funarg)
-                              (list 'object name class g-type #t))
-                        (make class #:g-inst foreign))))))
+             (case name
+               ((<g-param>) foreign)
+               (else
+                (and foreign
+                     ;; See the comment in registered-type->gi-type which
+                     ;; describes the role of confirmed? in the pattern.
+                     (if confirmed?
+                         (make gi-type #:g-inst foreign)
+                         (receive (class name g-type)
+                             (g-object-find-class foreign)
+                           (set! (!type-desc funarg)
+                                 (list 'object name class g-type #t))
+                           (make class #:g-inst foreign))))))))
           ((interface)
            (gi-argument-ref gi-argument 'v-pointer))))))
     ((array)
