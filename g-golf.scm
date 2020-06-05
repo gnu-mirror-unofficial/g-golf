@@ -210,8 +210,8 @@
 ;; "ParamSpecUnit" and (b) it is the returned type of some gtk class
 ;; methods, like gtk-container-class-find-child-property. In all use
 ;; cases - see (g-golf hl-api function) gi-argument->scm - G-Golf never
-;; create <g-param> instances, and 'blindingly' receive and pass
-;; GParamSpec pointers as received from GObject (just like opaque
+;; creates <g-param> instances, and 'blindingly' receive and pass
+;; GParamSpec pointers from/to GObject (just like opaque
 ;; structures). Note that the base info name is "ParamSpec" but the
 ;; registered type name is "GParam", hence the class is imported as
 ;; <g-param>.
