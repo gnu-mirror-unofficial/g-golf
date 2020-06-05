@@ -11,6 +11,20 @@ G-Golf GObject GParamSpec low level API.@*
 GParamSpec — Metadata for parameter specifications.
 
 
+@subheading Procedures
+
+@indentedblock
+@table @code
+@item @ref{g-param-spec-type}
+@item @ref{g-param-spec-type-name}
+@item @ref{g-param-spec-get-default-value}
+@item @ref{g-param-spec-get-name}
+@item @ref{g-param-spec-get-nick}
+@item @ref{g-param-spec-get-blurb}
+@end table
+@end indentedblock
+
+
 @subheading Types and Values
 
 @indentedblock
@@ -24,6 +38,49 @@ GParamSpec — Metadata for parameter specifications.
 
 @code{GParamSpec} is an object structure that encapsulates the metadata
 required to specify parameters, such as e.g. GObject properties.
+
+
+@subheading Procedures
+
+Note: in this section, the @var{p-spec} argument is [must be] a pointer
+to a @code{GParamSpec}.
+
+
+@anchor{g-param-spec-type}
+@anchor{g-param-spec-type-name}
+@deffn Procedure g-param-spec-type p-spec
+@deffnx Procedure g-param-spec-type-name p-spec
+
+Returns an integer or a (symbol) name, respectively.
+
+Obtains and returns the @code{GType} or the @code{GType} (symbol) name
+for @var{p-spec}, respectively.
+@end deffn
+
+
+@anchor{g-param-spec-get-default-value}
+@deffn Procedure g-param-spec-get-default-value p-spec
+
+Returns a pointer.
+
+Obtains and returns the @var{p-spec} default value as pointer to a
+@code{GValue}, which will remain valid for the life of @var{p-spec} and
+must not be modified.
+@end deffn
+
+
+@anchor{g-param-spec-get-name}
+@anchor{g-param-spec-get-nick}
+@anchor{g-param-spec-get-blurb}
+@deffn Procedure g-param-spec-get-name p-spec
+@deffnx Procedure g-param-spec-get-nick p-spec
+@deffnx Procedure g-param-spec-get-blurb p-spec
+
+Returns a string.
+
+Obtains and returns the name, nickname or short description for
+@var{p-spec}, respectively.
+@end deffn
 
 
 @subheading Types and Values

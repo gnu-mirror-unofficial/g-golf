@@ -27,9 +27,13 @@
 
 
 (define-module (g-golf gobject param-spec)
-  #:use-module (oop goops)  
+  #:use-module (oop goops)
+  #:use-module (system foreign)
+  #:use-module (g-golf init)
   #:use-module (g-golf support enum)
   #:use-module (g-golf support flag)
+  #:use-module (g-golf gi utils)
+  #:use-module (g-golf gobject params-vals)
 
   #:duplicates (merge-generics
 		replace
@@ -37,11 +41,75 @@
 		warn
 		last)
 
-  #:export (%g-param-flags))
+  #:export (g-param-spec-type
+            g-param-spec-type-name
+            g-param-spec-get-default-value
+            g-param-spec-get-name
+            g-param-spec-get-nick
+            g-param-spec-get-blurb
+
+            %g-param-flags))
 
 
 ;;;
-;;; GParamSpec
+;;; GObject Low Level API
+;;;
+
+(define (g-param-spec-type p-spec)
+  (g-value->g-type-id
+   (g_param_spec_get_default_value p-spec)))
+
+(define (g-param-spec-type-name p-spec)
+  (g-value->g-type
+   (g_param_spec_get_default_value p-spec)))
+
+(define (g-param-spec-get-default-value p-spec)
+  (g_param_spec_get_default_value p-spec))
+
+(define (g-param-spec-get-name p-spec)
+  (gi->scm (g_param_spec_get_name p-spec)
+           'string))
+
+(define (g-param-spec-get-nick p-spec)
+  (gi->scm (g_param_spec_get_nick p-spec)
+           'string))
+
+(define (g-param-spec-get-blurb p-spec)
+  (gi->scm (g_param_spec_get_blurb p-spec)
+           'string))
+
+
+;;;
+;;; GObject Bindings
+;;;
+
+(define g_param_spec_get_default_value
+  (pointer->procedure '*
+                      (dynamic-func "g_param_spec_get_default_value"
+				    %libgobject)
+                      (list '*)))	;; g-param-spec
+
+(define g_param_spec_get_name
+  (pointer->procedure '*
+                      (dynamic-func "g_param_spec_get_name"
+				    %libgobject)
+                      (list '*)))	;; g-param-spec
+
+(define g_param_spec_get_nick
+  (pointer->procedure '*
+                      (dynamic-func "g_param_spec_get_nick"
+				    %libgobject)
+                      (list '*)))	;; g-param-spec
+
+(define g_param_spec_get_blurb
+  (pointer->procedure '*
+                      (dynamic-func "g_param_spec_get_blurb"
+				    %libgobject)
+                      (list '*)))	;; g-param-spec
+
+
+;;;
+;;; Types and Values
 ;;;
 
 (define %g-param-flags

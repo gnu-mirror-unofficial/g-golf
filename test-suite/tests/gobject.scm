@@ -196,4 +196,24 @@
 ;; we will add a proper test here.
 
 
+;;;
+;;; Param Spec
+;;;
+
+(define-method (test-g-param-spec (self <g-golf-test-gobject>))
+  (gi-import-by-name "Gtk" "HPaned")
+  (let* ((g-type (!g-type <gtk-paned>))
+         (g-class (assert (g-type-class-ref g-type)))
+         (p-spec (assert
+                  (gtk-container-class-find-child-property g-class
+                                                           "resize"))))
+    (assert (g-param-spec-type p-spec))
+    (assert (g-param-spec-type-name p-spec))
+    (assert (g-param-spec-get-default-value p-spec))
+    (assert (g-param-spec-get-name p-spec))
+    (assert (g-param-spec-get-nick p-spec))
+    (assert (g-param-spec-get-blurb p-spec))
+    (assert (g-type-class-unref g-class))))
+
+
 (exit-with-summary (run-all-defined-test-cases))
