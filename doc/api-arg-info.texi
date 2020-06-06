@@ -187,7 +187,7 @@ representation of the direction of a @code{GIArgInfo}:
 
 @indentedblock
 @emph{g-name}: GIDirection  @*
-@emph{scm-name}: gi-direction  @*
+@emph{name}: gi-direction  @*
 @emph{enum-set}:
 @indentedblock
 @table @code
@@ -215,7 +215,7 @@ invoked and is used to decide when the invoke structs can be freed.
 
 @indentedblock
 @emph{g-name}: GIScopeType  @*
-@emph{scm-name}: gi-scope-type  @*
+@emph{name}: gi-scope-type  @*
 @emph{enum-set}:
 @indentedblock
 @table @code
@@ -258,7 +258,7 @@ representation of the @code{GITransfer}:
 
 @indentedblock
 @emph{g-name}: GITransfer  @*
-@emph{scm-name}: gi-transfer  @*
+@emph{name}: gi-transfer  @*
 @emph{enum-set}:
 @indentedblock
 @table @code

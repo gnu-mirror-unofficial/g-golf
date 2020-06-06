@@ -216,7 +216,7 @@ representation of the @code{GdkEventType}.
 
 @indentedblock
 @emph{g-name}: GdkEventType @*
-@emph{scm-name}: gdk-event-type @*
+@emph{name}: gdk-event-type @*
 @emph{enum-set}:
 @indentedblock
 @table @code
@@ -408,7 +408,7 @@ representation of the @code{GdkWindowState}.
 
 @indentedblock
 @emph{g-name}: GdkWindowState @*
-@emph{scm-name}: gdk-window-state @*
+@emph{name}: gdk-window-state @*
 @emph{enum-set}:
 @indentedblock
 @table @code

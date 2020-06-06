@@ -124,7 +124,7 @@ representation of the @code{GSignalFlags}:
 
 @indentedblock
 @emph{g-name}: GSignalFlags  @*
-@emph{scm-name}: g-signal-flags  @*
+@emph{name}: g-signal-flags  @*
 @emph{enum-set}:
 @indentedblock
 @table @code

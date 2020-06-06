@@ -164,7 +164,7 @@ representation of the @code{GTypeFundamentalFlags}:
 
 @indentedblock
 @emph{g-name}: GTypeFundamentalFlags  @*
-@emph{scm-name}: g-type-fundamental-flags  @*
+@emph{name}: g-type-fundamental-flags  @*
 @emph{enum-set}:
 @indentedblock
 @table @code
@@ -202,7 +202,7 @@ given by @code{G_TYPE_FUNDAMENTAL_SHIFT} (which we also have to apply,
 to get to the type ID for the fundamental number @code{x}).}
 @*
 
-@emph{scm-name}: g-type-fundamental-types @*
+@emph{name}: g-type-fundamental-types @*
 @emph{enum-set}:
 @indentedblock
 @table @code

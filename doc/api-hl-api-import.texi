@@ -133,7 +133,7 @@ Slots are:
      enum-set = ((mapped . 2) (realized . 4) (reactive . 8) (visible . 16) (no-layout . 32))
      g-type = 94844874149456
      g-name = "ClutterActorFlags"
-     scm-name = "clutter-actor-flags"
+     name = clutter-actor-flags
 @end lisp
 @end deffn
 
@@ -161,10 +161,10 @@ here above, as part of the @ref{gi-import-by-name} documentation entry.
 
 Every imported @ref{<gi-enum>}, @ref{<gi-flag>} and @ref{<gi-struct>}
 instance is cached under the @code{'enum}, @code{'flag} and
-@code{'boxed} main key (respectively), and using the symbol
-representation of the value of their scm-name slot as the secondary
-key. For example, reusing the "Clutter" "ActorFlags" namespace/name
-introduced above, you would retreive its @ref{<gi-flag>} instance as is:
+@code{'boxed} main key (respectively), using the content of their
+(symbol) @code{name} slot as the secondary key. For example, reusing the
+"Clutter" "ActorFlags" namespace/name introduced above, you would
+retreive its @ref{<gi-flag>} instance as is:
 
 @lisp
 @dots{}

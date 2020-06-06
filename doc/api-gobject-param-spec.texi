@@ -93,7 +93,7 @@ representation of the @code{GParamFlags}:
 
 @indentedblock
 @emph{type-name}: GParamFlags  @*
-@emph{scm-name}: g-param-flags @*
+@emph{name}: g-param-flags @*
 @emph{enum-set}:
 @indentedblock
 @table @code

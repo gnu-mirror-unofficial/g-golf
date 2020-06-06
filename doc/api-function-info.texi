@@ -190,7 +190,7 @@ representation of the @code{GIFunctionInfoFlags}:
 
 @indentedblock
 @emph{g-name}: GIFunctionInfoFlags  @*
-@emph{scm-name}: gi-function-info-flags  @*
+@emph{name}: gi-function-info-flags  @*
 @emph{enum-set}:
 @indentedblock
 @table @code

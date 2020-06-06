@@ -33,7 +33,7 @@ a @code{GITypeInfo}:
 
 @indentedblock
 @emph{g-name}: GITypeTag  @*
-@emph{scm-name}: gi-type-tag @*
+@emph{name}: gi-type-tag @*
 @emph{enum-set}:
 @indentedblock
 void		@*
@@ -72,7 +72,7 @@ a @code{GITypeInfo}:
 
 @indentedblock
 @emph{g-name}: GIArrayType  @*
-@emph{scm-name}: gi-array-type @*
+@emph{name}: gi-array-type @*
 @emph{enum-set}:
 @indentedblock
 c		@*
