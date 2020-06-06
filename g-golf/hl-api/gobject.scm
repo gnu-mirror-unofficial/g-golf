@@ -204,14 +204,14 @@
 
 (define (%g-inst-get-property-value g-value)
   (let ((value (g-value-ref g-value)))
-    (case (g-value->g-type g-value)
+    (case (g-value-type-tag g-value)
       ((object)
        (if (or (not value)
                (null-pointer? value))
            #f
            (or (g-inst-cache-ref value)
                (let* ((module (resolve-module '(g-golf hl-api object)))
-                      (r-type (g-value->g-type-id g-value))
+                      (r-type (g-value-type g-value))
                       (info (g-irepository-find-by-gtype r-type))
                       (g-name (g-registered-type-info-get-type-name info))
                       (c-name (g-name->class-name g-name))
@@ -223,7 +223,7 @@
            #f
            (or (g-inst-cache-ref value)
                (let* ((module (resolve-module '(g-golf hl-api object)))
-                      (r-type (g-value->g-type-id g-value))
+                      (r-type (g-value-type g-value))
                       (info (g-irepository-find-by-gtype r-type))
                       (g-name (g-registered-type-info-get-type-name info))
                       (c-name (g-name->class-name g-name))

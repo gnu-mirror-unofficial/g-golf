@@ -261,13 +261,13 @@
 
 (define (g-closure-marshal-g-value-ref g-value param-arg param-vals param-args)
   (let ((value (g-value-ref g-value)))
-    (case (g-value->g-type g-value)
+    (case (g-value-type-tag g-value)
       ((object)
        (if (null-pointer? value)
            #f
            (or (g-inst-cache-ref value)
                (let* ((module (resolve-module '(g-golf hl-api object)))
-                      (r-type (g-value->g-type-id g-value))
+                      (r-type (g-value-type g-value))
                       (info (g-irepository-find-by-gtype r-type))
                       (g-name (g-registered-type-info-get-type-name info))
                       (c-name (g-name->class-name g-name))
@@ -354,7 +354,7 @@
     (g-closure-marshal-g-value-ref g-value param-arg param-vals param-args)))
 
 (define (g-closure-marshal-g-value-return-val g-value return-val)
-  (case (g-value->g-type g-value)
+  (case (g-value-type-tag g-value)
     ((object)
      (!g-inst return-val))
     (else

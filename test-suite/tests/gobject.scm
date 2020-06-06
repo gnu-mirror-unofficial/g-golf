@@ -91,10 +91,12 @@
   (assert (g-value-unset
            (g-value-init (symbol->g-type 'float)))))
 
-(define-method (test-g-value->g-type* (self <g-golf-test-gobject>))
+(define-method (test-g-value-type* (self <g-golf-test-gobject>))
   (let ((g-value (g-value-init %align-info-g-type)))
-    (assert-true (= (g-value->g-type-id g-value) %align-info-g-type))
-    (assert-true (eq? (g-value->g-type g-value) 'enum))))
+    (assert-true (= (g-value-type g-value) %align-info-g-type))
+    (assert-true (string=? (g-value-type-name g-value)
+                           "ClutterActorAlign"))
+    (assert-true (eq? (g-value-type-tag g-value) 'enum))))
 
 (define-method (test-g-value-get-boolean (self <g-golf-test-gobject>))
   (let ((g-value (g-value-init (symbol->g-type 'boolean))))

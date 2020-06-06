@@ -51,8 +51,9 @@
 		warn
 		last)
 
-  #:export (g-value->g-type-id
-            g-value->g-type
+  #:export (g-value-type
+            g-value-type-tag
+            g-value-type-name
             g-value-ref
             g-value-set!
             g-value-get-int
@@ -88,70 +89,77 @@
 (define (g-value-parse g-value)
   (parse-c-struct g-value %g-value-struct))
 
-(define (g-value->g-type-id g-value)
+(define (g-value-type g-value)
   (match (g-value-parse g-value)
     ((g-type _ _) g-type)))
 
-(define (g-value->g-type g-value)
+(define (g-value-type-tag g-value)
   (match (g-value-parse g-value)
     ((g-type _ _)
      (g-type->symbol g-type))))
 
+(define (g-value-type-name g-value)
+  (match (g-value-parse g-value)
+    ((g-type _ _)
+     (g-type-name g-type))))
+
 (define (g-value-ref g-value)
-  (case (g-value->g-type g-value)
-    ((boolean)
-     (g-value-get-boolean g-value))
-    ((uint)
-     (g-value-get-uint g-value))
-    ((int)
-     (g-value-get-int g-value))
-    ((float)
-     (g-value-get-float g-value))
-    ((double)
-     (g-value-get-double g-value))
-    ((enum)
-     (g-value-get-enum g-value))
-    ((flags)
-     (g-value-get-flags g-value))
-    ((string)
-     (g-value-get-string g-value))
-    ((boxed)
-     (g-value-get-boxed g-value))
-    ((pointer)
-     (g-value-get-pointer g-value))
-    ((object
-      interface)
-     (g-value-get-object g-value))
-    (else
-     (error "Not implemented:" (g-value->g-type g-value)))))
+  (let ((type-tag (g-value-type-tag g-value)))
+    (case type-tag
+      ((boolean)
+       (g-value-get-boolean g-value))
+      ((uint)
+       (g-value-get-uint g-value))
+      ((int)
+       (g-value-get-int g-value))
+      ((float)
+       (g-value-get-float g-value))
+      ((double)
+       (g-value-get-double g-value))
+      ((enum)
+       (g-value-get-enum g-value))
+      ((flags)
+       (g-value-get-flags g-value))
+      ((string)
+       (g-value-get-string g-value))
+      ((boxed)
+       (g-value-get-boxed g-value))
+      ((pointer)
+       (g-value-get-pointer g-value))
+      ((object
+        interface)
+       (g-value-get-object g-value))
+      (else
+       (error "Not implemented:" type-tag)))))
 
 (define (g-value-set! g-value value)
-  (case (g-value->g-type g-value)
-    ((boolean)
-     (g-value-set-boolean g-value value))
-    ((uint)
-     (g-value-set-uint g-value value))
-    ((int)
-     (g-value-set-int g-value value))
-    ((float)
-     (g-value-set-float g-value value))
-    ((double)
-     (g-value-set-double g-value value))
-    ((enum)
-     (g-value-set-enum g-value value))
-    ((flags)
-     (g-value-set-flags g-value value))
-    ((string)
-     (g-value-set-string g-value value))
-    ((boxed)
-     (g-value-set-boxed g-value value))
-    ((pointer)
-     (g-value-set-pointer g-value value))
-    ((object
-      interface)
-     (g-value-set-object g-value value))
-    (else
-     (error "Not implemented:" (g-value->g-type g-value)))))
+  (let ((type-tag (g-value-type-tag g-value)))
+    (case type-tag
+      ((boolean)
+       (g-value-set-boolean g-value value))
+      ((uint)
+       (g-value-set-uint g-value value))
+      ((int)
+       (g-value-set-int g-value value))
+      ((float)
+       (g-value-set-float g-value value))
+      ((double)
+       (g-value-set-double g-value value))
+      ((enum)
+       (g-value-set-enum g-value value))
+      ((flags)
+       (g-value-set-flags g-value value))
+      ((string)
+       (g-value-set-string g-value value))
+      ((boxed)
+       (g-value-set-boxed g-value value))
+      ((pointer)
+       (g-value-set-pointer g-value value))
+      ((object
+        interface)
+       (g-value-set-object g-value value))
+      (else
+       (error "Not implemented:" type-tag)))))
 
 
 ;;;
@@ -190,11 +198,10 @@
   (g_value_set_double g-value double))
 
 (define (g-value-get-gi-enum g-value)
-  (let* ((id (g-value->g-type-id g-value))
-         (g-name (g-studly-caps-expand (g-type-name id)))
-         (key (string->symbol g-name)))
-    (or (gi-cache-ref 'enum key)
-        (error "No such enum type: " key))))
+  (let* ((g-name (g-value-type-name g-value))
+         (name (g-name->name g-name)))
+    (or (gi-cache-ref 'enum name)
+        (error "No such enum type: " name))))
 
 (define (g-value-get-enum g-value)
   (let ((gi-enum (g-value-get-gi-enum g-value))
@@ -216,11 +223,10 @@
         (error "No such " (!name gi-enum) " key: " sym))))
 
 (define (g-value-get-gi-flag g-value)
-  (let* ((id (g-value->g-type-id g-value))
-         (g-name (g-studly-caps-expand (g-type-name id)))
-         (key (string->symbol g-name)))
-    (or (gi-cache-ref 'flag key)
-        (error "No such flag type: " key))))
+  (let* ((g-name (g-value-type-name g-value))
+         (name (g-name->name g-name)))
+    (or (gi-cache-ref 'flag name)
+        (error "No such flag type: " name))))
 
 (define (g-value-get-flags g-value)
   (let ((gflags (g-value-get-gi-flag g-value))
@@ -246,11 +252,10 @@
                       (string->pointer str)))
 
 (define (g-value-get-gi-boxed g-value)
-  (let* ((id (g-value->g-type-id g-value))
-         (g-name (g-studly-caps-expand (g-type-name id)))
-         (key (string->symbol g-name)))
-    (or (gi-cache-ref 'boxed key)
-        (error "No such boxed type: " key))))
+  (let* ((g-name (g-value-type-name g-value))
+         (name (g-name->name g-name)))
+    (or (gi-cache-ref 'boxed name)
+        (error "No such boxed type: " name))))
 
 (define (g-value-get-boxed g-value)
   (let ((gi-boxed (g-value-get-gi-boxed g-value))

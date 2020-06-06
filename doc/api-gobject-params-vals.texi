@@ -15,8 +15,9 @@ Parameters and Values — Standard Parameter and Value Types
 
 @indentedblock
 @table @code
-@item @ref{g-value->g-type-id}
-@item @ref{g-value->g-type}
+@item @ref{g-value-type}
+@item @ref{g-value-type-tag}
+@item @ref{g-value-type-name}
 @item @ref{g-value-ref}
 @item @ref{g-value-set!}
 @item @ref{g-value-get-boolean}
@@ -70,26 +71,22 @@ replaced by a '-' during construction.
 
 @subheading Procedures and Methods
 
-Note: in this section, the @var{g-value} arguments are [must be]
-pointers to a @code{GValue}.
+Note: in this section, the @var{g-value} argument is [must be] a pointer
+to a @code{GValue}.
 
 
-@anchor{g-value->g-type-id}
-@deffn Procedure g-value->g-type-id g-value
+@anchor{g-value-type}
+@anchor{g-value-type-tag}
+@anchor{g-value-type-name}
+@deffn Procedure g-value-type g-value
+@deffnx Procedure g-value-type-tag g-value
+@deffnx Procedure g-value-type-name g-value
 
-Returns a integer.
+Returns an integer, a symbol or a string, respectively.
 
-Gets and returns the @code{GType} for @var{g-value}.
-@end deffn
-
-
-@anchor{g-value->g-type}
-@deffn Procedure g-value->g-type g-value
-
-Returns a symbol.
-
-Gets and returns the scheme representation (a symbol) of the
-@code{GType} for @var{g-value}.
+Obtains and returns the @code{GType}, the @code{GType} tag (see
+@ref{%g-type-fundamental-types}) or the @code{GType} name (see
+@ref{g-type-name} for @var{g-value}, respectively.
 @end deffn
 
 
@@ -98,10 +95,11 @@ Gets and returns the scheme representation (a symbol) of the
 
 Returns the content of @var{g-value}.
 
-Gets and returns the content of @var{g-value}.  Supported @code{GType}
-(their scheme representaion) for @var{g-value} are: @code{boolean},
-@code{int}, @code{uint}, @code{float}, @code{string}, @code{pointer},
-@code{object}.
+Obtains and returns the content of @var{g-value}.  Supported
+@code{GType} (their scheme representaion) for @var{g-value} are:
+@code{boolean}, @code{uint}, @code{int}, @code{float}, @code{double},
+@code{enum}, @code{flags}, @code{string}, @code{boxed}, @code{pointer},
+@code{object}, @code{interface}.
 @end deffn
 
 
@@ -112,8 +110,9 @@ Returns nothing.
 
 Sets the content of @var{g-value} to @var{value}.  Supported
 @code{GType} (their scheme representaion) for @var{g-value} are:
-@code{boolean}, @code{int}, @code{uint}, @code{float}, @code{string},
-@code{pointer}, @code{object}.
+@code{boolean}, @code{uint}, @code{int}, @code{float}, @code{double},
+@code{enum}, @code{flags}, @code{string}, @code{boxed}, @code{pointer},
+@code{object}, @code{interface}.
 
 Note that this procedure cannot cope with invalid values (the type of
 @var{value} must correspond to the @code{GType} for @var{g-value},
@@ -126,7 +125,7 @@ otherwise it will most likely lead to a crash.
 
 Returns @code{#t} or @code{#f}.
 
-Gets the content of @var{g-value} and returns @code{#f} if it is
+Obtains the content of @var{g-value} and returns @code{#f} if it is
 @code{0}, otherwise it returns @code{#t}.
 @end deffn
 
@@ -146,7 +145,7 @@ Sets the content of @var{g-value} to @code{0} if @var{val} is
 
 Returns a integer.
 
-Gets and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}.
 @end deffn
 
 
@@ -164,7 +163,7 @@ Sets the content of @var{g-value} to @var{int}.
 
 Returns an unsigned integer.
 
-Gets and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}.
 @end deffn
 
 
@@ -182,7 +181,7 @@ Sets the content of @var{g-value} to @var{uint}.
 
 Returns a float.
 
-Gets and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}.
 @end deffn
 
 
@@ -200,7 +199,7 @@ Sets the content of @var{g-value} to @var{float}.
 
 Returns a double.
 
-Gets and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}.
 @end deffn
 
 
@@ -218,7 +217,7 @@ Sets the content of @var{g-value} to @var{double}.
 
 Returns a symbol.
 
-Gets and returns the (registered) enum type info symbol for
+Obtains and returns the (registered) enum type info symbol for
 @var{g-value}.
 @end deffn
 
@@ -241,7 +240,7 @@ info for @var{g-value}), otherwise an exception is raised.
 
 Returns a list.
 
-Gets and returns the (registered) list of flags for @var{g-value}.
+Obtains and returns the (registered) list of flags for @var{g-value}.
 @end deffn
 
 
@@ -264,7 +263,7 @@ otherwise an exception is raised.
 
 Returns a string.
 
-Gets and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}.
 @end deffn
 
 
@@ -282,7 +281,7 @@ Sets the content of @var{g-value} to @var{str}.
 
 Returns either a list of values, or a pointer.
 
-Gets and returns the content of @var{g-value}. If the boxed type
+Obtains and returns the content of @var{g-value}. If the boxed type
 @ref{!is-opaque?} or @ref{!is-semi-opaque?}, it @samp{blindingly}
 returns the boxed instance @var{g-value} pointer. Otherwise, the boxed
 instance is @samp{decoded}, and a list of its field values is returned.
@@ -308,7 +307,7 @@ used to set @var{g-value}.
 
 Returns a pointer.
 
-Gets and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}.
 @end deffn
 
 
@@ -326,7 +325,7 @@ Sets the content of @var{g-value} to @var{pointer}.
 
 Returns a pointer.
 
-Gets and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}.
 @end deffn
 
 

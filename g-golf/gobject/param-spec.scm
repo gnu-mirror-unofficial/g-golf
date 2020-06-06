@@ -56,11 +56,11 @@
 ;;;
 
 (define (g-param-spec-type p-spec)
-  (g-value->g-type-id
+  (g-value-type
    (g_param_spec_get_default_value p-spec)))
 
 (define (g-param-spec-type-name p-spec)
-  (g-value->g-type
+  (g-value-type-name
    (g_param_spec_get_default_value p-spec)))
 
 (define (g-param-spec-get-default-value p-spec)
