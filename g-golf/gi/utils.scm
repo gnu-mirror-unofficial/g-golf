@@ -286,11 +286,13 @@
   (if value 1 0))
 
 (define (scm->gi-string value)
-  (string->pointer value))
+  (if value
+      (string->pointer value)
+      %null-pointer))
 
-;; The following two procedures need a bit more work, be cause a
-;; reference to the 'inner' pointers mst be kept (and returned to the
-;; caller). otherwise, they might be GC'ed ...
+;; The following two procedures need a bit more work, because a
+;; reference to the 'inner' pointers must be returned to the caller,
+;; which must 'keep it', otherwise, they might be GC'ed.
 
 (define* (scm->gi-n-string lst #:optional (n-string #f))
   (if (null? lst)
