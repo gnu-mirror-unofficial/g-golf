@@ -165,7 +165,7 @@
 (define (gi-strings->scm pointer)
   (if (or (not pointer)
           (null-pointer? pointer))
-      #f
+      '()
       (letrec ((gi-strings->scm-1
                      (lambda (pointer result)
                        (receive (d-pointer)
@@ -179,9 +179,9 @@
 
 (define (gi-csv-string->scm pointer)
   (if (null-pointer? pointer)
-       #f
-       (string-split (pointer->string pointer)
-                     #\,)))
+      '()
+      (string-split (pointer->string pointer)
+                    #\,)))
 
 (define (gi-pointer->scm pointer)
   (if (null-pointer? pointer)
@@ -192,7 +192,7 @@
   (if (or (not pointer)
           (null-pointer? pointer)
           (= n-pointer 0))
-      #f
+      '()
       (let loop ((i 0)
                  (pointer pointer)
                  (results '()))
@@ -206,7 +206,7 @@
 (define (gi-pointers->scm pointer)
   (if (or (not pointer)
           (null-pointer? pointer))
-      #f
+      '()
       (letrec ((gi-pointers->scm-1
                 (lambda (pointer result)
                   (receive (d-pointer)
@@ -248,7 +248,7 @@
   (if (or (not pointer)
           (null-pointer? pointer)
           (= n-gtype 0))
-      #f
+      '()
       (let loop ((u64 (pointer->bytevector pointer
                                            (* n-gtype
                                               (sizeof unsigned-long))))
