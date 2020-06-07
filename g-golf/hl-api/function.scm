@@ -1156,21 +1156,21 @@
                             #f
                             with-methods?))
          (g-type (g-registered-type-info-get-g-type info))
-         (name (g-type-name g-type))
-         (key (string->symbol (g-studly-caps-expand name))))
-    (or (gi-cache-ref type key)
+         (g-name (g-type-name g-type))
+         (name (g-name->name g-name)))
+    (or (gi-cache-ref type name)
         (let ((gi-type-inst (case type
                               ((flag)
                                (import-proc info #:flag #t))
                               ((union)
-                               (import-union-1 info g-type name))
+                               (import-union-1 info g-type g-name))
                               (else
                                (import-proc info)))))
           (gi-cache-set! (case type
                            ((struct union) 'boxed)
                            ((interface) 'iface)
                            (else type))
-                         key
+                         name
                          gi-type-inst)
           (when with-methods?
             (gi-import-registered-methods info
