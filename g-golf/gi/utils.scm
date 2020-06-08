@@ -384,8 +384,7 @@
                        rest))))))))
 
 (define (scm->gi-gslist lst)
-  (if (or (not lst)
-          (null? lst))
+  (if (null? lst)
       %null-pointer
       (let loop ((items (reverse lst))
                  (g-slist #f))
