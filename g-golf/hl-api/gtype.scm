@@ -61,7 +61,8 @@
           !namespace
           !g-type
           !g-name
-          
+          !g-class
+
           !g-inst
           unref
           g-inst-cache-remove!)
@@ -80,17 +81,24 @@
            #:init-keyword #:derived #:init-value #f)
   (namespace #:accessor !namespace)
   (g-type #:accessor !g-type)
-  (g-name #:accessor !g-name))
+  (g-name #:accessor !g-name)
+  (g-class #:accessor !g-class))
 
 (define-method (initialize (self <gtype-class>) initargs)
   (let ((info (or (get-keyword #:info initargs #f)
                   (error "Missing #:info initarg: " initargs))))
     (next-method)
     (unless (boolean? info) ;; it is #t for gtype instances
-      (mslot-set! self
-                  'namespace (g-base-info-get-namespace info)
-                  'g-type (g-registered-type-info-get-g-type info)
-                  'g-name (g-object-info-get-type-name info)))))
+      (let* ((namespace (g-base-info-get-namespace info))
+             (g-type (g-registered-type-info-get-g-type info))
+             (g-name (g-object-info-get-type-name info))
+             (g-class (g-type-class-ref g-type)))
+        (g-type-class-unref g-class)
+        (mslot-set! self
+                    'namespace namespace
+                    'g-type g-type
+                    'g-name g-name
+                    'g-class g-class)))))
 
 ;; The root class of all instantiable GType classes.
 

@@ -33,6 +33,7 @@ The base of the GObject type system.
 @item @ref{!namespace}
 @item @ref{!g-type}
 @item @ref{!g-name___}
+@item @ref{!g-class}
 @item @ref{!derived}
 @item @ref{!g-inst}
 @item @ref{unref}
@@ -64,6 +65,9 @@ have an @code{info} slot, holding a pointer to a
 @item @emph{g-name}
 #:accessor !g-name @*
 
+@item @emph{g-class}
+#:accessor !g-class @*
+
 @item @emph{derived}
 #:accessor !derived	 @*
 #:init-keyword #:derived @*
@@ -85,11 +89,13 @@ are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
 @anchor{!namespace}
 @anchor{!g-type}
 @anchor{!g-name___}
+@anchor{!g-class}
 @anchor{!derived}
 @deffn Accessor !info class
 @deffnx Accessor !namespace class
 @deffnx Accessor !g-type class
 @deffnx Accessor !g-name class
+@deffnx Accessor !g-class class
 @deffnx Accessor !derived class
 
 Returns the content of their respective slot for @var{class}.
