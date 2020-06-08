@@ -34,7 +34,9 @@
 
 
 (define %gi-override
-  '("gtk_list_store_set_value"
+  '("gtk_container_child_get_property"
+    "gtk_container_child_set_property"
+    "gtk_list_store_set_value"
     "gtk_tree_store_set_value"
     "gtk_tree_model_get_value"))
 

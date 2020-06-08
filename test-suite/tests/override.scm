@@ -38,11 +38,38 @@
 		last))
 
 
-(gi-import-by-name "Gtk" "ListStore")
-(gi-import-by-name "Gtk" "TreeView")
+(for-each (lambda (item)
+            (gi-import-by-name "Gtk" item))
+    '("HPaned"
+      "VPaned"
+      "ListStore"
+      "TreeView"
+      "init"))
+
+(gtk-init 0 '())
 
 
 (define-class <g-golf-test-override-gtk> (<test-case>))
+
+
+(define-method (test-gtk-container-child-get-property
+                (self <g-golf-test-override-gtk>))
+  (let ((hpane  (make <gtk-hpaned>))
+        (vpane  (make <gtk-vpaned>)))
+    (gtk-container-add hpane vpane)
+    (assert-false
+     (gtk-container-child-get-property hpane
+                                       vpane
+                                       "resize"))
+    (assert
+     (gtk-container-child-set-property hpane
+                                       vpane
+                                       "resize"
+                                       #t))
+    (assert-true
+     (gtk-container-child-get-property hpane
+                                       vpane
+                                       "resize"))))
 
 
 (define-method (test-gtk-list-store-set-value (self <g-golf-test-override-gtk>))

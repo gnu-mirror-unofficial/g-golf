@@ -27,10 +27,55 @@
 
 
 (define-module (g-golf override gtk)
-  #:export (gtk-list-store-set-value-ov
+  #:export (gtk-container-child-get-property-ov
+            gtk-container-child-set-property-ov
+            gtk-list-store-set-value-ov
             gtk-tree-store-set-value-ov
             gtk-tree-model-get-value-ov))
 
+
+(define (gtk-container-child-get-property-ov proc)
+  (values
+   #f
+   `(lambda (container child name)
+      (let* ((i-func ,proc)
+             (g-value-get-value
+              ,(@@ (g-golf hl-api gobject) %g-inst-get-property-value))
+             (g-class (!g-class (class-of container)))
+             (p-spec
+              (gtk-container-class-find-child-property g-class name)))
+        (if p-spec
+            (let* ((default-value (g-param-spec-get-default-value p-spec))
+                   (g-type (g-value-type default-value))
+                   (g-value (g-value-init g-type))
+                   (dum (begin
+                          (i-func container child name g-value)
+                          #t))
+                   (value (g-value-get-value g-value)))
+              (g-value-unset g-value)
+              value)
+            (error "No child property" container name))))))
+
+(define (gtk-container-child-set-property-ov proc)
+  (values
+   #f
+   `(lambda (container child name value)
+      (let* ((i-func ,proc)
+             (g-value-set-value
+              ,(@@ (g-golf hl-api gobject) %g-inst-set-property-value))
+             (g-class (!g-class (class-of container)))
+             (p-spec
+              (gtk-container-class-find-child-property g-class name)))
+        (if p-spec
+            (let* ((default-value (g-param-spec-get-default-value p-spec))
+                   (g-type (g-value-type default-value))
+                   (g-value (g-value-init g-type)))
+              (g-value-set! g-value
+                            (g-value-set-value g-type value))
+              (i-func container child name g-value)
+              (g-value-unset g-value)
+              (values))
+            (error "No child property" container name))))))
 
 (define (gtk-list-store-set-value-ov proc)
   (values
