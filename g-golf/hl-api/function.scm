@@ -749,12 +749,13 @@
                            (if (or may-be-null?
                                    ($is-an-allow-none-exception? name))
                                (gi-argument-set! gi-argument-in 'v-pointer #f)
-                               (error "Argument value not allowed: " name #f)))))))))
+                               (error "Invalid callback argument: " name #f)))))))))
               ((array)
-               (if (not arg)
+               (if (or (not arg)
+                       (null? arg))
                    (if may-be-null?
                        (gi-argument-set! gi-argument-in 'v-pointer #f)
-                       (error "Argument value not allowed: " #f))
+                       (error "Invalid array argument: " arg))
                    (match type-desc
                      ((array fixed-size is-zero-terminated param-n param-tag)
                       (case param-tag
@@ -783,14 +784,18 @@
                          (warning "Unimplemented (prepare args-in) type - array;"
                                   (format #f "~S" type-desc))))))))
               ((glist)
-               (if (and may-be-null? (not arg))
-                   (gi-argument-set! gi-argument-in 'v-pointer #f)
-                   (warning "Unimplemented type" (symbol->string type-tag))))
-              ((gslist)
-               (if (not arg)
+               (if (or (not arg)
+                       (null? arg))
                    (if may-be-null?
                        (gi-argument-set! gi-argument-in 'v-pointer #f)
-                       (error "Argument value not allowed: " #f))
+                       (error "Invalid glist argument: " arg))
+                   (warning "Unimplemented type" (symbol->string type-tag))))
+              ((gslist)
+               (if (or (not arg)
+                       (null? arg))
+                   (if may-be-null?
+                       (gi-argument-set! gi-argument-in 'v-pointer #f)
+                       (error "Invalid gslist argument: " arg))
                    (match type-desc
                      ((type name gi-type g-type confirmed?)
                       (case type
@@ -801,8 +806,10 @@
                          (warning "Unimplemented gslist subtype" type-desc)))))))
               ((ghash
                 error)
-               (if (and may-be-null? (not arg))
-                   (gi-argument-set! gi-argument-in 'v-pointer #f)
+               (if (not arg)
+                   (if may-be-null?
+                       (gi-argument-set! gi-argument-in 'v-pointer #f)
+                       (error "Invalid " type-tag " argument: " arg))
                    (warning "Unimplemented type" (symbol->string type-tag))))
               ((utf8
                 filename)
@@ -812,7 +819,7 @@
                (if (not arg)
                    (if may-be-null?
                        (gi-argument-set! gi-argument-in 'v-pointer #f)
-                       (error "Argument value not allowed: " #f))
+                       (error "Invalid " type-tag " argument: " #f))
                    (let ((string-pointer (string->pointer arg)))
                      (set! (!string-pointer arg-in) string-pointer)
                      ;; don't use 'v-string, which expects a string, calls
@@ -826,19 +833,19 @@
                ;; alocated mem.
                (case forced-type
                  ((pointer)
-                  (case type-tag
-                    ((int32)
-                     (let ((s32 (make-s32vector 1 0)))
-                       (s32vector-set! s32 0 arg)
-                       (gi-argument-set! gi-argument-in
-                                         (gi-type-tag->field forced-type)
-                                         (bytevector->pointer s32))))
-                    ((void)
-                     (if (and may-be-null? (not arg))
-                         (gi-argument-set! gi-argument-in 'v-pointer #f)
-                         (warning "Unimplemented (pointer to) type void " arg)))
-                    (else
-                     (warning "Unimplemeted (pointer to) type-tag: " type-tag))))
+                  (if (not arg)
+                      (if may-be-null?
+                          (gi-argument-set! gi-argument-in 'v-pointer #f)
+                          (error "Invalid (pointer to) " type-tag " argument: " arg))
+                      (case type-tag
+                        ((int32)
+                         (let ((s32 (make-s32vector 1 0)))
+                           (s32vector-set! s32 0 arg)
+                           (gi-argument-set! gi-argument-in
+                                             (gi-type-tag->field forced-type)
+                                             (bytevector->pointer s32))))
+                        (else
+                         (warning "Unimplemeted (pointer to): " type-tag)))))
                  (else
                   (gi-argument-set! gi-argument-in
                                     (gi-type-tag->field forced-type)
