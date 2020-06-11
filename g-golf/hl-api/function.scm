@@ -853,8 +853,7 @@
             (loop (+ i 1)))))))
 
 (define (prepare-gi-args-out function args)
-  (let ((is-method? (!is-method? function))
-        (n-gi-arg-out (!n-gi-arg-out function))
+  (let ((n-gi-arg-out (!n-gi-arg-out function))
         (args-out (!args-out function)))
     (let loop ((i 0))
       (if (= i n-gi-arg-out)
