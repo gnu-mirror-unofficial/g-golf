@@ -72,7 +72,6 @@
           !n-arg
           !caller-owns
           !return-type
-          !type-desc
           !may-return-null?
           !arguments
           !n-gi-arg-in
@@ -249,24 +248,23 @@
            (return-type (g-type-info-get-tag return-type-info))
            (type-desc (type-description return-type-info #:type-tag return-type)))
       (g-base-info-unref return-type-info)
-      (mslot-set! self
-                  'info info
-                  'namespace namespace
-                  'g-name g-name
-                  'name name
-                  'override? override?
-                  'flags flags
-                  'is-method? is-method?
-                  'caller-owns (g-callable-info-get-caller-owns info)
-                  'return-type return-type
-                  'type-desc type-desc
-                  'may-return-null? (g-callable-info-may-return-null info))
       (receive (n-arg args
                 n-gi-arg-in args-in gi-args-in gi-args-in-bv
                 n-gi-arg-out args-out gi-args-out gi-args-out-bv)
           (function-arguments-and-gi-arguments info is-method? override?)
         (mslot-set! self
+                    'info info
+                    'namespace namespace
+                    'g-name g-name
+                    'name name
+                    'override? override?
+                    'flags flags
+                    'is-method? is-method?
                     'n-arg n-arg
+                    'caller-owns (g-callable-info-get-caller-owns info)
+                    'return-type return-type
+                    'type-desc type-desc
+                    'may-return-null? (g-callable-info-may-return-null info)
                     'arguments args
                     'n-gi-arg-in n-gi-arg-in
                     'args-in args-in
