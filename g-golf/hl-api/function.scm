@@ -67,6 +67,7 @@
           !namespace
           !override?
           !i-func
+          !o-func
           !flags
           !is-method?
           !n-arg
@@ -194,17 +195,13 @@
       (let* ((g-name (g-function-info-get-symbol info))
              (name (g-name->name g-name)))
         (or (gi-cache-ref 'function name)
-            (let* ((module (resolve-module '(g-golf hl-api function)))
-                   (f-inst (make <function> #:info info))
-                   (i-func (%i-func f-inst)))
+            (let ((module (resolve-module '(g-golf hl-api function)))
+                  (f-inst (make <function> #:info info)))
               ;; Do not (g-base-info-unref info) - unref the function
               ;; info - it is needed by g-function-info-invoke.
               (if (!override? f-inst)
-                  (let ((o-func (%o-func f-inst i-func)))
-                    (mslot-set! f-inst
-                                'i-func i-func)
-                    (module-define! module name o-func))
-                  (module-define! module name i-func))
+                  (module-define! module name (!o-func f-inst))
+                  (module-define! module name (!i-func f-inst)))
               (gi-cache-set! 'function name f-inst)
               (module-g-export! module `(,name))
               f-inst))))))
@@ -216,6 +213,7 @@
   (name #:accessor !name)
   (override? #:accessor !override? #:init-value #f)
   (i-func #:accessor !i-func #:init-value #f)
+  (o-func #:accessor !o-func #:init-value #f)
   (flags #:accessor !flags)
   (is-method? #:accessor !is-method?)
   (n-arg #:accessor !n-arg)
@@ -274,7 +272,15 @@
                     'args-out args-out
                     'gi-args-out gi-args-out
                     'gi-args-out-bv gi-args-out-bv
-                    'gi-arg-result (make-gi-argument))))))
+                    'gi-arg-result (make-gi-argument))
+        (function-finalizer self)))))
+
+(define (function-finalizer f-inst)
+  (let ((i-func (%i-func f-inst)))
+    (mslot-set! f-inst
+                'i-func i-func
+                'o-func (and (!override? f-inst)
+                             (%o-func f-inst i-func)))))
 
 #;(define-method* (describe (self <function>) #:key (port #t))
   (next-method self #:port port)
