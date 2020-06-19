@@ -54,7 +54,8 @@
                    (value (g-value-get-value g-value)))
               (g-value-unset g-value)
               value)
-            (error "No child property" container name))))))
+            (error "No child property" container name))))
+   '(0 1 2)))
 
 (define (gtk-container-child-set-property-ov proc)
   (values
@@ -75,7 +76,8 @@
               (i-func container child name g-value)
               (g-value-unset g-value)
               (values))
-            (error "No child property" container name))))))
+            (error "No child property" container name))))
+   '(0 1 2 3)))
 
 (define (gtk-list-store-set-value-ov proc)
   (values
@@ -90,7 +92,8 @@
                       (g-value-set-value g-type value))
         (i-func store iter column g-value)
         (g-value-unset g-value)
-        (values)))))
+        (values)))
+   '(0 1 2 3)))
 
 (define (gtk-tree-store-set-value-ov proc)
   (values
@@ -105,7 +108,8 @@
                       (g-value-set-value g-type value))
         (i-func store iter column g-value)
         (g-value-unset g-value)
-        (values)))))
+        (values)))
+      '(0 1 2 3)))
 
 (define (gtk-tree-model-get-value-ov proc)
   (values
@@ -118,4 +122,5 @@
              (dum (i-func model iter column g-value))
              (value (g-value-get-value g-value)))
         (g-value-unset g-value)
-        value))))
+        value))
+      '(0 1 2)))

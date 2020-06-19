@@ -68,6 +68,7 @@
           !override?
           !i-func
           !o-func
+          !o-spec-pos
           !flags
           !is-method?
           !n-arg
@@ -178,7 +179,7 @@
          (o-name (string-append (symbol->string f-name) "-ov"))
          (o-func-ref (module-ref o-module
                                  (string->symbol o-name))))
-    (receive (prereqs exp)
+    (receive (prereqs o-proc o-spec-pos)
         (o-func-ref i-func)
       (when prereqs
         (for-each (lambda (prereq)
@@ -186,7 +187,8 @@
                       ((namespace name)
                        (%import namespace name))))
             prereqs))
-      (primitive-eval exp))))
+      (set! (!o-spec-pos f-inst) o-spec-pos)
+      (primitive-eval o-proc))))
 
 (define* (gi-import-function info #:key (force? #f))
   (let ((namespace (g-base-info-get-namespace info)))
@@ -195,16 +197,108 @@
       (let* ((g-name (g-function-info-get-symbol info))
              (name (g-name->name g-name)))
         (or (gi-cache-ref 'function name)
-            (let ((module (resolve-module '(g-golf hl-api function)))
-                  (f-inst (make <function> #:info info)))
+            (let ((f-inst (make <function> #:info info)))
               ;; Do not (g-base-info-unref info) - unref the function
               ;; info - it is needed by g-function-info-invoke.
-              (if (!override? f-inst)
-                  (module-define! module name (!o-func f-inst))
-                  (module-define! module name (!i-func f-inst)))
               (gi-cache-set! 'function name f-inst)
-              (module-g-export! module `(,name))
+              (if (!is-method? f-inst)
+                  (gi-add-method f-inst gi-add-procedure)
+                  (gi-add-procedure f-inst))
               f-inst))))))
+
+(define (gi-add-procedure f-inst)
+  (let ((module (resolve-module '(g-golf hl-api function)))
+        (name (!name f-inst)))
+    (module-g-export! module `(,name))
+    (if (!override? f-inst)
+        (module-set! module name (!o-func f-inst))
+        (module-set! module name (!i-func f-inst)))))
+
+(define (gi-add-method f-inst fallback)
+  (let* ((parent (g-base-info-get-container (!info f-inst)))
+         (type-tag (g-base-info-get-type parent)))
+    (case type-tag
+      ((interface
+        object)
+       (let* ((p-g-name (g-registered-type-info-get-type-name parent))
+              (p-name (g-name->name p-g-name 'as-string))
+              (n-drop (+ (string-length p-name) 1))
+              (m-long-name (!name f-inst))
+              (m-long-name-str (symbol->string m-long-name))
+              (m-long-generic (gi-add-method-gf m-long-name))
+              (m-short-name-str (string-drop m-long-name-str n-drop))
+              (m-short-name (string->symbol m-short-name-str))
+              (m-short-generic (gi-add-method-gf m-short-name))
+              (specializers (gi-add-method-specializers f-inst))
+              (procedure (if (!override? f-inst)
+                             (!o-func f-inst)
+                             (!i-func f-inst))))
+         (add-method! m-long-generic
+                      (make <method>
+                        #:specializers specializers
+                        #:procedure procedure))
+         (when m-short-generic
+           (add-method! m-short-generic
+                        (make <method>
+                          #:specializers specializers
+                          #:procedure procedure)))))
+      (else
+       (fallback f-inst)))))
+
+(define* (gi-add-method-gf name #:optional (module #f))
+  (let* ((module (or module
+                     (resolve-module '(g-golf hl-api gobject))))
+         (variable (module-variable module name))
+         (value (and variable
+                     (module-ref module name))))
+    (if (and value
+             (is-a? value <generic>))
+        value
+        (if value
+            (begin
+              (module-replace! module `(,name))
+              (let ((gf (make <generic> #:name name)))
+                (module-set! module name gf)
+                (add-method! gf
+                             (make <method>
+                               #:specializers <top>
+                               #:procedure (lambda ( . args)
+                                             (apply value args))))
+                gf))
+            (begin
+              (module-export! module `(,name))
+              (let ((gf (make <generic> #:name name)))
+                (module-set! module name gf)
+                gf))))))
+
+(define (gi-add-method-specializers f-inst)
+  (let ((arguments (!arguments f-inst))
+        (o-spec-pos (!o-spec-pos f-inst)))
+    (map (lambda (argument)
+           (case (!type-tag argument)
+             ((interface
+               object)
+              (match (!type-desc argument)
+                ((type name gi-type g-type confirmed?)
+                 (case type
+                   ((object)
+                    (if gi-type gi-type <top>))
+                   (else
+                    <top>)))))
+             (else
+              <top>)))
+      (if o-spec-pos
+          (map (lambda (pos)
+                 (list-ref arguments pos))
+            o-spec-pos)
+          (filter-map (lambda (argument)
+                        (case (!direction argument)
+                          ((in
+                            inout)
+                           argument)
+                          (else
+                           #f)))
+              arguments)))))
 
 (define-class <function> ()
   (info #:accessor !info)
@@ -214,6 +308,7 @@
   (override? #:accessor !override? #:init-value #f)
   (i-func #:accessor !i-func #:init-value #f)
   (o-func #:accessor !o-func #:init-value #f)
+  (o-spec-pos #:accessor !o-spec-pos #:init-value #f)
   (flags #:accessor !flags)
   (is-method? #:accessor !is-method?)
   (n-arg #:accessor !n-arg)
