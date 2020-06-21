@@ -27,8 +27,16 @@ The G-Golf GI function and argument high level API.
 
 @indentedblock
 @table @code
+
+@c <function> accessors
 @item @ref{!info_}
+@item @ref{!namespace_}
+@item @ref{!g-name____}
 @item @ref{!name}
+@item @ref{!override?}
+@item @ref{!i-func}
+@item @ref{!o-func}
+@item @ref{!o-spec-pos}
 @item @ref{!flags}
 @item @ref{!is-method?}
 @item @ref{!n-arg}
@@ -46,6 +54,9 @@ The G-Golf GI function and argument high level API.
 @item @ref{!gi-args-out}
 @item @ref{!gi-args-out-bv}
 @item @ref{!gi-arg-result}
+
+@c <argument> accessors
+@item @ref{!g-name_____}
 @item @ref{!name_}
 @item @ref{!closure}
 @item @ref{!destroy}
@@ -62,12 +73,12 @@ The G-Golf GI function and argument high level API.
 @item @ref{!is-optional?}
 @item @ref{!is-return-value?}
 @item @ref{!is-skip?}
+@item @ref{!arg-pos}
 @item @ref{!gi-argument-in}
 @item @ref{!gi-argument-in-bv-pos}
 @item @ref{!gi-argument-out}
 @item @ref{!gi-argument-out-bv-pos}
 @item @ref{!gi-argument-field}
-@item @ref{is-interface?}
 @end table
 @end indentedblock
 
@@ -95,8 +106,26 @@ Its slots are:
 @item @emph{info}
 #:accessor !info
 
+@item @emph{namespace}
+#:accessor !namespace
+
+@item @emph{g-name}
+#:accessor !g-name
+
 @item @emph{name}
 #:accessor !name
+
+@item @emph{override?}
+#:accessor !override?
+
+@item @emph{i-func}
+#:accessor !i-func
+
+@item @emph{o-func}
+#:accessor !o-func
+
+@item @emph{o-spec-pos}
+#:accessor !o-spec-pos
 
 @item @emph{flags}
 #:accessor !flags
@@ -261,7 +290,13 @@ respectively.
 
 
 @anchor{!info_}
+@anchor{!namespace_}
+@anchor{!g-name____}
 @anchor{!name}
+@anchor{!override?}
+@anchor{!i-func}
+@anchor{!o-func}
+@anchor{!o-spec-pos}
 @anchor{!flags}
 @anchor{!is-method?}
 @anchor{!n-arg}
@@ -280,7 +315,13 @@ respectively.
 @anchor{!gi-args-out-bv}
 @anchor{!gi-arg-result}
 @deffn Accessor !info function
+@deffnx Accessor !namespace function
+@deffnx Accessor !g-name function
 @deffnx Accessor !name function
+@deffnx Accessor !override? function
+@deffnx Accessor !i-func function
+@deffnx Accessor !o-func function
+@deffnx Accessor !o-spec-pos function
 @deffnx Accessor !flags function
 @deffnx Accessor !is-method? function
 @deffnx Accessor !n-arg function
@@ -302,7 +343,7 @@ respectively.
 Returns the content of their respective slot for @var{function}.
 @end deffn
 
-
+@anchor{!g-name_____}
 @anchor{!name_}
 @anchor{!closure}
 @anchor{!destroy}
@@ -319,12 +360,14 @@ Returns the content of their respective slot for @var{function}.
 @anchor{!is-optional?}
 @anchor{!is-return-value?}
 @anchor{!is-skip?}
+@anchor{!arg-pos}
 @anchor{!gi-argument-in}
 @anchor{!gi-argument-in-bv-pos}
 @anchor{!gi-argument-out}
 @anchor{!gi-argument-out-bv-pos}
 @anchor{!gi-argument-field}
-@deffn Accessor !name argument
+@deffn Accessor !g-name argument
+@deffnx Accessor !name argument
 @deffnx Accessor !closure argument
 @deffnx Accessor !destroy argument
 @deffnx Accessor !direction argument
@@ -340,6 +383,7 @@ Returns the content of their respective slot for @var{function}.
 @deffnx Accessor !is-optional? argument
 @deffnx Accessor !is-return-value? argument
 @deffnx Accessor !is-skip? argument
+@deffnx Accessor !arg-pos argument
 @deffnx Accessor !gi-argument-in argument
 @deffnx Accessor !gi-argument-in-bv-pos argument
 @deffnx Accessor !gi-argument-out argument
@@ -347,14 +391,6 @@ Returns the content of their respective slot for @var{function}.
 @deffnx Accessor !gi-argument-field argument
 
 Returns the content of their respective slot for @var{argument}.
-@end deffn
-
-
-@anchor{is-interface?}
-@deffn Method is-interface? argument
-
-Returns #t if the @code{type-tag} slot value for @var{argument} is
-@code{'interface}. Otherwise, it returns #f.
 @end deffn
 
 
