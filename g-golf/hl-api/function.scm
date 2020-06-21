@@ -49,6 +49,7 @@
             is-namespace-import-exception?
             %gi-strip-boolean-result
             gi-import-function
+            %gi-method-short-names-skip
             <function>
             <argument>
             gi-import-enum
@@ -105,9 +106,7 @@
           !gi-argument-in-bv-pos
           !gi-argument-out
           !gi-argument-out-bv-pos
-          !gi-argument-field
-
-          is-interface?)
+          !gi-argument-field)
 
 
 ;;;
@@ -228,7 +227,7 @@
               (m-long-generic (gi-add-method-gf m-long-name))
               (m-short-name-str (string-drop m-long-name-str n-drop))
               (m-short-name (string->symbol m-short-name-str))
-              (m-short-generic (gi-add-method-gf m-short-name))
+              (m-short-generic (gi-add-method-gf-sn m-short-name))
               (specializers (gi-add-method-specializers f-inst))
               (procedure (if (!override? f-inst)
                              (!o-func f-inst)
@@ -270,6 +269,20 @@
               (let ((gf (make <generic> #:name name)))
                 (module-set! module name gf)
                 gf))))))
+
+(define %gi-method-short-names-skip
+  '())
+
+(define* (gi-add-method-gf-sn name #:optional (module #f))
+  (let* ((%skip? (cond ((list? %gi-method-short-names-skip)
+                        (memq name %gi-method-short-names-skip))
+                       ((eq? %gi-method-short-names-skip 'all)
+                        #t)
+                       (else
+                        #f))))
+    (if %skip?
+        #f
+        (gi-add-method-gf name module))))
 
 (define (gi-add-method-specializers f-inst)
   (let ((arguments (!arguments f-inst))
@@ -466,10 +479,6 @@
                      ;; argument can be 'in, 'inout or 'out). See
                      ;; finalize-arguments-gi-argument-pointers.
                      'gi-argument-field (gi-type-tag->field forced-type)))))))
-
-(define-method (is-interface? (self <argument>))
-  (and (eq? (!type-tag self 'interface))
-       (!type-desc self)))
 
 #;(define-method* (describe (self <argument>) #:key (port #t))
   (next-method self #:port port))
