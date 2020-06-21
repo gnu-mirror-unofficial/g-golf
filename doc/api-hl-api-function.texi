@@ -196,6 +196,10 @@ Its slots are:
 @indentedblock
 @table @code
 
+@item @emph{g-name}
+#:accessor !g-name	@*
+#:init-keyword #:g-name
+
 @item @emph{name}
 #:accessor !name	@*
 #:init-keyword #:name
@@ -250,6 +254,10 @@ Its slots are:
 
 @item @emph{is-skip?}
 #:accessor !is-skip?
+
+@item @emph{arg-pos}
+#:accessor !arg-pos	@*
+#:init-keyword #:arg-pos
 
 @item @emph{gi-argument-in}
 #:accessor !gi-argument-in	@*
