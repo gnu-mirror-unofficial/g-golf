@@ -17,8 +17,8 @@ Introspection} functions, using the @samp{original} name, except that
 
 At this low level API, both arguments and returned values are pointers,
 except for enums, strings, numbers and booleans. This is also true for
-the minimal ’bootstrap’ bindings G-golf must implement for @code{Glib}
-and @code{GObject}.
+the minimal ’bootstrap’ bindings G-golf must implement for @code{Glib},
+@code{GObject} and @code{Gdk}.
 
 Here is an example:
 
@@ -37,7 +37,7 @@ libraries functionality available from @uref{@value{UGUILE}, Guile}.
 
 @subheading G-Golf High Level API
 
-G-Golf will also provide a high level API, mostly based on @code{GOOPS}
+G-Golf also provides a high level API, mostly based on @code{GOOPS}
 (@pxref{GOOPS,,, guile, The GNU Guile Reference Manual}), largely
 inspired by @uref{@value{UGG}, Guile-Gnome}.
 
@@ -72,29 +72,24 @@ inspired by @uref{@value{UGG}, Guile-Gnome}.
 @c what you will be able to do, at least this is the idea, once the higher
 @c level API will exist:
 
-Once G-Golf has its high level API ready, the idea is that you should be
-able to use just any @code{GIR} library, such as @code{Clutter}. Here is
-a simple @samp{simulation} example@footnote{You won't be able to try this
-example now, since there is no high level API in G-Golf yet, but so you
-get the idea @dots{}}:
+Just to illustrate the above words here is a simple example, that
+imports the @code{Clutter} namespace, initialize clutter and creates
+a clutter stage:
 
 @lisp
 ,use (g-golf)
 (gi-import "Clutter")
+(clutter-init 0 '())
+@print{}
+$2 = success
+$3 = 0
+$4 = ()
 
 (make <clutter-stage>)
 @print{}
-$3 = #<<clutter-stage> 22782a0>
+$5 = #<<clutter-stage> 5566dd378240>
 @end lisp
 
-@c Or even better:
-
-@c @lisp
-@c ,use (g-golf clutter)
-@c (make <clutter-stage>)
-@c @print{}
-@c $3 = #<<clutter-stage> 22782a0>
-@c @end lisp
 
 @include api-naming-conventions.texi
 @include api-pro-doc-struct.texi
