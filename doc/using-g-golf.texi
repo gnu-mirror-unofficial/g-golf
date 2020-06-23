@@ -5,7 +5,8 @@
 
 
 @node Using G-Golf
-@chapter Using G-Golf
+@c @chapter Using G-Golf
+@unnumbered Using G-Golf
 
 G-Golf Reference Manual still is a mock-up: any help is more then
 welcome to improve this situation, thanks!

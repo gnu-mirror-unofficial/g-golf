@@ -5,7 +5,7 @@
 
 
 @node Introduction
-@chapter Introduction
+@unnumbered Introduction
 
 @menu
 * About G-Golf::
