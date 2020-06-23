@@ -73,6 +73,18 @@ Maybe later
     list-style: none;
 }
 
+.unnumbered,
+.section,
+.subsection,
+.subheading {
+    !color: #931101;
+    !color: #cf8001;
+    !color: #edb927;
+    !color: #c84300;
+    !color: #a33900;
+    !color: #c1971f;
+}
+
 
 /*
 ***
