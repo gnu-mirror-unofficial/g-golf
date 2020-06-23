@@ -21,7 +21,7 @@
 @end indentedblock
 
 
-@subheading Types and Values
+@subheading Variables
 
 @indentedblock
 @table @code
@@ -123,7 +123,7 @@ will either be @code{0} (zero), or @code{%null-pointer}.
 @end deffn
 
 
-@subheading Types and Values
+@subheading Variables
 
 
 @anchor{%g-name-transform-exceptions}
