@@ -17,6 +17,7 @@
 @item @ref{class-direct-g-property-slots}
 @item @ref{class-g-property-slots}
 @item @ref{mslot-set!}
+@item @ref{generic?}
 @end table
 @end indentedblock
 
@@ -73,4 +74,12 @@ Returns nothing.
 Performs a multiple @code{slot-set!} for @var{inst}, setting its slot
 named @var{s1} to the value @var{v1}, @var{s2} to @var{v2}, @var{s3} to
 @var{v3} @dots{}
+@end deffn
+
+
+@anchor{generic?}
+@deffn Procedure generic? value
+
+Returns @code{#t} if @var{value} is a @var{<generic>} instance.
+Otherwise, it returns @code{#f}.
 @end deffn

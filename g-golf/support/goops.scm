@@ -53,7 +53,8 @@
 		last)
 
   #:export (define-method*
-            mslot-set!))
+             mslot-set!
+             generic?))
 
 
 (g-export class-direct-virtual-slots
@@ -133,3 +134,6 @@
            (slot-set! self name val)
            (loop rest))))
       (error "Wrong number of arguments: " args)))
+
+(define (generic? value)
+  (is-a? value <generic>))
