@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -43,12 +43,19 @@
 	    and-l
 	    identities
             flatten
+
             g-studly-caps-expand
 	    %g-name-transform-exceptions
             %g-studly-caps-expand-token-exceptions
 	    g-name->name
 	    g-name->class-name
 	    #;gi-class-name->method-name
+
+            %syntax-name-protect-prefix
+            %syntax-name-protect-postfix
+            %syntax-name-protect-renamer
+            syntax-name->method-name
+
             gi-type-tag->ffi
             gi-type-tag->init-val))
 
@@ -255,6 +262,44 @@
           (if (string-prefix? key token)
               (values (string-length key) val)
               (loop rest))))))))
+
+
+;;;
+;;; Syntax names -> method names
+;;;
+
+;; The following variables and procedure are related to the so called
+;; GI method short names, which are obtained by dropping the container
+;; name (and its trailing hyphen) from the GI method full/long names,
+;; which are (Gnome method long names), by definition, always unique.
+
+;; GI methods are added to their respective generic function, which is
+;; created if it does not already exist. When a generic function is
+;; created, G-Golf checks if the name is used, and when it is bound to a
+;; procedure, the procedure is 'captured' into an unspecialized method,
+;; which is added to the newly created generic function.
+
+;; However, if/when the name is used but its variable value is a syntax,
+;; the above can't be done and the name must be 'protected'. This is
+;; what syntax-name->method-name does, by using a renamer (if any, it is
+;; 'user provided'), or by adding a prefix, a postfix or both to its
+;; argument (symbol) name.
+
+(define %syntax-name-protect-prefix #f)
+(define %syntax-name-protect-postfix '_)
+(define %syntax-name-protect-renamer #f)
+
+(define (syntax-name->method-name name)
+  (cond (%syntax-name-protect-renamer
+         (%syntax-name-protect-renamer name))
+        ((and %syntax-name-protect-prefix
+              %syntax-name-protect-postfix)
+         (symbol-append %syntax-name-protect-prefix
+                        name
+                        %syntax-name-protect-postfix))
+        (else
+         (symbol-append name
+                        %syntax-name-protect-postfix))))
 
 
 ;;;

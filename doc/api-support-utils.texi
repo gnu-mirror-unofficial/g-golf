@@ -17,6 +17,7 @@
 @item @ref{g-name->class-name}
 @item @ref{gi-type-tag->ffi}
 @item @ref{gi-type-tag->init-val}
+@item @ref{syntax-name->method-name}
 @end table
 @end indentedblock
 
@@ -27,6 +28,9 @@
 @table @code
 @item @ref{%g-name-transform-exceptions}
 @item @ref{%g-studly-caps-expand-token-exceptions}
+@item @ref{%syntax-name-protect-prefix}
+@item @ref{%syntax-name-protect-postfix}
+@item @ref{%syntax-name-protect-renamer}
 @end table
 @end indentedblock
 
@@ -123,8 +127,51 @@ will either be @code{0} (zero), or @code{%null-pointer}.
 @end deffn
 
 
-@subheading Variables
+@anchor{syntax-name->method-name}
+@deffn Procedure syntax-name->method-name name
 
+Returns a (symbol) name.
+
+This procedure is used to @samp{protect} syntax names, from being
+redefined as generic functions and methods.
+
+Users should normally not call this procedure - except for testing
+purposes, if/when they customize its default settings - it is
+appropriately and automatically called by G-Golf when importing a GI
+typelib.
+
+Unless otherwise specified (see @code{%gi-method-short-names-skip}),
+when a GI typelib is imported, G-Golf also creates so called short name
+methods, obtained by dropping the container name (and its trailing
+hyphen) from the GI typelib method full/long names.
+
+GI methods are added to their respective generic function, which is
+created if it does not already exist. When a generic function is
+created, G-Golf checks if the name is used, and when it is bound to a
+procedure, the procedure is 'captured' into an unspecialized method,
+which is added to the newly created generic function.
+
+However, when the name is used but its variable value is a syntax, the
+above can't be done and the name must be @samp{protected}, which is what
+@ref{syntax-name->method-name} does, using a renamer, or by adding a
+prefix, a postfix or both to its (symbol) @var{name} argument.
+
+By default, the renamer (@ref{%syntax-name-protect-renamer}) and prefix
+(@ref{%syntax-name-protect-prefix}) variables are set to @code{#f}. The
+the postfix (@ref{%syntax-name-protect-postfix}) variable is set to
+@code{_} (the underscore symbol).
+
+As an example, using these default settings, the short name method for
+@code{gcr-secret-exchange-begin} would be @code{begin_}.
+
+@c If the @code{(ice-9 receive)} has also been imported, then the short
+@c name method for @code{gcr-secret-exchange-receive} would be
+@c @code{receive_}, otherwise, since there would be no syntax name
+@c @samp{clash}, it would be @code{receive}.
+@end deffn
+
+
+@subheading Variables
 
 @anchor{%g-name-transform-exceptions}
 @defvar %g-name-transform-exceptions
@@ -164,4 +211,42 @@ It is currently defined as:
 @end lisp
 
 Users may add or remove alist pairs to satisfy their needs.
+@end defvar
+
+
+@anchor{%syntax-name-protect-prefix}
+@anchor{%syntax-name-protect-postfix}
+@anchor{%syntax-name-protect-renamer}
+@defvar %syntax-name-protect-prefix
+@defvarx %syntax-name-protect-postfix
+@defvarx %syntax-name-protect-renamer
+
+These variables are used by @ref{syntax-name->method-name} and may be
+customized. Their default values are:
+
+@indentedblock
+@table @var
+@item %syntax-name-protect-prefix #f
+@item %syntax-name-protect-postfix '_ (the underscore symbol)
+@item %syntax-name-protect-renamer #f
+@end table
+@end indentedblock
+
+@var{%syntax-name-protect-prefix} and @var{%syntax-name-protect-postfix}
+may be defined as @code{#f} or a symbol name. Unless a renamer is set,
+at least one of these two variables must be defined as a symbol name.
+
+The @var{%syntax-name-protect-renamer} may be defined as @code{#f} or a
+procedure, that takes one argument - a symbol name - and returns a
+symbol name.
+
+@ref{syntax-name->method-name} first checks for a
+@var{%syntax-name-protect-renamer}, and calls it if it has been defined,
+igoring the other variables.
+
+Otherwise, @ref{syntax-name->method-name} returns a symbol name prefixed
+using @var{%syntax-name-protect-prefix} when not @code{#f} and/or
+postfixed using @var{%syntax-name-protect-postfix} when not @code{#f}.
+As mentioned above, unless a renamer is set, at least one of these two
+variables must be defined as a symbol name.
 @end defvar
