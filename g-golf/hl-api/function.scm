@@ -247,28 +247,32 @@
 (define* (gi-add-method-gf name #:optional (module #f))
   (let* ((module (or module
                      (resolve-module '(g-golf hl-api gobject))))
-         (variable (module-variable module name))
+         (current-module (current-module))
+         (variable (module-variable current-module name))
          (value (and variable
-                     (module-ref module name))))
-    (if (and value
-             (is-a? value <generic>))
-        value
-        (if value
-            (begin
-              (module-replace! module `(,name))
-              (let ((gf (make <generic> #:name name)))
-                (module-set! module name gf)
-                (add-method! gf
-                             (make <method>
-                               #:specializers <top>
-                               #:procedure (lambda ( . args)
-                                             (apply value args))))
-                gf))
-            (begin
-              (module-export! module `(,name))
-              (let ((gf (make <generic> #:name name)))
-                (module-set! module name gf)
-                gf))))))
+                     (variable-bound? variable)
+                     (variable-ref variable))))
+    (if value
+        (cond ((generic? value)
+               value)
+              ((macro? value)
+               (gi-add-method-gf (syntax-name->method-name name)
+                                 module))
+              (else
+               (module-replace! module `(,name))
+               (let ((gf (make <generic> #:name name)))
+                 (module-set! module name gf)
+                 (add-method! gf
+                              (make <method>
+                                #:specializers <top>
+                                #:procedure (lambda ( . args)
+                                              (apply value args))))
+                 gf)))
+        (begin
+          (module-export! module `(,name))
+          (let ((gf (make <generic> #:name name)))
+            (module-set! module name gf)
+            gf)))))
 
 (define %gi-method-short-names-skip
   '())
