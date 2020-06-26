@@ -297,6 +297,9 @@
          (symbol-append %syntax-name-protect-prefix
                         name
                         %syntax-name-protect-postfix))
+        (%syntax-name-protect-prefix
+         (symbol-append %syntax-name-protect-prefix
+                        name))
         (else
          (symbol-append name
                         %syntax-name-protect-postfix))))
