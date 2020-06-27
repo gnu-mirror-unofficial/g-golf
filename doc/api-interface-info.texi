@@ -1,0 +1,297 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@defindex oi
+
+
+@node Interface Info
+@subsection Interface Info
+
+G-Golf Interface Info low level API.@*
+GIInterfaceInfo — Structs representing a GInterface.
+
+
+@subheading Procedures
+
+@indentedblock
+@table @code
+@item @ref{gi-interface-import}
+@item @ref{gi-interface-show}
+@c @item @ref{gi-interface-property-names}
+@item @ref{g-interface-info-get-n-prerequisites}
+@item @ref{g-interface-info-get-prerequisite}
+@item @ref{g-interface-info-get-n-properties}
+@item @ref{g-interface-info-get-property}
+@item @ref{g-interface-info-get-n-methods}
+@item @ref{g-interface-info-get-method}
+@item @ref{g-interface-info-find-method}
+@item @ref{g-interface-info-get-n-signals}
+@item @ref{g-interface-info-get-signal}
+@item @ref{g-interface-info-find-signal}
+@item @ref{g-interface-info-get-n-vfuncs}
+@item @ref{g-interface-info-get-vfunc}
+@item @ref{g-interface-info-find-vfunc}
+@item @ref{g-interface-info-get-n-constants}
+@item @ref{g-interface-info-get-constant}
+@item @ref{g-interface-info-get-iface-struct}
+@end table
+@end indentedblock
+
+
+@c @subheading Types and Values
+
+@c @indentedblock
+@c @table @code
+@c @item @ref{%g-arg-info-transfer}
+@c @end table
+@c @end indentedblock
+
+
+@subheading Description
+
+@code{GIInterfaceInfo} represents a @uref{@value{UGOBJECT-GType-Module},
+GInterface}.
+
+A GInterface has methods, properties, signals, constants, virtual
+functions and prerequisites.
+
+
+@subheading Struct Hierarchy
+
+@indentedblock
+GIBaseInfo           	       		@*
+@ @ +--- GIRegisteredTypeInfo  		@*
+@ @ @ @ @ @ @ @ @ @ @  +--- GIInterfaceInfo
+@end indentedblock
+
+
+@subheading Procedures
+
+Note: in this section, unless otherwise specified, the @var{info}
+argument is [must be] a pointer to a @code{GIInterfaceInfo}.
+
+
+@anchor{gi-interface-import}
+@deffn Procedure gi-interface-import info
+
+Returns a list.
+
+In the current version of G-Golf, interfaces are @samp{opaques}. Returns
+a list composed of the 'interface (type-tag) symbol, the interface
+(scheme and symbol) name, g-name, g-type and #t (a boolean that means
+the type is confirmed). Here is an example:
+
+@example
+(interface gtk-orientable "GtkOrientable" 94578771473520 #t)
+@end example
+@end deffn
+
+
+@anchor{gi-interface-show}
+@deffn Procedure gi-interface-show info
+
+Returns nothing.
+
+Obtains and displays the following informations about the interface
+pointed to by @var{info}:
+
+@lisp
+,use (g-golf)
+(g-irepository-require "Gtk")
+$2 = #<pointer 0x55649014c780>
+
+(g-irepository-find-by-name "Gtk" "Orientable")
+$3 = #<pointer 0x5564901531e0>
+
+(gi-interface-show $3)
+@print{}
+#<pointer 0x5564901531e0> is a (pointer to a) GIInterfaceInfo:
+
+          namespace: "Gtk"
+               name: "Orientable"
+             g-type: 93890405098944
+        g-type-name: "GtkOrientable"
+    n-prerequisites: 0
+       n-properties: 1
+          n-methods: 2
+          n-signals: 0
+          n-vfuncts: 0
+        n-constants: 0
+       iface-struct: #<pointer 0x556490153140>
+  iface-struct-name: "OrientableIface"
+@end lisp
+@end deffn
+
+
+@c @anchor{gi-interface-property-names}
+@c @deffn Procedure gi-interface-property-names info
+
+@c Returns a (possibly empty) list.
+
+@c Obtains and returns the (possibly empty) list of the (untranslated) GI
+@c property names for @var{info} (see @ref{g-name->name} to obtain their
+@c scheme representation).
+@c @end deffn
+
+
+@anchor{g-interface-info-get-n-prerequisites}
+@deffn Procedure g-interface-info-get-n-prerequisites info
+
+Returns the number of prerequisites for @var{info}.
+
+Obtain the number of prerequisites for this interface type.  A
+prerequisites is another interface that needs to be implemented for
+interface, similar to a base class for GObjects.
+@end deffn
+
+
+@anchor{g-interface-info-get-prerequisite}
+@deffn Procedure g-interface-info-get-prerequisite info n
+
+Returns a pointer to the @var{n}th prerequisite for @var{info}.
+
+The prerequisite as a @code{GIBaseInfo}. It must be freed by calling
+@ref{g-base-info-unref} when done accessing the data.
+@end deffn
+
+
+@anchor{g-interface-info-get-n-properties}
+@deffn Procedure g-interface-info-get-n-properties info
+
+Returns the number of properties for @var{info}.
+
+Obtain the number of properties that this interface type has.
+@end deffn
+
+
+@anchor{g-interface-info-get-property}
+@deffn Procedure g-interface-info-get-property info n
+
+Returns a pointer to the @var{n}th @code{GIPropertyInfo} of @var{info}.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-get-n-methods}
+@deffn Procedure g-interface-info-get-n-methods info
+
+Returns the number of methods for @var{info}.
+
+Obtain the number of methods that this interface type has.
+@end deffn
+
+
+@anchor{g-interface-info-get-method}
+@deffn Procedure g-interface-info-get-method info n
+
+Returns a pointer to the @var{n}th @code{GIFunctionInfo} of @var{info}.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-find-method}
+@deffn Procedure g-interface-info-find-method info name
+
+Returns a pointer to a @code{GIFunctionInfo} or #f if there is no method
+available with that name.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-get-n-signals}
+@deffn Procedure g-interface-info-get-n-signals info
+
+Returns the number of signals for @var{info}.
+
+Obtain the number of signals that this interface type has.
+@end deffn
+
+
+@anchor{g-interface-info-get-signal}
+@deffn Procedure g-interface-info-get-signal info n
+
+Returns a pointer to the @var{n}th @code{GISignalInfo} of @var{info}.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-find-signal}
+@deffn Procedure g-interface-info-find-signal info name
+
+Returns a pointer to a @code{GISignalInfo} or #f if there is no signal
+available with that name.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-get-n-vfuncs}
+@deffn Procedure g-interface-info-get-n-vfuncs info
+
+Returns the number of vfuncs for @var{info}.
+
+Obtain the number of vfuncs that this interface type has.
+@end deffn
+
+
+@anchor{g-interface-info-get-vfunc}
+@deffn Procedure g-interface-info-get-vfunc info n
+
+Returns a pointer to the @var{n}th @code{GIVfuncInfo} of @var{info}.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-find-vfunc}
+@deffn Procedure g-interface-info-find-vfunc info name
+
+Returns a pointer to a @code{GIFunctionInfo} or #f if there is no signal
+available with that name.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-get-n-constants}
+@deffn Procedure g-interface-info-get-n-constants info
+
+Returns the number of constants for @var{info}.
+
+Obtain the number of constants that this interface type has.
+@end deffn
+
+
+@anchor{g-interface-info-get-constant}
+@deffn Procedure g-interface-info-get-constant info n
+
+Returns a pointer to the @var{n}th @code{GIConstantInfo} of @var{info}.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn
+
+
+@anchor{g-interface-info-get-iface-struct}
+@deffn Procedure g-interface-info-get-iface-struct info
+
+Returns a pointer to the @var{n}th @code{GIStructInfo} of @var{info}, or
+#f.
+
+It must be freed by calling @ref{g-base-info-unref} when done accessing
+the data.
+@end deffn

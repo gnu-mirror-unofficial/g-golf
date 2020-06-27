@@ -71,6 +71,7 @@
 @set UGOBJECT https://developer.gnome.org/gobject/stable/
 
 @set UGOBJECT-Type-Info https://developer.gnome.org/gobject/stable/gobject-Type-Information.html
+@set UGOBJECT-GType-Module https://developer.gnome.org/gobject/stable/GTypeModule.html
 @set UGOBJECT-GObject https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html
 @set UGOBJECT-GObject-struct https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#GObject-struct
 @set UGOBJECT-Enum-Flags https://developer.gnome.org/gobject/stable/gobject-Enumeration-and-Flag-Types.html
