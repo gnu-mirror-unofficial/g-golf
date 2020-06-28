@@ -156,27 +156,27 @@ pointer or @code{#f} (when @var{value} is the @code{%null-pointer}).
 
 @item glist
 The GType of @var{value} is @code{glist}. The returned value is a
-(possibly empty) list of items contained in the glist poited by
+(possibly empty) list of items contained in the glist pointed by
 @var{value}.
 
-Note: currently, the only supported item type is @code{object} (which
-implies that the @var{type} argument is a type description as documented
-below (see @ref{gi-glist->scm}, @ref{gi-gslist->scm}). G-Golf will of
-course provide translation for all other glist gslist item types, but in
-the mean time, if you encounter such a missing glist gslist item type,
-please @ref{Contact} us so we immediately fix that for you.
+@c Note: currently, the only supported item type is @code{object} (which
+@c implies that the @var{type} argument is a type description as documented
+@c below (see @ref{gi-glist->scm}, @ref{gi-gslist->scm}). G-Golf will of
+@c course provide translation for all other glist gslist item types, but in
+@c the mean time, if you encounter such a missing glist gslist item type,
+@c please @ref{Contact} us so we immediately fix that for you.
 
 @item gslist
 The GType of @var{value} is @code{gslist}. The returned value is a
-(possibly empty) list of items contained in the glist poited by
+(possibly empty) list of items contained in the glist pointed by
 @var{value}.
 
-Note: currently, the only supported item type is @code{object} (which
-implies that the @var{type} argument is a type description as documented
-below (see @ref{gi-glist->scm}, @ref{gi-gslist->scm}). G-Golf will of
-course provide translation for all other glist gslist item types, but in
-the mean time, if you encounter such a missing glist gslist item type,
-please @ref{Contact} us so we immediately fix that for you.
+@c Note: currently, the only supported item type is @code{object} (which
+@c implies that the @var{type} argument is a type description as documented
+@c below (see @ref{gi-glist->scm}, @ref{gi-gslist->scm}). G-Golf will of
+@c course provide translation for all other glist gslist item types, but in
+@c the mean time, if you encounter such a missing glist gslist item type,
+@c please @ref{Contact} us so we immediately fix that for you.
 
 @end table
 @end indentedblock
