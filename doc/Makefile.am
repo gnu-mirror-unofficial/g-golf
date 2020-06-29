@@ -33,8 +33,8 @@ g_golf_TEXINFOS = \
   variables.texi		\
   preface.texi     		\
   introduction.texi		\
-  using-g-golf.texi		\
-  api.texi			\
+  um.texi			\
+  gc.texi			\
   api-overview.texi		\
   api-naming-conventions.texi	\
   api-pro-doc-struct.texi	\

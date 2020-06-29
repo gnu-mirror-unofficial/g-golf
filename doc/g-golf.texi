@@ -75,7 +75,7 @@ Documentation License.''
 * Preface::
 * Introduction::
 * Using G-Golf::
-* API Reference::
+* G-Golf Core Reference::
 
 Appendices
 
@@ -96,8 +96,8 @@ Indices
 
 @include preface.texi
 @include introduction.texi
-@include using-g-golf.texi
-@include api.texi
+@include um.texi
+@include gc.texi
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License

@@ -4,9 +4,9 @@
 @c See the file g-golf.texi for copying conditions.
 
 
-@node API Reference
-@c @chapter API Reference
-@unnumbered API Reference
+@node G-Golf Core Reference
+@c @chapter G-Golf Core Reference
+@unnumbered III. G-Golf Core Reference
 
 @c G-Golf Reference Manual still is a mock-up: any help is more then
 @c welcome to improve this situation, thanks!

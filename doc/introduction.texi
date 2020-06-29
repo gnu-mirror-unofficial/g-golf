@@ -5,15 +5,15 @@
 
 
 @node Introduction
-@unnumbered Introduction
+@unnumbered I. Introduction
 
 @menu
 * About G-Golf::
 @c * Description::
 @c * What else::
 @c * Savannah::
-* Obtaining and Installing G-Golf::
-* Contact::
+* Obtaining and installing G-Golf::
+* Contact information::
 * Reporting Bugs::
 @end menu
 
@@ -57,8 +57,8 @@ GNU G-Golf also has a project page on @uref{@value{UG-GOLF-SAVANNAH},
 Savannah}.
 
 
-@node Obtaining and Installing G-Golf
-@section Obtaining and Installing G-Golf
+@node Obtaining and installing G-Golf
+@section Obtaining and installing G-Golf
 
 GNU G-Golf can be obtained from the following archive site
 @uref{@value{UG-GOLF-RELEASES}}.  The file will be named
@@ -252,8 +252,8 @@ make check
 @end enumerate
 
 
-@node Contact
-@section Contact
+@node Contact information
+@section Contact information
 
 
 @subheading Mailing list
