@@ -34,11 +34,11 @@ g_golf_TEXINFOS = \
   preface.texi     		\
   introduction.texi		\
   um.texi			\
+  um-overview.texi		\
+  um-ov-naming-conventions.texi	\
+  um-ov-pro-doc-struct.texi	\
+  um-ov-goops-notes-and-conventions.texi	\
   gc.texi			\
-  api-overview.texi		\
-  api-naming-conventions.texi	\
-  api-pro-doc-struct.texi	\
-  api-goops-notes-and-conventions.texi	\
   api-glib.texi			\
   api-glib-mem-alloc.texi	\
   api-glib-main-event-loop.texi \

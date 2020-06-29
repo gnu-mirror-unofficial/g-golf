@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2018 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -8,5 +8,19 @@
 @c @chapter Using G-Golf
 @unnumbered II. Using G-Golf
 
-G-Golf Reference Manual still is a mock-up: any help is more then
-welcome to improve this situation, thanks!
+@c G-Golf Reference Manual still is a mock-up: any help is more then
+@c welcome to improve this situation, thanks!
+
+
+@menu
+
+* Overview::
+
+@end menu
+
+
+@node Overview
+@section Overview
+
+
+@include um-overview.texi
