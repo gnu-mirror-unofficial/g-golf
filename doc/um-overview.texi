@@ -7,12 +7,15 @@
 @menu
 
 * Naming Conventions::
-* Project and Documentation Structure::
 * GOOPS Notes and Conventions::
+* Customizing G-Golf::
 
 @end menu
 
 
 @include um-ov-naming-conventions.texi
-@include um-ov-pro-doc-struct.texi
 @include um-ov-goops-notes-and-conventions.texi
+
+
+@node Customizing G-Golf
+@subsection Customizing G-Golf

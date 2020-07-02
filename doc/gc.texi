@@ -13,6 +13,7 @@
 
 
 @menu
+* Overview::
 * Glib::
 * GObject::
 * Gdk::
@@ -20,6 +21,12 @@
 * Support::
 * G-Golf High Level API::
 @end menu
+
+
+@node Overview
+@section Overview
+
+@include gc-overview.texi
 
 
 @node Glib

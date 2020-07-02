@@ -14,13 +14,12 @@
 
 @menu
 
-* Overview::
+* Before you start::
 
 @end menu
 
 
-@node Overview
-@section Overview
-
+@node Before you start
+@section Before you start
 
 @include um-overview.texi
