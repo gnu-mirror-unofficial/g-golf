@@ -39,6 +39,7 @@ g_golf_TEXINFOS = \
   ug-bys-goops-notes-and-conventions.texi	\
   cr.texi			\
   cr-overview.texi		\
+  cr-ov-project-and-doc-struct.texi \
   cr-glib.texi			\
   cr-glib-mem-alloc.texi	\
   cr-glib-main-event-loop.texi \
