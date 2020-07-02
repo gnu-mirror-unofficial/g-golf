@@ -96,7 +96,7 @@ Indices
 
 @include preface.texi
 @include introduction.texi
-@include um.texi
+@include ug.texi
 @include cr.texi
 
 @node GNU Free Documentation License

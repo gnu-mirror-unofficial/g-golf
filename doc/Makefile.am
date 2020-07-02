@@ -33,10 +33,10 @@ g_golf_TEXINFOS = \
   variables.texi		\
   preface.texi     		\
   introduction.texi		\
-  um.texi			\
-  um-overview.texi		\
-  um-ov-naming-conventions.texi	\
-  um-ov-goops-notes-and-conventions.texi	\
+  ug.texi			\
+  ug-bys.texi			\
+  ug-bys-naming-conventions.texi		\
+  ug-bys-goops-notes-and-conventions.texi	\
   cr.texi			\
   cr-overview.texi		\
   api-glib.texi			\

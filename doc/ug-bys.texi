@@ -13,8 +13,8 @@
 @end menu
 
 
-@include um-ov-naming-conventions.texi
-@include um-ov-goops-notes-and-conventions.texi
+@include ug-bys-naming-conventions.texi
+@include ug-bys-goops-notes-and-conventions.texi
 
 
 @node Customizing G-Golf
