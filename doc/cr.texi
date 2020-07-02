@@ -26,7 +26,7 @@
 @node Overview
 @section Overview
 
-@include gc-overview.texi
+@include cr-overview.texi
 
 
 @node Glib

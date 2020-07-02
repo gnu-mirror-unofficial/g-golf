@@ -37,8 +37,8 @@ g_golf_TEXINFOS = \
   um-overview.texi		\
   um-ov-naming-conventions.texi	\
   um-ov-goops-notes-and-conventions.texi	\
-  gc.texi			\
-  gc-overview.texi		\
+  cr.texi			\
+  cr-overview.texi		\
   api-glib.texi			\
   api-glib-mem-alloc.texi	\
   api-glib-main-event-loop.texi \
