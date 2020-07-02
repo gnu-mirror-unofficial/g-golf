@@ -23,14 +23,14 @@ support goops))}, ...
 @end menu
 
 
-@include api-support-modules.texi
-@include api-support-goops.texi
+@include cr-support-modules.texi
+@include cr-support-goops.texi
 
 @node G-export
 @subsection G-export
 
-@include api-support-enum.texi
-@include api-support-flag.texi
-@include api-support-struct.texi
-@include api-support-union.texi
-@include api-support-utils.texi
+@include cr-support-enum.texi
+@include cr-support-flag.texi
+@include cr-support-struct.texi
+@include cr-support-union.texi
+@include cr-support-utils.texi

@@ -32,10 +32,10 @@ though they might be some exception in the future.
 @end menu
 
 
-@include api-glib-mem-alloc.texi
-@include api-glib-main-event-loop.texi
-@include api-glib-io-channels.texi
-@include api-glib-unix-utils.texi
-@include api-glib-glist.texi
-@include api-glib-gslist.texi
-@include api-glib-quarks.texi
+@include cr-glib-mem-alloc.texi
+@include cr-glib-main-event-loop.texi
+@include cr-glib-io-channels.texi
+@include cr-glib-unix-utils.texi
+@include cr-glib-glist.texi
+@include cr-glib-gslist.texi
+@include cr-glib-quarks.texi

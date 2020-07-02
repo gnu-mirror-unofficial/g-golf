@@ -32,34 +32,34 @@
 @node Glib
 @section Glib
 
-@include api-glib.texi
+@include cr-glib.texi
 
 
 @node GObject
 @section GObject
 
-@include api-gobject.texi
+@include cr-gobject.texi
 
 
 @node Gdk
 @section Gdk
 
-@include api-gdk.texi
+@include cr-gdk.texi
 
 
 @node GObject Introspection
 @section GObject Introspection
 
-@include api-gir.texi
+@include cr-gir.texi
 
 
 @node Support
 @section Support
 
-@include api-support.texi
+@include cr-support.texi
 
 
 @node G-Golf High Level API
 @section G-Golf High Level API
 
-@include api-hl-api.texi
+@include cr-hl-api.texi

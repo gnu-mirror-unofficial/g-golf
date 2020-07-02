@@ -28,6 +28,6 @@ they might be some exception in the future.
 @end menu
 
 
-@include api-gdk-events.texi
-@c @include api-gdk-event-structures.texi
-@include api-gdk-key-values.texi
+@include cr-gdk-events.texi
+@c @include cr-gdk-event-structures.texi
+@include cr-gdk-key-values.texi

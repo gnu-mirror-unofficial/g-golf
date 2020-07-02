@@ -34,11 +34,11 @@ though they might be some exception in the future.
 
 @end menu
 
-@include api-gobject-type-info.texi
-@include api-gobject-gobject.texi
-@include api-gobject-enum-flags.texi
-@include api-gobject-gen-vals.texi
-@include api-gobject-params-vals.texi
-@include api-gobject-param-spec.texi
-@include api-gobject-closures.texi
-@include api-gobject-signals.texi
+@include cr-gobject-type-info.texi
+@include cr-gobject-gobject.texi
+@include cr-gobject-enum-flags.texi
+@include cr-gobject-gen-vals.texi
+@include cr-gobject-params-vals.texi
+@include cr-gobject-param-spec.texi
+@include cr-gobject-closures.texi
+@include cr-gobject-signals.texi

@@ -52,23 +52,23 @@ Intropection (manual) section, but there are some exceptions, such as
 @end menu
 
 
-@include api-repository.texi
-@include api-common-types.texi
-@include api-base-info.texi
-@include api-callable-info.texi
-@include api-signal-info.texi
-@include api-function-info.texi
-@include api-registered-type-info.texi
-@include api-enum-info.texi
-@include api-struct-info.texi
-@include api-union-info.texi
-@include api-object-info.texi
-@include api-interface-info.texi
-@include api-arg-info.texi
-@include api-constant-info.texi
-@include api-field-info.texi
-@include api-property-info.texi
-@include api-type-info.texi
+@include cr-gir-repository.texi
+@include cr-gir-common-types.texi
+@include cr-gir-base-info.texi
+@include cr-gir-callable-info.texi
+@include cr-gir-signal-info.texi
+@include cr-gir-function-info.texi
+@include cr-gir-registered-type-info.texi
+@include cr-gir-enum-info.texi
+@include cr-gir-struct-info.texi
+@include cr-gir-union-info.texi
+@include cr-gir-object-info.texi
+@include cr-gir-interface-info.texi
+@include cr-gir-arg-info.texi
+@include cr-gir-constant-info.texi
+@include cr-gir-field-info.texi
+@include cr-gir-property-info.texi
+@include cr-gir-type-info.texi
 
-@include api-typelib.texi
-@include api-utilities.texi
+@include cr-gir-typelib.texi
+@include cr-gir-utilities.texi

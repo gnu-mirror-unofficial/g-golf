@@ -41,11 +41,11 @@ Reference Manual}), in a way that is largely inspired by
 @end menu
 
 
-@include api-hl-api-events.texi
-@include api-hl-api-gtype.texi
-@include api-hl-api-gobject.texi
-@include api-hl-api-closure.texi
-@include api-hl-api-function.texi
-@c @include api-hl-api-object.texi
-@include api-hl-api-import.texi
-@include api-hl-api-utils.texi
+@include cr-hl-api-events.texi
+@include cr-hl-api-gtype.texi
+@include cr-hl-api-gobject.texi
+@include cr-hl-api-closure.texi
+@include cr-hl-api-function.texi
+@c @include cr-hl-api-object.texi
+@include cr-hl-api-import.texi
+@include cr-hl-api-utils.texi
