@@ -71,6 +71,7 @@ g_golf_TEXINFOS = \
   cr-gir-struct-info.texi	\
   cr-gir-union-info.texi	\
   cr-gir-object-info.texi	\
+  cr-gir-interface-info.texi	\
   cr-gir-arg-info.texi		\
   cr-gir-constant-info.texi	\
   cr-gir-field-info.texi	\
