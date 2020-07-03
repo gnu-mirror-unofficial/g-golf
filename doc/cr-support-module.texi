@@ -4,10 +4,10 @@
 @c See the file g-golf.texi for copying conditions.
 
 
-@node Modules
-@subsection Modules
+@node Module
+@subsection Module
 
-
+x
 @indentedblock
 @table @code
 @item @ref{re-export-public-interface}

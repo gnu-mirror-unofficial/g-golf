@@ -12,9 +12,8 @@ support goops))}, ...
 
 
 @menu
-* Modules::
+* Module::
 * Goops::
-* G-export::
 * Enum::
 * Flag::
 * Struct::
@@ -23,12 +22,8 @@ support goops))}, ...
 @end menu
 
 
-@include cr-support-modules.texi
+@include cr-support-module.texi
 @include cr-support-goops.texi
-
-@node G-export
-@subsection G-export
-
 @include cr-support-enum.texi
 @include cr-support-flag.texi
 @include cr-support-struct.texi

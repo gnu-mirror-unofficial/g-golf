@@ -81,7 +81,7 @@ g_golf_TEXINFOS = \
   cr-gir-typelib.texi		\
   cr-gir-utilities.texi		\
   cr-support.texi		\
-  cr-support-modules.texi	\
+  cr-support-module.texi	\
   cr-support-goops.texi		\
   cr-support-enum.texi		\
   cr-support-flag.texi		\
