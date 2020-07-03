@@ -7,155 +7,99 @@
 @node Project and Documentation Structure
 @subsection Project and Documentation Structure
 
-The project and documentation structure and naming is, whenever it is
-possible, based on the @samp{original} documentation structure and
-naming of the corresponding library (among others, you will find
-exceptions, such as for @code{support} and @code{utils} modules, but
-these are exceptions and their common denominator is that the
-functionality they provide is @samp{additional} and (never) part of
-@code{Glib}, @code{GObject} or @code{GObject Introspection}.
+The project and documentation both structure and naming is, whenever it
+is possible, based on the @samp{original} documentation structure and
+naming of the corresponding library. So far, these are the @code{glib}
+(GLib), @code{gobject} (GObject), @code{gdk} (Gdk) and @code{gi}
+(GObject Introspection) directories. To illustrate, here are just a few
+examples:
 
-@subheading Glib
-
-In the table below we list respectively the Glib section, and, when
-applicable, its G-Golf section and the corresponding G-Golf source code
-module.
 
 @indentedblock
-@multitable @columnfractions  .3 .3 .3
-@headitem Glib Section @tab G-Golf Section @tab G-Golf module
+@strong{Glib}
 
-@item
-@uref{@value{UGLIB-Mem-Alloc}, Memory Allocation}
-@tab @ref{Memory Allocation}
-@tab @code{(g-golf glib mem-alloc)}
+@table @code
 
-@item
-@uref{@value{UGLIB-Main-Event-Loop}, The Main Event Loop}
-@tab @ref{The Main Event Loop}
-@tab @code{(g-golf glib main-event-loop)}
+@item @uref{@value{UGLIB-Mem-Alloc}, Memory Allocation}
+@ref{Memory Allocation} @*
+@code{(g-golf glib mem-alloc)}
 
-@end multitable
+@item @uref{@value{UGLIB-Main-Event-Loop}, The Main Event Loop}
+@ref{The Main Event Loop} @*
+@code{(g-golf glib main-event-loop)}
+
+@item @dots{}
+
+@end table
 @end indentedblock
 
 
-@subheading GObject
-
-In the table below we list respectively the GObject section, and, when
-applicable, its G-Golf section and the corresponding G-Golf source code
-module.
-
 @indentedblock
-@multitable @columnfractions .3 .3 .3
-@headitem GObject Section @tab G-Golf Section @tab G-Golf module
+@strong{GObject}
 
-@item
-@uref{@value{UGOBJECT-Type-Info}, Type Information}
-@tab @ref{Type Information}
-@tab @code{(g-golf gobject type-info)}
+@table @code
 
-@item
-@uref{@value{UGOBJECT-GObject}, GObject}
-@tab @ref{GObject_}
-@tab @code{(g-golf gobject gobject)}
+@item @uref{@value{UGOBJECT-Type-Info}, Type Information}
+@ref{Type Information} @*
+@code{(g-golf gobject type-info)}
 
-@item
-@uref{@value{UGOBJECT-Enum-Flags}, Enumeration and Flag Types}
-@tab @ref{Enumeration and Flag Types}
-@tab @code{(g-golf gobject enum-flags)}
+@item @uref{@value{UGOBJECT-GObject}, GObject}
+@ref{GObject_} @*
+@code{(g-golf gobject gobject)}
 
-@item
-@uref{@value{UGOBJECT-Params-Vals}, Parameters and Values}
-@tab @ref{Parameters and Values}
-@tab @code{(g-golf gobject params-vals)}
+@item @uref{@value{UGOBJECT-Enum-Flags}, Enumeration and Flag Types}
+@ref{Enumeration and Flag Types} @*
+@code{(g-golf gobject enum-flags)}
 
-@item
-@uref{@value{UGOBJECT-GParamSpec}, GParamSpec}
-@tab @ref{GParamSpec}
-@tab @code{(g-golf gobject param-spec)}
+@item @dots{}
 
-@c @item
-@c @uref{@value{UGOBJECT-Gen-Vals}, Generic Values}
-@c @tab @c @ref{Repository}
-@c @tab @code{(g-golf gobject generic-values)}
-
-@end multitable
+@end table
 @end indentedblock
 
 
-@subheading GObject Introspection
+@indentedblock
+@strong{Gdk}
 
-In the table below we list respectively the GObject Introspection
-section, and, when applicable, its G-Golf section and the corresponding
-G-Golf source code module.
+@table @code
+
+@item @uref{@value{UGDK-Events}, Events}
+@ref{Events} @*
+@code{(g-golf gdk events)}
+
+@item @uref{@value{UGDK-KeyValues}, Key Values}
+@ref{Key Values} @*
+@code{(g-golf gdk key-values)}
+
+@item @dots{}
+
+@end table
+@end indentedblock
+
 
 @indentedblock
-@multitable @columnfractions .3 .3 .3
-@headitem GI Section @tab G-Golf Section @tab G-Golf module
+@strong{GObject Introspection}
+
+@table @code
 
 @item @uref{@value{UGIRepository}, GIRepository}
-@tab @ref{Repository}
-@tab @code{(g-golf gi repository)}
+@ref{Repository} @*
+@code{(g-golf gi repository)}
 
 @item @uref{@value{UGIcommontypes}, common types}
-@tab @ref{Common Types}
-@tab @code{(g-golf gi common-types)}
+@ref{Common Types} @*
+@code{(g-golf gi common-types)}
 
 @item @uref{@value{UGIBaseInfo}, GIBaseInfo}
-@tab @ref{Base Info}
-@tab @code{(g-golf gi base-info)}
+@ref{Base Info} @*
+@code{(g-golf gi base-info)}
 
-@item @uref{@value{UGICallableInfo}, GICallableInfo}
-@tab @ref{Callable Info}
-@tab @code{(g-golf gi callable-info)}
+@item @dots{}
 
-@item @uref{@value{UGIFunctionInfo}, GIFunctionInfo}
-@tab @ref{Function Info}
-@tab @code{(g-golf gi function-info)}
-
-@item @uref{@value{UGICallbackInfo}, GICallbackInfo}
-
-@item @uref{@value{UGISignalInfo}, GISignalInfo}
-
-@item @uref{@value{UGIVFuncInfo}, GIVFuncInfo}
-
-@item @uref{@value{UGIRegisteredTypeInfo}, GIRegisteredTypeInfo}
-@tab @ref{Registered Type Info}
-@tab @code{(g-golf gi registered-type-info)}
-
-@item @uref{@value{UGIEnumInfo}, GIEnumInfo}
-@tab @ref{Enum Info}
-@tab @code{(g-golf gi enum-info)}
-
-@item @uref{@value{UGIStructInfo}, GIStructInfo}
-
-@item @uref{@value{UGIUnionInfo}, GIUnionInfo}
-
-@item @uref{@value{UGIObjectInfo}, GIObjectInfo}
-@tab @ref{Object Info}
-@tab @code{(g-golf gi object-info)}
-
-@item @uref{@value{UGIInterfaceInfo}, GIInterfaceInfo}
-
-@item @uref{@value{UGIArgInfo}, GIArgInfo}
-@tab @ref{Arg Info}
-@tab @code{(g-golf gi arg-info)}
-
-@item @uref{@value{UGIConstantInfo}, GIConstantInfo}
-
-@item @uref{@value{UGIFieldInfo}, GIFieldInfo}
-
-@item @uref{@value{UGIPropertyInfo}, GIPropertyInfo}
-@tab @ref{Property Info}
-@tab @code{(g-golf gi property-info)}
-
-@item @uref{@value{UGITypeInfo}, GITypeInfo}
-@tab @ref{Type Info}
-@tab @code{(g-golf gi type-info)}
-
-@item @uref{@value{UGIValueInfo}, GIValueInfo}
-@tab n/a
-@tab n/a
-
-@end multitable
+@end table
 @end indentedblock
+
+
+Exceptions to the above are the G-Golf modules that provide support to
+the core project itself or additional functionality, so far organized in
+their respective @code{support}, @code{override} and @code{hl-api}
+directory.

@@ -81,6 +81,9 @@
 @set UGOBJECT-Closures https://developer.gnome.org/gobject/stable/gobject-Closures.html
 @set UGOBJECT-Signals https://developer.gnome.org/gobject/stable/gobject-Signals.html
 
+
+@set UGDK-Events https://developer.gnome.org/gdk3/stable/gdk3-Events.html
+
 @set UGDK-ModifierType https://developer.gnome.org/gdk3/stable/gdk3-Windows.html#GdkModifierType
 @set UGDK-KeyValues https://developer.gnome.org/gdk3/stable/gdk3-Keyboard-Handling.html
 
