@@ -91,16 +91,12 @@
                                    (g-name (g-base-info-get-name g-property))
                                    (g-flags (g-property-info-get-flags g-property))
 	                           (g-type (gi-property-g-type g-property))
-                                   (scm-name (g-name->name g-name 'as-string))
-                                   (s-name (string->symbol scm-name))
-                                   (k-name (with-input-from-string
-                                               (string-append "#:" scm-name)
-                                             read)))
+                                   (name (g-name->name g-name)))
                               (and #;(has-valid-property-flag? g-flags)
-                               (not (has-slot? scm-name slots))
+                               (not (has-slot? name slots))
                                g-type
-                               (let* ((a-name (string->symbol
-                                               (string-append "!" scm-name)))
+                               (let* ((k-name (symbol->keyword name))
+                                      (a-name (symbol-append '! name))
                                       (a-inst (if (module-variable module a-name)
                                                   (module-ref module a-name)
                                                   (let ((a-inst (make-accessor a-name)))
@@ -108,7 +104,7 @@
                                                     (module-set! module a-name a-inst)
                                                     a-inst)))
                                       (slot (make <slot>
-                                              #:name s-name
+                                              #:name name
                                               #:g-property g-property
                                               #:g-type g-type
                                               #:g-flags g-flags
