@@ -1,21 +1,20 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
 @node GOOPS Notes and Conventions
 @subsection GOOPS Notes and Conventions
 
-G-Golf high level API (main) objective is to make (imported) GOBject
-classes and methods available using GOOPS, the Guile Object Oriented
-System (@pxref{GOOPS,,, guile, The GNU Guile Reference Manual}), in a
-way that is largely inspired by @uref{@value{UGG}, Guile-Gnome}.
+G-Golf extensively uses GOOPS, the Guile Object Oriented System
+(@pxref{GOOPS,,, guile, The GNU Guile Reference Manual}), in a way that
+is largely inspired by @uref{@value{UGG}, Guile-Gnome}.
 
 Here are some notes and the GOOPS conventions used by G-Golf.
 
 
-@subheading Slots are not Immutable
+@ @ @U{10a52} @strong{Slots are not Immutable}
 
 Except for virtual slots, there is currently no way to effectively
 prohibit (block) a user to mutate a goops class instance (one can always
@@ -29,18 +28,44 @@ for some exmples in the @uref{@value{UGG}, Guile-Gnome}, source tree,
 where it is extensively used.}.
 
 However, you will find a few places in this manual using phrase excerpts
-like @samp{instances this <class> are immutable}, or @samp{this <slot>
+like @samp{instances of this <class> are immutable}, or @samp{this <slot>
 is immutable}.  In these contexts, what is actually meant is that these
 (insances or slots) are not meant to be mutated.  Doing so is not only
 at your own risks, but likely to cause a crash.
 
 
-@subheading Merging Generics
+@ @ @U{10a52} @strong{Merging Generics}
 
-In G-Golf, generic functions are always merged.
+In G-Golf, generic functions are always merged (@pxref{Merging
+Generics,,, guile, The GNU Guile Reference Manual}).
+
+Users are (highly) recommended to do the same, in their @code{repl},
+application/library modules and script(s). In its modules - those that
+import (oop goops) - G-Golf uses the following duplicate binding handler
+set:
+
+@example
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
+@end example
+
+In a @code{repl} or in scripts, these maybe set - after importing (oop
+goops) - by calling @code{default-duplicate-binding-handler}:
 
 
-@subheading Accessors Naming Convention
+@example
+(use-modules (oop goops))
+
+(default-duplicate-binding-handler
+    '(merge-generics replace warn-override-core warn last))
+@end example
+
+
+
+@ @ @U{10a52} @strong{Accessors Naming Convention}
 
 In G-Golf, all slots define an accessor (and no getter, no setter), the
 name of which is the @code{slot-name } prefixed using @code{!}. For
