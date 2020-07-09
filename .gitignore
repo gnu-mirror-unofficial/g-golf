@@ -16,6 +16,7 @@ doc/version.texi
 doc/stamp-vti
 doc/g-golf.t2p
 doc/g-golf.tps
+doc/g-golf.dvi
 libtool
 m4/libtool.m4
 m4/ltoptions.m4
