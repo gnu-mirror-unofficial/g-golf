@@ -14,7 +14,7 @@ is largely inspired by @uref{@value{UGG}, Guile-Gnome}.
 Here are some notes and the GOOPS conventions used by G-Golf.
 
 
-@ @ @U{10a52} @strong{Slots are not Immutable}
+@ @ @sup{_} @strong{Slots are not Immutable}
 
 Except for virtual slots, there is currently no way to effectively
 prohibit (block) a user to mutate a goops class instance (one can always
@@ -34,7 +34,7 @@ is immutable}.  In these contexts, what is actually meant is that these
 at your own risks, but likely to cause a crash.
 
 
-@ @ @U{10a52} @strong{Merging Generics}
+@ @ @sup{_} @strong{Merging Generics}
 
 In G-Golf, generic functions are always merged (@pxref{Merging
 Generics,,, guile, The GNU Guile Reference Manual}).
@@ -65,7 +65,7 @@ goops) - by calling @code{default-duplicate-binding-handler}:
 
 
 
-@ @ @U{10a52} @strong{Accessors Naming Convention}
+@ @ @sup{_} @strong{Accessors Naming Convention}
 
 In G-Golf, all slots define an accessor (and no getter, no setter), the
 name of which is the @code{slot-name } prefixed using @code{!}. For

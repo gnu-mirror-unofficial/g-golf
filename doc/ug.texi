@@ -15,7 +15,7 @@
 @menu
 
 * Before you start::
-
+* G-Golf Cache::
 @end menu
 
 
@@ -23,3 +23,9 @@
 @section Before you start
 
 @include ug-bys.texi
+
+
+@node G-Golf Cache
+@section G-Golf Cache
+
+@c @include ug-g-golf-cache.texi

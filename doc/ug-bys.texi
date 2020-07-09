@@ -8,13 +8,17 @@
 
 * Naming Conventions::
 * GOOPS Notes and Conventions::
+@c * G-Golf Cache (Accessing)::
 * Customizing G-Golf::
-
 @end menu
 
 
 @include ug-bys-naming-conventions.texi
 @include ug-bys-goops-notes-and-conventions.texi
+
+
+@c @node G-Golf Cache (Accessing)
+@c @subsection G-Golf Cache (Accessing)
 
 
 @node Customizing G-Golf

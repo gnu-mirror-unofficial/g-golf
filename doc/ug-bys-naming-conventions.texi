@@ -14,7 +14,6 @@ an imported Gnome library or is part of a G-Golf's core reference
 module.
 
 
-@c @U{1f535} @strong{Gnome Libraries} @U{1f535}
 @subheading Gnome Libraries
 
 When G-Golf imports a Gnome library, its classes, properties, methods,
@@ -22,11 +21,21 @@ functions, types and constant are renamed, which is achieved by calling
 @ref{g-name->class-name} and @ref{g-name->name} appropriately.
 
 As described in their respective documentation entry, as well as in the
-(@xref{Customizing G-Golf} section, G-Golf offers a way to either ignore
+@ref{Customizing G-Golf} section, G-Golf offers a way to either ignore
 or partially customize the renaming process.
 
+@c playing ... attempt to 'replace' @U{10a52}, which only works for
+@c x/html, pdf. @ @ @sup{_} @strong{...} seems the best, for now.
 
-@ @ @U{10a52} @strong{Classes}
+@c @ @ @U{10a52} @strong{Classes} @*
+@c @ @ o @strong{Classes} @*
+@c @ @ @textdegree{} @strong{Classes} @*
+@c @ @ - @strong{Classes} @*
+@c @ @ @sup{o} @strong{Classes} @*
+@c @ @ @sup{o} @strong{Classes} @sup{o} @*
+@c @ @ @bullet{} @strong{Classes} @*
+@ @ @sup{_} @strong{Classes} @*
+
 
 Gnome library classes are imported as GOOPS classes (the Guile Object
 Oriented System, @pxref{GOOPS,,, guile, The GNU Guile Reference
@@ -43,7 +52,7 @@ would be <web-kit-web-view>.}
 @end lisp
 
 
-@ @ @U{10a52} @strong{Properties}
+@ @ @sup{_} @strong{Properties}
 
 Gnome library class properties are imported as GOOPS class slots, and
 their respective name is given by calling @ref{g-name->name}. Each
@@ -55,7 +64,7 @@ As an example, the @code{<gtk-label>} class has a @code{label} slot,
 with the @code{#:label} init-keyword and @code{!label} accessor.
 
 
-@ @ @U{10a52} @strong{Methods}
+@ @ @sup{_} @strong{Methods}
 
 Gnome library methods are imported as GOOPS class methods and added to
 their respective generic function, the name of which is given by calling
@@ -74,7 +83,7 @@ generic function, make and add a method with its specializers, in this
 case @code{<gtk-container>} and @code{<gtk-widget>}.
 
 
-@ @ @U{10a52} @strong{Functions}
+@ @ @sup{_} @strong{Functions}
 
 Gnome library functions are imported as procedures, renamed by calling
 @ref{g-name->name}. For example:
@@ -86,10 +95,10 @@ clutter_actor_new -> clutter-actor-new
 @end lisp
 
 
-@ @ @U{10a52} @strong{Enums, Flags and Boxed types}
+@ @ @sup{_} @strong{Enums, Flags and Boxed types}
 
-Gnome library enums, flags and boxed types are cached (FIXME - see
-@code{G-Golf's cache} section), renamed by calling @ref{g-name->name}.
+Gnome library enums, flags and boxed types are renamed by calling
+@ref{g-name->name} (and cached, @xref{G-Golf Cache} section).
 
 Enum and flag type members are renamed by calling @ref{g-name->name}. To
 illustrate, here is an example:
@@ -107,9 +116,6 @@ Slots are:
      g-type = 94664428197600
      g-name = "GtkWindowPosition"
      name = gtk-window-position
-
-(gi-cache-ref 'enum 'gtk-window-position)
-$3 = #<<gi-enum> 5618c7a18090>
 @end lisp
 
 
@@ -117,7 +123,7 @@ $3 = #<<gi-enum> 5618c7a18090>
 @subheading G-Golf Core Reference
 
 
-@ @ @U{10a52} @strong{Procedures}
+@ @ @sup{_} @strong{Procedures}
 
 G-Golf procedure names that bind a Glib, GObject, Gdk or GObject GObject
 Introspection function always use the @samp{original} name, except that
@@ -164,7 +170,7 @@ an R6RS reserved word.}, then the name starts using the @code{gi-}
 prefix, and equally for variables, using @code{%gi-}.
 
 
-@ @ @U{10a52} @strong{Types and Values}
+@ @ @sup{_} @strong{Types and Values}
 
 G-Golf variables that bind Glib, GObject, Gdk and GI types and values
 use the same convention as for procedures, except that they always start
