@@ -148,8 +148,8 @@
 		(g-name->class-name "WebKitWebContent"))
   (assert-equal 'webkit-network-proxy-settings-new
                 (g-name->name "webkit_network_proxy_settings_new"))
-  (assert-equal "bluefox"
-                (g-name->name "BLuefox" 'as-string))
+  (assert-equal "gobject"
+                (g-name->name "GObject" 'as-string))
   (assert-equal "clutter-actor"
 		(g-name->name "ClutterActor" 'as-string))
   (assert-equal '<clutter-actor>

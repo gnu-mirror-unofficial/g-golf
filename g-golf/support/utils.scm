@@ -160,8 +160,7 @@
 (define %g-name-transform-exceptions
   ;; Default name transformations can be overridden, but g-golf won't
   ;; define exceptions for now, let's see.
-  '(("BLuefox" . "bluefox") ;; to test
-    ;; ("GEnum" . "genum")  ;; no sure yet
+  '(#;("GEnum" . "genum")  	;; no sure yet
     ("GObject" . "gobject")))
 
 (define* (g-name->name g-name #:optional (as-string? #f))
