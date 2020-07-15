@@ -176,22 +176,24 @@ As an example, using these default settings, the short name method for
 @anchor{%g-name-transform-exceptions}
 @defvar %g-name-transform-exceptions
 
-Contains an alist where each @code{key} is a GType name exception for
-the @ref{g-name->name} procedure, and the corresponding
-@code{value} the string that @ref{g-name->name} will return
-instead. As an example, it could be defined as:
+Contains an alist where each @code{key} is a @code{GType} name exception
+for the @ref{g-name->name} procedure, and the corresponding @code{value}
+is the name @ref{g-name->name} should use instead.
+
+Its default value contains an entry for @code{GObject}, which should not
+(never) be removed:
 
 @lisp
 (define %g-name-transform-exceptions
-  '((GEnum . genum)))
+  '(("GObject" . "gobject")))
 @end lisp
 
-However currently it is an exmpty list@footnote{@uref{@value{UGG},
-Guile-Gnome} defines a relatively long list of those GType name
-exceptions, including GEnum, but I'm still not sure about what G-Golf
-will do and currently decided not to apply any exception.  Will this
-change in the future? Maybe, but it will become stable before G-Golf
-1.0.}.
+@c However currently it is an exmpty list@footnote{@uref{@value{UGG},
+@c Guile-Gnome} defines a relatively long list of those GType name
+@c exceptions, including GEnum, but I'm still not sure about what G-Golf
+@c will do and currently decided not to apply any exception.  Will this
+@c change in the future? Maybe, but it will become stable before G-Golf
+@c 1.0.}.
 @end defvar
 
 
@@ -203,7 +205,7 @@ the @ref{g-studly-caps-expand} procedure, and the corresponding
 @code{value} the string that @ref{g-studly-caps-expand} will use for
 that @code{token} transformation instead.
 
-It is currently defined as:
+Its default value contains an entry for the @code{WebKit} token:
 
 @lisp
 (define %g-studly-caps-expand-token-exceptions
