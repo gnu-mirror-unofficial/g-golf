@@ -299,9 +299,11 @@
         (%syntax-name-protect-prefix
          (symbol-append %syntax-name-protect-prefix
                         name))
-        (else
+        (%syntax-name-protect-postfix
          (symbol-append name
-                        %syntax-name-protect-postfix))))
+                        %syntax-name-protect-postfix))
+        (else
+         (error "At least one of %syntax-name-protect-prefix, %syntax-name-protect-postfix or %syntax-name-protect-renamer variable must be defined: " %syntax-name-protect-prefix %syntax-name-protect-postfix %syntax-name-protect-renamer))))
 
 
 ;;;
