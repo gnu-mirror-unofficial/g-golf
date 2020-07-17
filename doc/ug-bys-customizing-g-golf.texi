@@ -1,0 +1,103 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@node Customizing G-Golf
+@subsection Customizing G-Golf
+
+There are three @samp{domains} for which G-Golf offers a series of
+customization variables. The first is related to @samp{name
+transformation}, or how things are being named as they are being
+imported. The second is related to the so called @samp{short name
+methods}, wether G-Golf should create them. The third is related to the
+so called @samp{syntax name protect} mechanism, or how G-Golf should
+address syntax name @samp{clash} exceptions, if/when short name methods
+are created.
+
+Variables listed in this subsection of the manual are somewhat briefly
+introduced, make sure to follow each cross-reference to also read their
+reference documentation entry.
+
+
+@ @ @sup{_} @strong{Name Transformation }
+
+As stated previously (@xref{Naming Conventions}), when G-Golf imports a
+Gnome library, its classes, properties, methods, functions, types and
+constant are renamed, mainly to avoid
+@samp{@uref{@value{UWIKI-CAMELCASE}, Camel Case}}, to surround class
+names by @samp{<} @samp{>} and to avoid @samp{_} (underscore) and use
+@samp{-} (hyphen) instead.
+
+G-Golf provides two variables, that may be used to fully or partially
+customize the name transformation output:
+
+@indentedblock
+@table @code
+@item @ref{%g-name-transform-exceptions}
+@item @ref{%g-studly-caps-expand-token-exceptions}
+@end table
+@end indentedblock
+
+Here is a summary of how name transformation happens and how the above
+two variables are used:
+
+@itemize
+@item
+Class names are obtained by calling @ref{g-name->class-name}, which
+calls @ref{g-name->name}
+@*@*
+
+@item
+@ref{g-name->name} first checks if its argument has an entry in
+@ref{%g-name-transform-exceptions} and returns its value if it found
+one, otherwise, it calls @ref{g-studly-caps-expand} @*@*
+
+@item
+@ref{g-studly-caps-expand}, which does the core of the job, uses
+@ref{%g-studly-caps-expand-token-exceptions} to specially treat its
+listed token exceptions.
+
+@end itemize
+
+
+@ @ @sup{_} @strong{Short Name Methods}
+
+By default, when G-Golf imports a GI typelib, it creates so called
+@samp{short name methods}, obtained by dropping the container name (and
+its trailing hyphen) from the GI typelib method full/long names. Users
+may change this default, by setting the following variable:
+
+@indentedblock
+@table @code
+@item @ref{%gi-method-short-names-skip}
+@end table
+@end indentedblock
+
+
+@ @ @sup{_} @strong{Syntax Name Protect}
+
+When a short name method is created, which is obtained by dropping the
+container name (and its trailing hyphen) from the GI typelib method
+full/long name, it may lead to a so called name @samp{clash}, with an
+already defined procedure or syntax. Name @samp{clashes} against
+procedures are not a concern (this is explained in the
+@ref{syntax-name->method-name} documentation entry).
+
+However, the @samp{magic} applied for name @samp{clashes} against
+procedures can not work for syntaxes, and those syntax names must be
+@samp{protected}, which is achieved by (automatically) calling
+@ref{syntax-name->method-name} (users should normally not call this
+procedure themselves - except for testing purposes).
+
+Three variables are provided to customize the @samp{Syntax Name
+Protect} default mechanism:
+
+@indentedblock
+@table @code
+@item @ref{%syntax-name-protect-prefix}
+@item @ref{%syntax-name-protect-postfix}
+@item @ref{%syntax-name-protect-renamer}
+@end table
+@end indentedblock

@@ -37,6 +37,7 @@ g_golf_TEXINFOS = \
   ug-bys.texi			\
   ug-bys-naming-conventions.texi		\
   ug-bys-goops-notes-and-conventions.texi	\
+  ug-bys-customizing-g-golf.texi		\
   ug-g-golf-cache.texi		\
   cr.texi			\
   cr-overview.texi		\

@@ -28,6 +28,7 @@
 @table @code
 @item @ref{%g-name-transform-exceptions}
 @item @ref{%g-studly-caps-expand-token-exceptions}
+@item @ref{%gi-method-short-names-skip}
 @item @ref{%syntax-name-protect-prefix}
 @item @ref{%syntax-name-protect-postfix}
 @item @ref{%syntax-name-protect-renamer}
@@ -58,10 +59,11 @@ where there are named @code{GStudlyCapsExpand},
 be used to transform other (Gobject Inptrospection given) names, such as
 function names, hence their @code{g-name->} prefix instead} returns a
 new string, with all @samp{_} transformed into @samp{-}, uppercase
-letters are transformed into their corresponding lowercase letter, and
-with a @code{#\-} is inserted in between occurrences of two consecutive
+letters are transformed into their corresponding lowercase letter, and a
+@code{#\-} is inserted in between occurrences of two consecutive
 uppercase letters, unless the sequence analysed is part of a prefix
-defined in the @ref{%g-studly-caps-expand-token-exceptions} alist .
+defined in the @ref{%g-studly-caps-expand-token-exceptions} alist.
+
 Here are two examples:
 
 @lisp
@@ -140,7 +142,7 @@ purposes, if/when they customize its default settings - it is
 appropriately and automatically called by G-Golf when importing a GI
 typelib.
 
-Unless otherwise specified (see @code{%gi-method-short-names-skip}),
+Unless otherwise specified (see @ref{%gi-method-short-names-skip}),
 when a GI typelib is imported, G-Golf also creates so called short name
 methods, obtained by dropping the container name (and its trailing
 hyphen) from the GI typelib method full/long names.
@@ -213,6 +215,36 @@ Its default value contains an entry for the @code{WebKit} token:
 @end lisp
 
 Users may add or remove alist pairs to satisfy their needs.
+@end defvar
+
+
+@anchor{%gi-method-short-names-skip}
+@defvar %gi-method-short-names-skip
+
+This variable is used by G-Golf to decide, while importing a GI typelib,
+if a short name method should be created or not (@samp{skipped}, hence
+the variable name).
+
+It can take the following values:
+
+@indentedblock
+@table @code
+
+@item '()
+This is the default value. In this case, a short name method is created
+for every full/long name method, or in other words, no short name method
+creation process is skipped.
+
+@item 'all
+In this case, no short name method is created, or in other words, all
+short name method creation process is skipped.
+
+@item a list of short name(s)
+In this case, for each short name in the list, the short name method
+creation process is skipped.
+@end table
+@end indentedblock
+
 @end defvar
 
 
