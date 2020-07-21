@@ -98,7 +98,8 @@
 (define* (gi-interface-show info
                             #:optional (port (current-output-port)))
   (let* ((iface-struct (g-interface-info-get-iface-struct info))
-         (iface-struct-name (g-base-info-get-name iface-struct)))
+         (iface-struct-name (and iface-struct
+                                 (g-base-info-get-name iface-struct))))
     (format port "~?" %iface-fmt
             (list
              info
