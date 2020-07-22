@@ -66,9 +66,14 @@
 (define-class <gobject-class> (<gtype-class>))
 
 (define (has-slot? name slots)
-  (and (pair? slots)
-       (or (eq? name (slot-definition-name (car slots)))
-           (has-slot? name (cdr slots)))))
+  (let loop ((slots slots))
+    (match slots
+      (#f #f)
+      (() #f)
+      ((slot . rest)
+       (or (eq? name
+                (slot-definition-name slot))
+           (loop rest))))))
 
 (define (has-valid-property-flag? g-flags)
   (let ((valid-flags '(readable writable readwrite))
