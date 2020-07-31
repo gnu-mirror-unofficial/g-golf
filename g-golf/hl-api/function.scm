@@ -586,7 +586,7 @@
                    (gi-import-union info))
                #t))
       ((object)
-       (let ((module (resolve-module '(g-golf hl-api object)))
+       (let ((module (resolve-module '(g-golf hl-api gobject)))
              (c-name (g-name->class-name g-name)))
          ;; In the code below, it is necessary to make sure c-name has
          ;; been defined before to (maybe) get its value, because it
@@ -632,7 +632,14 @@
                name
                (or (gi-cache-ref 'iface name)
                    (gi-import-interface info))
-               #t))
+               #t)
+       #;(let ((module (resolve-module '(g-golf hl-api gobject)))
+             (c-name (g-name->class-name g-name)))
+         (values id
+                 name
+                 (or (gi-cache-ref 'iface name)
+                     (gi-import-interface info))
+                 #t)))
       (else
        (values id name #f #f)))))
 
@@ -1192,7 +1199,7 @@
                          (gi-type-tag->field type-tag)))))))
 
 (define (g-object-find-class foreign)
-  (let* ((module (resolve-module '(g-golf hl-api object)))
+  (let* ((module (resolve-module '(g-golf hl-api gobject)))
          (g-type (g-object-type foreign))
          (g-name (g-object-type-name foreign))
          (name (g-name->class-name g-name))

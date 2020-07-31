@@ -266,7 +266,7 @@
        (if (null-pointer? value)
            #f
            (or (g-inst-cache-ref value)
-               (let* ((module (resolve-module '(g-golf hl-api object)))
+               (let* ((module (resolve-module '(g-golf hl-api gobject)))
                       (r-type (g-value-type g-value))
                       (info (g-irepository-find-by-gtype r-type))
                       (g-name (g-registered-type-info-get-type-name info))
