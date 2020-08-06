@@ -259,6 +259,32 @@
                       (g-closure-marshal-g-value-return-val return-val result))
         (values)))))
 
+#!
+
+The g-closure-marshal-g-value-ref code below used to retreive the class
+name of an object doing the following calls:
+
+  ...
+  (let* ((r-type (g-value-type g-value))
+         (info (g-irepository-find-by-gtype r-type))
+         (g-name (g-registered-type-info-get-type-name info)))
+    ...)
+
+However, there are situations, within the context of signals callback
+notably, for which the type of the g-value's object pointer is a
+subclass of the class described as its type in the GI info as retrieved
+here above.
+
+As an example, the second argument to a 'decicion-policy callback maybe
+a WebKitResponsePolicyDecision or a WebKitNavigationPolicyDecision, both
+a WebKitPolicyDecision subclass, which is what the GI info for that
+signal callback argument would tell us it is ...
+
+The solution is to simply call g-object-type-name on the object pointer
+stored in the g-value.
+
+!#
+
 (define (g-closure-marshal-g-value-ref g-value param-arg param-vals param-args)
   (let ((value (g-value-ref g-value)))
     (case (g-value-type-tag g-value)
@@ -267,9 +293,7 @@
            #f
            (or (g-inst-cache-ref value)
                (let* ((module (resolve-module '(g-golf hl-api gobject)))
-                      (r-type (g-value-type g-value))
-                      (info (g-irepository-find-by-gtype r-type))
-                      (g-name (g-registered-type-info-get-type-name info))
+                      (g-name (g-object-type-name value))
                       (c-name (g-name->class-name g-name))
                       (type (module-ref module c-name)))
                  (make type #:g-inst value)))))

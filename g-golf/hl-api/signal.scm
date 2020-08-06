@@ -215,7 +215,7 @@
                                 val)))))
 
 (define* (gi-signal-cache-show #:optional (m-key #f))
-  (format #t "%gi-signal-cahe~%")
+  (format #t "%gi-signal-cache~%")
   (if m-key
       (begin
         (format #t "  ~A~%" m-key)
@@ -228,7 +228,8 @@
                   (match m-entry
                     ((m-key . m-vals)
                      (format #t "  ~A~%" m-key))))
-          %gi-signal-cache)))
+          %gi-signal-cache))
+  (values))
 
 (define (gi-signal-cache-find name)
   'wip)
