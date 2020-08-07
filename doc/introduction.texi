@@ -4,6 +4,8 @@
 @c See the file g-golf.texi for copying conditions.
 
 
+@c @part I. Introduction
+
 @node Introduction
 @unnumbered I. Introduction
 
@@ -13,7 +15,7 @@
 @c * What else::
 @c * Savannah::
 * Obtaining and installing G-Golf::
-* Contact information::
+* Contact Information::
 * Reporting Bugs::
 @end menu
 
@@ -252,8 +254,8 @@ make check
 @end enumerate
 
 
-@node Contact information
-@section Contact information
+@node Contact Information
+@section Contact Information
 
 
 @subheading Mailing list
@@ -303,4 +305,4 @@ on the @uref{@value{UG-GOLF-BUGS-LISTINFO}, list information
 page}.
 
 Further information and a list of available commands are available
-@uref{@value{UG-GOLF-BUGS-SERVER-CONTROL}, here}.
+@uref{@value{UDEBBUGS-SERVER-CONTROL}, here}.

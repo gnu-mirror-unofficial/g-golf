@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -24,8 +24,9 @@
 @set UG-GOLF-LISTINFO https://lists.gnu.org/mailman/listinfo/g-golf-user
 @set UG-GOLF-BUGS-TRACKER https://savannah.gnu.org/bugs/?group=g-golf
 @set UG-GOLF-BUGS-LISTINFO https://lists.gnu.org/mailman/listinfo/bug-g-golf
-@set UG-GOLF-BUGS-SERVER-CONTROL https://debbugs.gnu.org/server-control.html
 @set UG-GOLF-GIT http://git.savannah.gnu.org/cgit/g-golf.git
+
+@set UDEBBUGS-SERVER-CONTROL https://debbugs.gnu.org/server-control.html
 
 @set UGRIP http://www.nongnu.org/grip/index.html
 @set UGRIP-GNOME http://www.nongnu.org/grip/index.html
