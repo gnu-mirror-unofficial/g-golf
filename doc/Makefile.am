@@ -39,6 +39,8 @@ g_golf_TEXINFOS = \
   ug-bys-goops-notes-and-conventions.texi	\
   ug-bys-customizing-g-golf.texi		\
   ug-g-golf-cache.texi		\
+  ug-gswg.texi			\
+  ug-gswg-hello-world.texi	\
   cr.texi			\
   cr-overview.texi		\
   cr-ov-project-and-doc-struct.texi \
