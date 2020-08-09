@@ -15,7 +15,9 @@
 @menu
 
 * Before you start::
+* Getting Started with G-Golf::
 * G-Golf Cache - Accessing::
+
 @end menu
 
 
@@ -23,6 +25,15 @@
 @section Before you start
 
 @include ug-bys.texi
+
+
+@node Getting Started with G-Golf
+@section Getting Started with G-Golf
+
+@include ug-gswg.texi
+
+
+@c Building applications
 
 
 @node G-Golf Cache - Accessing
