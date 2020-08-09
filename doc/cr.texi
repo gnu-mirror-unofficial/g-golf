@@ -50,7 +50,7 @@
 @node GObject Introspection
 @section GObject Introspection
 
-@include cr-gir.texi
+@include cr-gi.texi
 
 
 @node Support

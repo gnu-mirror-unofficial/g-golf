@@ -52,23 +52,22 @@ Intropection (manual) section, but there are some exceptions, such as
 @end menu
 
 
-@include cr-gir-repository.texi
-@include cr-gir-common-types.texi
-@include cr-gir-base-info.texi
-@include cr-gir-callable-info.texi
-@include cr-gir-signal-info.texi
-@include cr-gir-function-info.texi
-@include cr-gir-registered-type-info.texi
-@include cr-gir-enum-info.texi
-@include cr-gir-struct-info.texi
-@include cr-gir-union-info.texi
-@include cr-gir-object-info.texi
-@include cr-gir-interface-info.texi
-@include cr-gir-arg-info.texi
-@include cr-gir-constant-info.texi
-@include cr-gir-field-info.texi
-@include cr-gir-property-info.texi
-@include cr-gir-type-info.texi
-
-@include cr-gir-typelib.texi
-@include cr-gir-utilities.texi
+@include cr-gi-repository.texi
+@include cr-gi-common-types.texi
+@include cr-gi-base-info.texi
+@include cr-gi-callable-info.texi
+@include cr-gi-signal-info.texi
+@include cr-gi-function-info.texi
+@include cr-gi-registered-type-info.texi
+@include cr-gi-enum-info.texi
+@include cr-gi-struct-info.texi
+@include cr-gi-union-info.texi
+@include cr-gi-object-info.texi
+@include cr-gi-interface-info.texi
+@include cr-gi-arg-info.texi
+@include cr-gi-constant-info.texi
+@include cr-gi-field-info.texi
+@include cr-gi-property-info.texi
+@include cr-gi-type-info.texi
+@include cr-gi-typelib.texi
+@include cr-gi-utilities.texi

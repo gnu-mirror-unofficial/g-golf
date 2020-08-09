@@ -139,7 +139,9 @@ The GType of @var{value} is @code{gboolean}.  The returned value is
 The GType of @var{value} is @code{*gchar}.  The returned value is a
 string or @code{#f} (when @var{value} is the @code{%null-pointer}).
 
-@item strings
+@item n-string
+@itemx strings
+
 The GType of @var{value} is @code{**gchar} (an array of pointers to
 @code{*gchar}), returned as a list of strings, which can be empty (when
 @var{value} is the @code{%null-pointer}).

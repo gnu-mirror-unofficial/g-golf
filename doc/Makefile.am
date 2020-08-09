@@ -62,26 +62,26 @@ g_golf_TEXINFOS = \
   cr-gdk.texi			\
   cr-gdk-events.texi		\
   cr-gdk-key-values.texi	\
-  cr-gir.texi			\
-  cr-gir-repository.texi	\
-  cr-gir-common-types.texi	\
-  cr-gir-base-info.texi		\
-  cr-gir-callable-info.texi	\
-  cr-gir-signal-info.texi	\
-  cr-gir-function-info.texi	\
-  cr-gir-registered-type-info.texi	\
-  cr-gir-enum-info.texi		\
-  cr-gir-struct-info.texi	\
-  cr-gir-union-info.texi	\
-  cr-gir-object-info.texi	\
-  cr-gir-interface-info.texi	\
-  cr-gir-arg-info.texi		\
-  cr-gir-constant-info.texi	\
-  cr-gir-field-info.texi	\
-  cr-gir-property-info.texi	\
-  cr-gir-type-info.texi		\
-  cr-gir-typelib.texi		\
-  cr-gir-utilities.texi		\
+  cr-gi.texi			\
+  cr-gi-repository.texi	\
+  cr-gi-common-types.texi	\
+  cr-gi-base-info.texi		\
+  cr-gi-callable-info.texi	\
+  cr-gi-signal-info.texi	\
+  cr-gi-function-info.texi	\
+  cr-gi-registered-type-info.texi	\
+  cr-gi-enum-info.texi		\
+  cr-gi-struct-info.texi	\
+  cr-gi-union-info.texi	\
+  cr-gi-object-info.texi	\
+  cr-gi-interface-info.texi	\
+  cr-gi-arg-info.texi		\
+  cr-gi-constant-info.texi	\
+  cr-gi-field-info.texi	\
+  cr-gi-property-info.texi	\
+  cr-gi-type-info.texi		\
+  cr-gi-typelib.texi		\
+  cr-gi-utilities.texi		\
   cr-support.texi		\
   cr-support-module.texi	\
   cr-support-goops.texi		\
