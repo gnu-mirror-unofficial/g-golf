@@ -151,7 +151,7 @@
   (if (or (not pointer)
           (null-pointer? pointer)
           (= n-string 0))
-      #f
+      '()
       (let loop ((i 0)
                  (pointer pointer)
                  (results '()))
