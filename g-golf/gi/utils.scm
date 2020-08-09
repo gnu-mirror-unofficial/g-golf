@@ -306,16 +306,16 @@
         (let loop ((w-ptr o-ptr)
                    (i-ptrs '())
                    (lst lst))
-          (if (null? lst)
-              (values o-ptr
-                      (reverse! i-ptrs))
-              (match lst
-                ((str . rest)
-                 (let ((i-ptr (string->pointer str)))
-                   (bv-ptr-set! w-ptr i-ptr)
-                   (loop (gi-pointer-inc w-ptr)
-                         (cons i-ptr i-ptrs)
-                         rest)))))))))
+          (match lst
+            (()
+             (values o-ptr
+                     (reverse! i-ptrs)))
+            ((str . rest)
+             (let ((i-ptr (string->pointer str)))
+               (bv-ptr-set! w-ptr i-ptr)
+               (loop (gi-pointer-inc w-ptr)
+                     (cons i-ptr i-ptrs)
+                     rest))))))))
 
 (define (scm->gi-strings lst)
   (if (null? lst)
@@ -328,18 +328,18 @@
         (let loop ((w-ptr o-ptr)
                    (i-ptrs '())
                    (lst lst))
-          (if (null? lst)
-              (begin
-                (bv-ptr-set! w-ptr %null-pointer)
-                (values o-ptr
-                        (reverse! i-ptrs)))
-              (match lst
-                ((str . rest)
-                 (let ((i-ptr (string->pointer str)))
-                   (bv-ptr-set! w-ptr i-ptr)
-                   (loop (gi-pointer-inc w-ptr)
-                         (cons i-ptr i-ptrs)
-                         rest)))))))))
+          (match lst
+            (()
+             (bv-ptr-set! w-ptr %null-pointer)
+             (values o-ptr
+                     (reverse! i-ptrs)))
+
+            ((str . rest)
+             (let ((i-ptr (string->pointer str)))
+               (bv-ptr-set! w-ptr i-ptr)
+               (loop (gi-pointer-inc w-ptr)
+                     (cons i-ptr i-ptrs)
+                     rest))))))))
 
 (define (scm->gi-pointer value)
   (if value
@@ -356,13 +356,13 @@
              (o-ptr (bytevector->pointer bv)))
         (let loop ((w-ptr o-ptr)
                    (lst lst))
-          (if (null? lst)
-              o-ptr
-              (match lst
-                ((i-ptr . rest)
-                 (bv-ptr-set! w-ptr i-ptr)
-                 (loop (gi-pointer-inc w-ptr)
-                       rest))))))))
+          (match lst
+            (()
+             o-ptr)
+            ((i-ptr . rest)
+             (bv-ptr-set! w-ptr i-ptr)
+             (loop (gi-pointer-inc w-ptr)
+                   rest)))))))
 
 (define (scm->gi-pointers lst)
   (if (null? lst)
@@ -373,15 +373,14 @@
              (o-ptr (bytevector->pointer bv)))
         (let loop ((w-ptr o-ptr)
                    (lst lst))
-          (if (null? lst)
-              (begin
-                (bv-ptr-set! w-ptr %null-pointer)
-                o-ptr)
-              (match lst
-                ((l-ptr . rest)
-                 (bv-ptr-set! w-ptr l-ptr)
-                 (loop (gi-pointer-inc w-ptr)
-                       rest))))))))
+          (match lst
+            (()
+             (bv-ptr-set! w-ptr %null-pointer)
+             o-ptr)
+            ((l-ptr . rest)
+             (bv-ptr-set! w-ptr l-ptr)
+             (loop (gi-pointer-inc w-ptr)
+                   rest)))))))
 
 (define (scm->gi-gslist lst)
   (if (null? lst)
@@ -402,11 +401,11 @@
              (u64 (make-u64vector n-gtype 0)))
         (let loop ((lst lst)
                    (i 0))
-          (if (null? lst)
-              (bytevector->pointer u64)
-              (match lst
-                ((g-type . rest)
-                 (u64vector-set! u64 i
-                                 (symbol->g-type g-type))
-                 (loop rest
-                       (+ i 1)))))))))
+          (match lst
+            (()
+             (bytevector->pointer u64))
+            ((g-type . rest)
+             (u64vector-set! u64 i
+                             (symbol->g-type g-type))
+             (loop rest
+                   (+ i 1))))))))
