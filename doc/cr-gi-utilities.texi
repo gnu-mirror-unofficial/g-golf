@@ -24,9 +24,13 @@ G-Golf GObject Introspetion Utilities low level API.@*
 @item @ref{gi->scm}
 @item @ref{gi-boolean->scm}
 @item @ref{gi-string->scm}
+@item @ref{gi-n-string->scm}
 @item @ref{gi-strings->scm}
 @item @ref{gi-csv-string->scm}
 @item @ref{gi-pointer->scm}
+@item @ref{gi-n-pointer->scm}
+@item @ref{gi-pointers->scm}
+@item @ref{gi-n-gtype->scm}
 @item @ref{gi-glist->scm}
 @item @ref{gi-gslist->scm}
 @end table
@@ -118,60 +122,48 @@ returned.
 
 
 @anchor{gi->scm}
-@deffn Procedure gi->scm value type
+@deffn Procedure gi->scm value type [cmpl #f]
 
 Returns the scheme representation of @var{value}.
 
-The accepted @var{type} symbols (also called @code{tags} in the
-@code{GI} terminology@footnote{All (G-Golf) procedures that accept a GI
-tag as an argument will accept the tag as an integer (the GI
-representation) or a symbol (the scheme representation).  All (G-Golf)
-procedures that return a tag will always return the scheme
-representation.}) are:
+The @var{type}, a symbol name (also called a @code{type tag} or just a
+@code{tag} in the @code{GI} terminology) supported values are:
+
+@c @footnote{All (G-Golf) procedures that accept a GI tag as an argument
+@c will accept the tag as an integer (the GI representation) or a symbol
+@c (the scheme representation).  All (G-Golf) procedures that return a
+@c tag will always return the scheme representation.}
 
 @indentedblock
 @table @code
-@item boolean
-The GType of @var{value} is @code{gboolean}.  The returned value is
-@code{#t} or @code{#f}.
 
-@item string
-The GType of @var{value} is @code{*gchar}.  The returned value is a
-string or @code{#f} (when @var{value} is the @code{%null-pointer}).
+@item 'boolean
+Calls @ref{gi-boolean->scm}.
 
-@item n-string
-@itemx strings
+@item 'string
+@itemx 'pointer
+Calls @ref{gi-string->scm} or @ref{gi-pointer->scm}, respectively.
 
-The GType of @var{value} is @code{**gchar} (an array of pointers to
-@code{*gchar}), returned as a list of strings, which can be empty (when
-@var{value} is the @code{%null-pointer}).
+@item 'n-string
+@itemx 'n-pointer
+@itemx 'n-gtype
+Calls @ref{gi-n-string->scm}, @ref{gi-n-pointer->scm} or
+@ref{gi-n-gtype->scm}, respectively.
 
-@item csv-string
-The GType of @var{value} is @code{*gchar}. The returned value is a list
-of strings, obtained by splitting @var{value} using @code{#\,} as the
-@code{char-pred}, or @code{#f} (when @var{value} is the
-@code{%null-pointer}).
+The optional @var{cmpl} (complement) argument must be passed and set to
+the number of string(s), pointer(s) or gtype(s) contained in
+@var{value}, .
 
-@item pointer
-The GType of @var{value} is @code{gpointer}. The returned value is a
-pointer or @code{#f} (when @var{value} is the @code{%null-pointer}).
+@item 'strings
+@item 'pointers
+Calls @ref{gi-strings->scm} or @ref{gi-pointers->scm}, respectively.
 
-@item glist
-The GType of @var{value} is @code{glist}. The returned value is a
-(possibly empty) list of items contained in the glist pointed by
-@var{value}.
+@item 'csv-string
+Calls @ref{gi-csv-string->scm}.
 
-@c Note: currently, the only supported item type is @code{object} (which
-@c implies that the @var{type} argument is a type description as documented
-@c below (see @ref{gi-glist->scm}, @ref{gi-gslist->scm}). G-Golf will of
-@c course provide translation for all other glist gslist item types, but in
-@c the mean time, if you encounter such a missing glist gslist item type,
-@c please @ref{Contact} us so we immediately fix that for you.
-
-@item gslist
-The GType of @var{value} is @code{gslist}. The returned value is a
-(possibly empty) list of items contained in the glist pointed by
-@var{value}.
+@item 'glist
+@itemx 'gslist
+Calls @ref{gi-glist->scm} or @ref{gi-gslist->scm}, repsectively.
 
 @c Note: currently, the only supported item type is @code{object} (which
 @c implies that the @var{type} argument is a type description as documented
@@ -190,89 +182,103 @@ The GType of @var{value} is @code{gslist}. The returned value is a
 
 Returns @code{#t} or @code{#f}.
 
-The GType of @var{value} is @code{gboolean}.
+The GType of @var{value} is (must be) a @code{gboolean}.
 @end deffn
 
 
 @anchor{gi-string->scm}
+@anchor{gi-pointer->scm}
 @deffn Procedure gi-string->scm value
+@deffnx Procedure gi-pointer->scm value
 
-Returns a string or @code{#f}.
+Returns a string, a pointer respectively or @code{#f} if @var{value} is
+the @code{%null-pointer}.
 
-The GType of @var{value} is @code{gchar*}. When @var{value} is the
-@code{%null-pointer}, the procedure returns @code{#f}.
+The GType of @var{value} is (must be) a @code{gchar*} or a
+@code{gpointer}, respectively.
+@end deffn
+
+
+@anchor{gi-n-string->scm}
+@anchor{gi-n-pointer->scm}
+@anchor{gi-n-gtype->scm}
+@deffn Procedure gi-n-string->scm value n-string
+@deffnx Procedure gi-n-pointer->scm value n-pointer
+@deffnx Procedure gi-n-gtype->scm value n-gtype
+
+Returns a (possibly empty list) of string(s), pointer(s) or GType(s),
+respectively.
+
+The GType of @var{value} is (must be) a @code{gchar**}, a
+@code{gpointer[]} or a @code{GType[]}, respectively. The @var{n-string},
+@var{n-pointer} and @var{n-gtype} argument is (must be) the length of
+the @var{value} array.
 @end deffn
 
 
 @anchor{gi-strings->scm}
+@anchor{gi-pointers->scm}
 @deffn Procedure gi-strings->scm value
+@deffnx Procedure gi-pointers->scm value
 
-Returns a list of strings (which can be empty).
+Returns a (possibly empty) list of strings or pointer, respectively.
 
-The GType of @var{value} is @code{gchar**} (an array of pointers to
-@code{*gchar}).
+The GType of @var{value} is (must be) a @code{gchar**} or
+@code{gpointer[]}, respectively. The array must be NULL terminated.
 @end deffn
 
 
 @anchor{gi-csv-string->scm}
 @deffn Procedure gi-csv-string->scm value
 
-Returns a list of strings or @code{#f}.
+Returns a list of string(s) or @code{#f} if @var{value} is the
+@code{%null-pointer}.
 
-The GType of @var{value} is @code{gchar*}.  When the returned value is a
-list of strings, it is obtained by splitting @var{value} using
-@code{#\,} as the @code{char-pred}.  When @var{value} is the
-@code{%null-pointer}, the procedure returns @code{#f}.
+The GType of @var{value} is @code{gchar*}. Unless @code{#f}, the list of
+string(s) is obtained by splitting the (comma separated value) string
+pointed to by @var{value } using using @code{#\,} as the
+@code{char-pred}.
 @end deffn
-
-
-@anchor{gi-pointer->scm}
-@deffn Procedure gi-pointer->scm value
-
-Returns a pointer or @code{#f}.
-
-The GType of @var{value} is @code{gpointer}.  When @var{value} is the
-@code{%null-pointer}, the procedure returns @code{#f}.
-@end deffn
-
 
 @anchor{gi-glist->scm}
 @anchor{gi-gslist->scm}
-@deffn Procedure gi-glist->scm g-list type-desc
-@deffnx Procedure gi-gslist->scm g-slist type-desc
+@deffn Procedure gi-glist->scm g-list
+@deffnx Procedure gi-gslist->scm g-slist
 
-Returns a list.
+Returns a (possibly empty) list.
 
-Obtains and returns a (possibly empty) list composed of the scheme
-representation of the @code{data} field of ech element of @var{g-list}
-or @var{g-slist} respectively.
+Obtains and returns a (possibly empty) list of the pointers stored in
+the @code{data} field of each element of @var{g-list} or @var{g-slist}
+respectively.
 
-The @var{type-desc} is a list composed of the @var{g-list} or
-@var{g-slist} type tag, @code{'interface} if the list element param-tag
-is interface or #f otherwise, the interface description (if the previous
-is not #f), followed by a boolean which is #t if the g-list (g-slist)
-@code{data} field is a pointer, #f otherwise.
+@c The @var{type-desc} is a list composed of the @var{g-list} or
+@c @var{g-slist} type tag, @code{'interface} if the list element
+@c param-tag is interface or #f otherwise, the interface description (if
+@c the previous is not #f), followed by a boolean which is #t if the
+@c g-list (g-slist) @code{data} field is a pointer, #f otherwise.
 
-An interface description is a list composed of the interface GI type
-tag, the G-Golf type name, the G-Golf type, the g-type id and a boolean
-which is #t if the last three values have been verified@footnote{It
-happens, due to the (unspecified) order at which @samp{things} are
-imported from a GI typelib, that a G-Golf class or instance hasn't been
-finalized when the procedure or method is being imported, hence these
-must be verified, which is done at the first (and only once) procedure
-or method call.}. As an example, here is the type description of the
-returned value for @code{clutter-actor-get-children}:
+@c An interface description is a list composed of the interface GI type
+@c tag, the G-Golf type name, the G-Golf type, the g-type id and a
+@c boolean which is #t if the last three values have been
+@c verified@footnote{It happens, due to the (unspecified) order at which
+@c @samp{things} are imported from a GI typelib, that a G-Golf class or
+@c instance hasn't been finalized when the procedure or method is being
+@c imported, hence these must be verified, which is done at the first
+@c (and only once) procedure or method call.}. As an example, here is
+@c the type description of the returned value for
+@c @code{clutter-actor-get-children}:
 
-@lisp
-(glist
- interface
- (object
-  <clutter-actor>
-  #<<gobject-class> <clutter-actor> 561c2e9c2960>
-  94679044057632
-  #f)
- #f)
-@end lisp
+@c @lisp
+@c (glist
+@c  interface
+@c  (object
+@c   <clutter-actor>
+@c   #<<gobject-class> <clutter-actor> 561c2e9c2960>
+@c   94679044057632
+@c   #f)
+@c  #f)
+@c @end lisp
+
 @end deffn
 
 
