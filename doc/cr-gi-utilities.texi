@@ -33,6 +33,16 @@ G-Golf GObject Introspetion Utilities low level API.@*
 @item @ref{gi-n-gtype->scm}
 @item @ref{gi-glist->scm}
 @item @ref{gi-gslist->scm}
+@item @ref{scm->gi}
+@item @ref{scm->gi-boolean}
+@item @ref{scm->gi-string}
+@item @ref{scm->gi-n-string}
+@item @ref{scm->gi-strings}
+@item @ref{scm->gi-pointer}
+@item @ref{scm->gi-n-pointer}
+@item @ref{scm->gi-pointers}
+@item @ref{scm->gi-n-gtype}
+@item @ref{scm->gi-gslist}
 @end table
 @end indentedblock
 
@@ -279,6 +289,130 @@ respectively.
 @c  #f)
 @c @end lisp
 
+@end deffn
+
+
+@anchor{scm->gi}
+@deffn Procedure scm->gi value type [cmpl #f]
+
+Returns the GI representation of @var{value}.
+
+The @var{type}, a symbol name (also called a @code{type tag} or just a
+@code{tag} in the @code{GI} terminology) supported values are:
+
+@indentedblock
+@table @code
+
+@item 'boolean
+Calls @ref{scm->gi-boolean}.
+
+@item 'string
+@itemx 'pointer
+Calls @ref{scm->gi-string} or @ref{scm->gi-pointer}, respectively.
+
+@item 'n-string
+@itemx 'n-pointer
+@itemx 'n-gtype
+Calls @ref{scm->gi-n-string}, @ref{scm->gi-n-pointer} or
+@ref{scm->gi-n-gtype}, respectively.
+
+The optional @var{cmpl} (complement) argument may be passed and set to
+the number of string(s), pointer(s) or gtype(s) contained in
+@var{value}.
+
+@item 'strings
+@item 'pointers
+Calls @ref{scm->gi-strings} or @ref{scm->gi-pointers}, respectively.
+
+@c @item 'glist
+@item 'gslist
+Calls @ref{scm->gi-gslist}.
+
+@end table
+@end indentedblock
+@end deffn
+
+
+@anchor{scm->gi-boolean}
+@deffn Procedure scm->gi-boolean value
+
+Returns @code{0} if @var{value} is @code{#f}, otherwise, it returns
+@code{1}.
+@end deffn
+
+
+@anchor{scm->gi-string}
+@anchor{scm->gi-pointer}
+@deffn Procedure scm->gi-string value
+@deffnx Procedure scm->gi-pointer value
+
+Returns a pointer.
+
+If @var{value} is @code{#f}, it returns @code{%null-pointer}. Otherwise,
+it returns a pointer to the string in @var{value} or @var{value},
+respectively.
+@end deffn
+
+
+@anchor{scm->gi-n-string}
+@anchor{scm->gi-strings}
+@deffn Procedure scm->gi-n-string value [n-string #f]
+@deffnx Procedure scm->gi-strings value
+
+Returns two values.
+
+If @var{value} is the empty list, it returns @code{%null-pointer} and an
+empty list. Otherwise, it returns a pointer to an array of pointer(s) to
+the string(s) in @var{value} and a list of the @samp{inner} string
+pointer(s).
+
+It is the caller's responsibility to maintain a reference to those inner
+pointer(s), until the array @samp{itself} (the first returned value) is
+no longer needed/used.
+
+The array returned by @ref{scm->gi-strings} is @code{NULL} terminated,
+where as the array returned by @ref{scm->gi-n-string} is not.
+@end deffn
+
+
+@anchor{scm->gi-n-pointer}
+@anchor{scm->gi-n-gtype}
+@deffn Procedure scm->gi-n-pointer value [n-pointer #f]
+@deffnx Procedure scm->gi-n-gtype value [n-gtype #f]
+
+Returns a pointer.
+
+If @var{value} is an empty list, it returns
+@code{%null-pointer}. Otherwise, it returns a pointer to an array the
+pointer(s) or GType(s) in @var{value}, respectively.
+
+The returned array is not @code{NULL} nor @code{0-} terminated,
+respectively.
+@end deffn
+
+
+@anchor{scm->gi-pointers}
+@deffn Procedure scm->gi-pointers value
+
+Returns a pointer.
+
+If @var{value} is an empty list, it returns
+@code{%null-pointer}. Otherwise, it returns a pointer to an array the
+pointer(s) in @var{value}.
+
+The returned array is @code{NULL} terminated.
+@end deffn
+
+
+@anchor{scm->gi-gslist}
+@deffn Procedure scm->gi-gslist value
+
+Returns a pointer.
+
+If @var{value} is an empty list, it returns
+@code{%null-pointer}. Otherwise, it returns a pointer to a
+@code{GSList}, with its element's data being (in order), the pointer(s)
+in @var{value}.
 @end deffn
 
 
