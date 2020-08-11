@@ -152,13 +152,13 @@ Calls @ref{gi-boolean->scm}.
 
 @item 'string
 @itemx 'pointer
-Calls @ref{gi-string->scm} or @ref{gi-pointer->scm}, respectively.
+Calls @ref{gi-string->scm} or @ref{gi-pointer->scm}.
 
 @item 'n-string
 @itemx 'n-pointer
 @itemx 'n-gtype
 Calls @ref{gi-n-string->scm}, @ref{gi-n-pointer->scm} or
-@ref{gi-n-gtype->scm}, respectively.
+@ref{gi-n-gtype->scm}.
 
 The optional @var{cmpl} (complement) argument must be passed and set to
 the number of string(s), pointer(s) or gtype(s) contained in
@@ -166,7 +166,7 @@ the number of string(s), pointer(s) or gtype(s) contained in
 
 @item 'strings
 @item 'pointers
-Calls @ref{gi-strings->scm} or @ref{gi-pointers->scm}, respectively.
+Calls @ref{gi-strings->scm} or @ref{gi-pointers->scm}.
 
 @item 'csv-string
 Calls @ref{gi-csv-string->scm}.
@@ -192,7 +192,7 @@ Calls @ref{gi-glist->scm} or @ref{gi-gslist->scm}, repsectively.
 
 Returns @code{#t} or @code{#f}.
 
-The GType of @var{value} is (must be) a @code{gboolean}.
+The GType of @var{value} must be a @code{gboolean}.
 @end deffn
 
 
@@ -201,11 +201,11 @@ The GType of @var{value} is (must be) a @code{gboolean}.
 @deffn Procedure gi-string->scm value
 @deffnx Procedure gi-pointer->scm value
 
-Returns a string, a pointer respectively or @code{#f} if @var{value} is
-the @code{%null-pointer}.
+Returns a string, a pointer or @code{#f} if @var{value} is the
+@code{%null-pointer}.
 
-The GType of @var{value} is (must be) a @code{gchar*} or a
-@code{gpointer}, respectively.
+The GType of @var{value} must be a @code{gchar*} or a
+@code{gpointer}.
 @end deffn
 
 
@@ -216,12 +216,11 @@ The GType of @var{value} is (must be) a @code{gchar*} or a
 @deffnx Procedure gi-n-pointer->scm value n-pointer
 @deffnx Procedure gi-n-gtype->scm value n-gtype
 
-Returns a (possibly empty list) of string(s), pointer(s) or GType(s),
-respectively.
+Returns a (possibly empty list) of string(s), pointer(s) or GType(s).
 
-The GType of @var{value} is (must be) a @code{gchar**}, a
-@code{gpointer[]} or a @code{GType[]}, respectively. The @var{n-string},
-@var{n-pointer} and @var{n-gtype} argument is (must be) the length of
+The GType of @var{value} must be a @code{gchar**}, a
+@code{gpointer[]} or a @code{GType[]}. The @var{n-string},
+@var{n-pointer} and @var{n-gtype} argument must be the length of
 the @var{value} array.
 @end deffn
 
@@ -231,10 +230,10 @@ the @var{value} array.
 @deffn Procedure gi-strings->scm value
 @deffnx Procedure gi-pointers->scm value
 
-Returns a (possibly empty) list of strings or pointer, respectively.
+Returns a (possibly empty) list of strings or pointer.
 
-The GType of @var{value} is (must be) a @code{gchar**} or
-@code{gpointer[]}, respectively. The array must be NULL terminated.
+The GType of @var{value} must be a @code{gchar**} or
+@code{gpointer[]}. The array must be NULL terminated.
 @end deffn
 
 
@@ -258,8 +257,7 @@ pointed to by @var{value } using using @code{#\,} as the
 Returns a (possibly empty) list.
 
 Obtains and returns a (possibly empty) list of the pointers stored in
-the @code{data} field of each element of @var{g-list} or @var{g-slist}
-respectively.
+the @code{data} field of each element of @var{g-list} or @var{g-slist}.
 
 @c The @var{type-desc} is a list composed of the @var{g-list} or
 @c @var{g-slist} type tag, @code{'interface} if the list element
@@ -308,13 +306,13 @@ Calls @ref{scm->gi-boolean}.
 
 @item 'string
 @itemx 'pointer
-Calls @ref{scm->gi-string} or @ref{scm->gi-pointer}, respectively.
+Calls @ref{scm->gi-string} or @ref{scm->gi-pointer}.
 
 @item 'n-string
 @itemx 'n-pointer
 @itemx 'n-gtype
 Calls @ref{scm->gi-n-string}, @ref{scm->gi-n-pointer} or
-@ref{scm->gi-n-gtype}, respectively.
+@ref{scm->gi-n-gtype}.
 
 The optional @var{cmpl} (complement) argument may be passed and set to
 the number of string(s), pointer(s) or gtype(s) contained in
@@ -322,7 +320,7 @@ the number of string(s), pointer(s) or gtype(s) contained in
 
 @item 'strings
 @item 'pointers
-Calls @ref{scm->gi-strings} or @ref{scm->gi-pointers}, respectively.
+Calls @ref{scm->gi-strings} or @ref{scm->gi-pointers}.
 
 @c @item 'glist
 @item 'gslist
@@ -349,8 +347,7 @@ Returns @code{0} if @var{value} is @code{#f}, otherwise, it returns
 Returns a pointer.
 
 If @var{value} is @code{#f}, it returns @code{%null-pointer}. Otherwise,
-it returns a pointer to the string in @var{value} or @var{value},
-respectively.
+it returns a pointer to the string in @var{value} or @var{value}.
 @end deffn
 
 
@@ -384,10 +381,9 @@ Returns a pointer.
 
 If @var{value} is an empty list, it returns
 @code{%null-pointer}. Otherwise, it returns a pointer to an array the
-pointer(s) or GType(s) in @var{value}, respectively.
+pointer(s) or GType(s) in @var{value}.
 
-The returned array is not @code{NULL} nor @code{0-} terminated,
-respectively.
+The returned array is not @code{NULL} nor @code{0-} terminated.
 @end deffn
 
 
