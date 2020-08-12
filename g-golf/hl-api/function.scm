@@ -244,11 +244,37 @@
       (else
        (fallback f-inst)))))
 
+#!
+
+The gi-add-method-gf code now uses ensure-generic, when its name
+argument is find to be bound to a procedure. It should have used it in
+the first place, but I've looked at the code and ensure-generic actually
+does a better job then what I wrote, because it checks if the procedure
+is a procedure-with-setter?, and returns a <generic-with-setter>
+instance, otherwise, it returns a <generic> instance.
+
+Nonetheless, I'll keep the code I wrote as an example of 'manually'
+promoting a procedure (with no setter) to a generic function, adding a
+method with its 'old' definition.
+
+  ...
+  (else
+   (module-replace! module `(,name))
+   (let ((gf (make <generic> #:name name)))
+     (module-set! module name gf)
+     (add-method! gf
+                  (make <method>
+                    #:specializers <top>
+                    #:procedure (lambda ( . args)
+                                  (apply value args))))
+     gf))
+
+!#
+
 (define* (gi-add-method-gf name #:optional (module #f))
   (let* ((module (or module
                      (resolve-module '(g-golf hl-api gobject))))
-         (current-module (current-module))
-         (variable (module-variable current-module name))
+         (variable (module-variable module name))
          (value (and variable
                      (variable-bound? variable)
                      (variable-ref variable))))
@@ -260,19 +286,15 @@
                                  module))
               (else
                (module-replace! module `(,name))
-               (let ((gf (make <generic> #:name name)))
+               (let ((gf (ensure-generic value name)))
                  (module-set! module name gf)
-                 (add-method! gf
-                              (make <method>
-                                #:specializers <top>
-                                #:procedure (lambda ( . args)
-                                              (apply value args))))
                  gf)))
         (begin
           (module-export! module `(,name))
           (let ((gf (make <generic> #:name name)))
             (module-set! module name gf)
             gf)))))
+
 
 (define %gi-method-short-names-skip
   '())
