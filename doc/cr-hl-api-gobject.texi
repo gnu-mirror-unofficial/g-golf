@@ -49,6 +49,6 @@ The base class for GLib’s default object system.
 @anchor{gobject-class?}
 @deffn Procedure gobject-class? val
 
-Returns #t if @var{val} is a member of the class-subclasses
-for @code{<gobject>}. Otherwise, it returns #f.
+Returns #t if @var{val} is a class and if @code{<gobject>} is a member
+of its class precedence list. Otherwise, it returns #f.
 @end deffn

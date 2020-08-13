@@ -326,5 +326,11 @@
   *unspecified*)
 
 (define (gobject-class? val)
-  (memq val
-        (class-subclasses <gobject>)))
+  ;; For the record, Guile-Gnome also defines the same procedure, but in
+  ;; Guile-Gnome, it is guaranteed to always receive a class as its
+  ;; argument (called c).  Here in G-Golf, gobject-class? is/must be
+  ;; called in context that val is a type tag, not a class.
+  (and (is-a? val <class>)
+       (memq <gobject>
+             (class-precedence-list val))
+       #t))
