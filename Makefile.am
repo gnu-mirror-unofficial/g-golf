@@ -183,7 +183,6 @@ distclean-local:
 	rm -f aclocal.m4
 	rm -rf autom4te.cache
 	rm -rf build-aux
-	rm -f configure
 	rm -f *~
 	rm -f g-golf-*.tar.gz
 	rm -f g-golf-*.tar.gz.sig
