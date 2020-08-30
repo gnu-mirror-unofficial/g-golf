@@ -29,7 +29,7 @@
 (define-module (g-golf hl-api)
   #:use-module (oop goops)
   #:use-module (g-golf support utils)
-  #:use-module (g-golf support modules)
+  #:use-module (g-golf support module)
   #:use-module (g-golf support goops)
   #:use-module (g-golf hl-api gtype)
   #:use-module (g-golf hl-api glib)

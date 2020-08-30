@@ -27,7 +27,7 @@
 
 
 (define-module (g-golf override)
-  #:use-module (g-golf support modules)
+  #:use-module (g-golf support module)
   #:use-module (g-golf override override)
   #:use-module (g-golf override gtk))
 

@@ -31,7 +31,7 @@
   #:use-module (ice-9 binary-ports)
   #:use-module (rnrs bytevectors)
   #:use-module (system foreign)
-  #:use-module (g-golf support modules)
+  #:use-module (g-golf support module)
   #:use-module (g-golf support goops)
   #:use-module (g-golf support g-export)
   #:use-module (g-golf support utils)

@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -26,7 +26,7 @@
 ;;; Code:
 
 
-(define-module (g-golf support modules)
+(define-module (g-golf support module)
   #:export (re-export-public-interface))
 
 

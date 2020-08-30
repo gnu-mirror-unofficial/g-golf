@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2019
+;;;; Copyright (C) 2016 - 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -39,7 +39,7 @@
   #:use-module (system foreign)
   #:use-module (rnrs bytevectors)
   #:use-module (rnrs arithmetic bitwise)
-  #:use-module (g-golf support modules)
+  #:use-module (g-golf support module)
   #:use-module (g-golf support goops)
   #:use-module (g-golf support g-export)
   #:use-module (g-golf support utils)
