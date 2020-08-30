@@ -44,7 +44,7 @@
   #:use-module (oop goops)
   #:use-module (oop goops describe)
   #:use-module (g-golf support g-export)
-  #:use-module (g-golf support modules)
+  #:use-module (g-golf support module)
 
   #:duplicates (merge-generics
 		replace
@@ -53,8 +53,8 @@
 		last)
 
   #:export (define-method*
-             mslot-set!
-             generic?))
+            mslot-set!
+            generic?))
 
 
 (g-export class-direct-virtual-slots
