@@ -30,6 +30,34 @@
   #:export (re-export-public-interface))
 
 
+(define (re-export-public-interfaces modules)
+  (let ((public-i (module-public-interface (current-module))))
+    (for-each
+        (lambda (module)
+          (if (list? module)
+              (cond-expand
+               (guile-3
+                (module-for-each (lambda (sym val)
+                                   (hashq-set! (module-replacements public-i) sym #t)
+                                   (module-add! public-i sym val))
+                  (resolve-interface module)))
+               (else
+                (module-use! public-i
+                             (resolve-interface module))))
+              (error "Invalid module specification" module)))
+      modules)))
+
+(define-syntax-rule (re-export-public-interface module ...)
+    "Re-export the public interface of a module or modules. Invoked as
+@code{(re-export-public-interface (mod1) (mod2)...)}."
+  (re-export-public-interfaces '(module ...)))
+
+
+#!
+
+;; Here is the previous definition, kept 'for the record', and if
+;; guile-3 fixes module-use!, maybe I'll (re)use it again.
+
 (define-macro (re-export-public-interface . args)
   "Re-export the public interface of a module or modules. Invoked as
 @code{(re-export-public-interface (mod1) (mod2)...)}."
@@ -42,3 +70,5 @@
 		  `(module-use! (module-public-interface (current-module))
 				(resolve-interface ',mod)))
 		args))))
+
+!#
