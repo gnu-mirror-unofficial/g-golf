@@ -18,6 +18,7 @@ Type Information — The GLib Runtime type identification and management system
 @item @ref{g-type->symbol}
 @item @ref{symbol->g-type}
 @item @ref{g-type-name}
+@item @ref{g-type-is-a}
 @item @ref{g-type-class-ref}
 @item @ref{g-type-class-peek}
 @item @ref{g-type-class-unref}
@@ -91,6 +92,17 @@ Get the unique name that is assigned to @var{g-type}, a type ID. Note
 that this function (like all other GType API) cannot cope with invalid
 type IDs. It accepts validly registered type ID, but randomized type IDs
 should not be passed in and will most likely lead to a crash.
+@end deffn
+
+
+@anchor{g-type-is-a}
+@deffn Procedure g-type-is-a g-type is-a-g-type
+
+Returns #t if @var{g-type} is a  @var{is-a-g-type}.
+
+If @var{is-a-g-type} is a derivable type, check whether @var{g-type} is
+a descendant of @var{is-a-g-type}. If @var{is-a-g-type} is an interface,
+check whether  @var{g-type} conforms to it.
 @end deffn
 
 
