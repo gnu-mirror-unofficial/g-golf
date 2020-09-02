@@ -289,9 +289,9 @@ the data.
 @anchor{g-interface-info-get-iface-struct}
 @deffn Procedure g-interface-info-get-iface-struct info
 
-Returns a pointer to the @var{n}th @code{GIStructInfo} of @var{info}, or
-#f.
+Returns a pointer to a @code{GIStructInfo} for @var{info}, or #f.
 
-It must be freed by calling @ref{g-base-info-unref} when done accessing
-the data.
+Obtains and returns the layout C structure associated with
+@var{info}. It must be freed by calling @ref{g-base-info-unref} when
+done accessing the data.
 @end deffn
