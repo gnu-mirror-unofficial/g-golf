@@ -91,9 +91,13 @@
     (unless (boolean? info) ;; it is #t for gtype instances
       (let* ((namespace (g-base-info-get-namespace info))
              (g-type (g-registered-type-info-get-g-type info))
-             (g-name (g-object-info-get-type-name info))
-             (g-class (g-type-class-ref g-type)))
-        (g-type-class-unref g-class)
+             (g-f-type (g-type-fundamental g-type))
+             (g-name (g-registered-type-info-get-type-name info))
+             (g-class (and (= g-f-type
+                              (enum->value %g-type-fundamental-types 'object))
+                           (g-type-class-ref g-type))))
+        (and g-class
+             (g-type-class-unref g-class))
         (mslot-set! self
                     'namespace namespace
                     'g-type g-type
