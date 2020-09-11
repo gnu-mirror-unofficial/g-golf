@@ -55,8 +55,7 @@
             gi-import-enum
             gi-import-flag
             gi-import-struct
-            gi-import-union
-            gi-import-interface))
+            gi-import-union))
 
 
 (g-export describe	;; function and argument
@@ -650,17 +649,12 @@ method with its 'old' definition.
                  ;; type-spec.
                  #f)))
       ((interface)
-       (values id
-               name
-               (or (gi-cache-ref 'iface name)
-                   (gi-import-interface info))
-               #t)
-       #;(let ((module (resolve-module '(g-golf hl-api gobject)))
+       (let ((module (resolve-module '(g-golf hl-api gobject)))
              (c-name (g-name->class-name g-name)))
          (values id
-                 name
-                 (or (gi-cache-ref 'iface name)
-                     (gi-import-interface info))
+                 c-name
+                 (and (module-variable module c-name)
+                      (module-ref module c-name))
                  #t)))
       (else
        (values id name #f #f)))))
@@ -1279,15 +1273,6 @@ method with its 'old' definition.
                         gi-union-import
                         g-union-info-get-n-methods
                         g-union-info-get-method
-                        #:with-methods? with-methods?
-                        #:force? force?))
-
-(define* (gi-import-interface info #:key (with-methods? #t) (force? #f))
-  (gi-import-registered info
-                        'interface
-                        gi-interface-import
-                        g-interface-info-get-n-methods
-                        g-interface-info-get-method
                         #:with-methods? with-methods?
                         #:force? force?))
 

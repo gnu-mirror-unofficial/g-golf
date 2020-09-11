@@ -36,6 +36,7 @@
 
 (define-module (g-golf hl-api gobject)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 receive)
   #:use-module (srfi srfi-1)
   #:use-module (oop goops)
   #:use-module (g-golf support)
@@ -51,7 +52,8 @@
 		last)
 
   #:export (<gobject>
-            gobject-class?))
+            gobject-class?
+            <ginterface>))
 
 
 #;(g-export )
@@ -119,24 +121,41 @@
                           g-properties)))
     extra-slots))
 
-(define (gobject-class-properties class)
+(define (n-prop-prop-accessors class)
+  ;; Note that at this point, the g-type slot of the class is still
+  ;; unbound.
+  (let* ((info (!info class))
+         (g-type (g-registered-type-info-get-g-type info)))
+    (case (g-type->symbol g-type)
+      ((object)
+       (values g-object-info-get-n-properties
+               g-object-info-get-property))
+      ((interface)
+       (values g-interface-info-get-n-properties
+               g-interface-info-get-property))
+      (else
+       (error "Not a GObject nor an Ginterface class:" class)))))
+
+(define (gobject-ginterface-direct-properties class)
   (if (or (boolean? (!info class))
           (!derived class))
       '()
-      (let* ((info (!info class))
-             (n-prop (g-object-info-get-n-properties info)))
-        (let loop ((i 0)
-                   (result '()))
-          (if (= i n-prop)
-              (reverse! result)
-              (loop (+ i 1)
-                    (cons (g-object-info-get-property info i)
-                          result)))))))
+      (receive (get-n-properties get-property)
+          (n-prop-prop-accessors class)
+        (let* ((info (!info class))
+               (n-prop (get-n-properties info)))
+          (let loop ((i 0)
+                     (result '()))
+            (if (= i n-prop)
+                (reverse! result)
+                (loop (+ i 1)
+                      (cons (get-property info i)
+                            result))))))))
 
 (define-method (compute-slots (class <gobject-class>))
   (let* ((slots (next-method))
          (extra (compute-extra-slots class
-                                     (gobject-class-properties class)
+                                     (gobject-ginterface-direct-properties class)
                                      slots)))
     (slot-set! class 'direct-slots
                (append (slot-ref class 'direct-slots)
@@ -159,9 +178,9 @@
          (not (memq 'construct-only g-flags)))))
 
 (define-method (compute-get-n-set (class <gobject-class>) slot-def)
-  (let ((name (slot-definition-name slot-def)))
-    (case (slot-definition-allocation slot-def)
-      ((#:g-property)
+  (case (slot-definition-allocation slot-def)
+    ((#:g-property)
+     (let ((name (slot-definition-name slot-def)))
        (list (lambda (obj)
                (let* ((slot-opts (slot-definition-options slot-def))
                       (g-property (get-keyword #:g-property slot-opts #f))
@@ -175,9 +194,10 @@
                       (g-type (get-keyword #:g-type slot-opts #f)))
                  (if (is-writable? slot-def slot-opts)
                      (g-inst-set-property (!g-inst obj) g-property val g-type)
-                     (error "Unwritable slot:" name))))))
-      (else
-       (next-method)))))
+                     (error "Unwritable slot:" name)))))))
+
+    (else
+     (next-method))))
 
 (define-method (initialize (class <gobject-class>) initargs)
   (let ((info (get-keyword #:info initargs #f)))
@@ -334,3 +354,14 @@
        (memq <gobject>
              (class-precedence-list val))
        #t))
+
+
+;;;
+;;; <ginterface>
+;;;
+
+#;(define-class <ginterface-class> (<gtype-class>))
+
+(define-class <ginterface> (<gtype-instance>)
+  #:info #t
+  #:metaclass <gobject-class>)
