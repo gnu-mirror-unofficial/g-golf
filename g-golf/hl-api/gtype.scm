@@ -93,9 +93,11 @@
              (g-type (g-registered-type-info-get-g-type info))
              (g-f-type (g-type-fundamental g-type))
              (g-name (g-registered-type-info-get-type-name info))
-             (g-class (and (= g-f-type
-                              (enum->value %g-type-fundamental-types 'object))
-                           (g-type-class-ref g-type))))
+             (g-class (case (g-type->symbol g-f-type)
+                        ((object)
+                         (g-type-class-ref g-type))
+                        (else
+                         #f))))
         (and g-class
              (g-type-class-unref g-class))
         (mslot-set! self
