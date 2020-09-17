@@ -50,8 +50,6 @@
   #:use-module (g-golf hl-api function)
   #:use-module (g-golf hl-api closure)
 
-  #:replace (connect)
-
   #:duplicates (merge-generics
 		replace
 		warn-override-core
@@ -80,19 +78,13 @@
           !param-types
           !param-args
 
+          connect
           connect-after)
 
 
 ;;;
 ;;; Signal connection
 ;;;
-
-(define %connect
-  (module-ref the-root-module 'connect))
-
-(define-method (connect . args)
-  "The core Guile implementation of the connect(2) POSIX call"
-  (apply %connect args))
 
 (define-method* (connect (inst <gtype-instance>) name function
                          #:optional (after? #f) (detail #f))

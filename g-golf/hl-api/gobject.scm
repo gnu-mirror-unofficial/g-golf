@@ -45,6 +45,8 @@
   #:use-module (g-golf gi)
   #:use-module (g-golf hl-api gtype)
 
+  #:replace (connect)
+
   #:duplicates (merge-generics
 		replace
 		warn-override-core
@@ -57,6 +59,26 @@
 
 
 #;(g-export )
+
+
+;;;
+;;; Connect
+;;;
+
+;; This code was in (g-golf hl-api signal), but (a) all other guile core
+;; or user procedure 'promotion' to gf are done using (g-golf hl-api
+;; gobject), and (b) a Gio based example, iif using the 'open signal,
+;; revealed that unless connect is promoted as a gf in this module
+;; (which is defined and imported before signal, and of course before
+;; any user import(s)), then an 'overrides core binding' warning is
+;; displayed, followed by a "module-lookup"connect exception.
+
+(define %connect
+  (module-ref the-root-module 'connect))
+
+(define-method (connect . args)
+  "The core Guile implementation of the connect(2) POSIX call"
+  (apply %connect args))
 
 
 ;;;
