@@ -289,7 +289,8 @@ stored in the g-value.
   (let ((value (g-value-ref g-value)))
     (case (g-value-type-tag g-value)
       ((object)
-       (if (null-pointer? value)
+       (if (or (not value)
+               (null-pointer? value))
            #f
            (or (g-inst-cache-ref value)
                (let* ((module (resolve-module '(g-golf hl-api gobject)))
