@@ -231,17 +231,28 @@
               (procedure (if (!override? f-inst)
                              (!o-func f-inst)
                              (!i-func f-inst))))
-         (add-method! m-long-generic
-                      (make <method>
-                        #:specializers specializers
-                        #:procedure procedure))
-         (when m-short-generic
-           (add-method! m-short-generic
-                        (make <method>
-                          #:specializers specializers
-                          #:procedure procedure)))))
+         (gi-add-methods m-long-generic
+                         m-short-generic
+                         specializers
+                         procedure)))
       (else
        (fallback f-inst)))))
+
+(define (gi-add-methods m-long-generic
+                        m-short-generic
+                        specializers
+                        procedure)
+  (for-each (lambda (xp-spec)
+              (add-method! m-long-generic
+                           (make <method>
+                             #:specializers xp-spec
+                             #:procedure procedure))
+              (when m-short-generic
+                (add-method! m-short-generic
+                             (make <method>
+                               #:specializers xp-spec
+                               #:procedure procedure))))
+      (explode specializers)))
 
 #!
 
@@ -319,8 +330,11 @@ method with its 'old' definition.
               (match (!type-desc argument)
                 ((type name gi-type g-type confirmed?)
                  (case type
-                   ((object)
-                    (if gi-type gi-type <top>))
+                   ((object
+                     interface)
+                    (if (!may-be-null? argument)
+                        (list gi-type <boolean>)
+                        gi-type))
                    (else
                     <top>)))))
              (else
@@ -607,32 +621,14 @@ method with its 'old' definition.
                    (gi-import-union info))
                #t))
       ((object)
-       (let ((module (resolve-module '(g-golf hl-api gobject)))
-             (c-name (g-name->class-name g-name)))
-         ;; In the code below, it is necessary to make sure c-name has
-         ;; been defined before to (maybe) get its value, because it
-         ;; could be that c-name hasn't been defined yet, due to the
-         ;; unspecified order in which <gobject> subclasses are being
-         ;; imported, and methods defined. For example, which happened
-         ;; while I was working on this, importing "Cutter", it appears
-         ;; that <clutter-actor> may exists, and one of its methods
-         ;; requiring, let's say, a <clutter-constraint> argument, but
-         ;; the <clutter-constraint> class hasn't been imported yet, and
-         ;; therefore its class name is unbound at the time
-         ;; <clutter-actor> methods are being defined. Ultimately, all
-         ;; classes will be defined of course, and the following
-         ;; returned values updated, but only after the call to
-         ;; gi-import is fully completed. Now, these returned values are
-         ;; used to define (gi)arguments, and those are 'permanent'
-         ;; (their definition is, not their value of course), and stored
-         ;; in the arguments slot of <function> instances. Therefore, it
-         ;; is possible to later permanently complete missing classes,
-         ;; while processing (calling) those functions/methods, and only
-         ;; as part of the first call.
+       (let* ((module (resolve-module '(g-golf hl-api gobject)))
+              (c-name (g-name->class-name g-name))
+              (c-inst (or (and (module-variable module c-name)
+                               (module-ref module c-name))
+                          ((@ (g-golf hl-api object) gi-import-object) info))))
          (values id
                  c-name
-                 (and (module-variable module c-name)
-                      (module-ref module c-name))
+                 c-inst
                  ;; we can't rely on GI to tell us, at import time, the
                  ;; exact class name of the returned instance. As an
                  ;; example, at import time, the WebKit2 typelib pretend
@@ -649,12 +645,14 @@ method with its 'old' definition.
                  ;; type-spec.
                  #f)))
       ((interface)
-       (let ((module (resolve-module '(g-golf hl-api gobject)))
-             (c-name (g-name->class-name g-name)))
+       (let* ((module (resolve-module '(g-golf hl-api gobject)))
+              (c-name (g-name->class-name g-name))
+              (c-inst (or (and (module-variable module c-name)
+                               (module-ref module c-name))
+                          ((@ (g-golf hl-api object) gi-import-interface) info))))
          (values id
                  c-name
-                 (and (module-variable module c-name)
-                      (module-ref module c-name))
+                 c-inst
                  #t)))
       (else
        (values id name #f #f)))))

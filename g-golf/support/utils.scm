@@ -43,6 +43,7 @@
 	    and-l
 	    identities
             flatten
+            explode
 
             g-studly-caps-expand
 	    %g-name-transform-exceptions
@@ -141,6 +142,50 @@
                  (if (pair? x)
                      (loop rests (append (loop x '()) result))
                      (loop rests (cons x result))))))))
+
+(define (explode lst)
+  ;; Generate the (first level only [*]) combinatorial lists for LST.
+
+  ;; For example:
+  ;;   (explode '(a (b c) b))
+  ;;     -| ((a b b) (a c b))
+  ;;   (explode '(a (b c) (b c)))
+  ;;     -|  ((a b b) (a b c) (a c b) (a c c))
+
+  ;; But (expected, given the current definition):
+  ;;  (explode '(a (b (c d)) (b c)))
+  ;;    -| ((a b b) (a b c) (a (c d) b) (a (c d) c))
+
+  ;; [*] In G-Golf, explode is used to determine the combinatorial lists
+  ;; of specializers for a particular method, which we know requires
+  ;; only one level of combinatorial generation. This is because, for
+  ;; any method, the unexploded specializers (the argument passed to
+  ;; explode) is a list of items, each of which is either a class or a
+  ;; list of two classes (in which case, the first class is a <gobject>
+  ;; sublass, the second is <boolean> - when the method accepts NULL
+  ;; (the scheme representation of which is #f) for one or several of
+  ;; its arguments.
+
+  (map reverse (explode-1 lst '(()))))
+
+(define (explode-1 lst results)
+  (match lst
+    (() results)
+    ((x . rests)
+     (match x
+       (() '())
+       ((a . bcd)
+        (append (explode-1 rests
+                           (map (lambda (result)
+                                  (cons a result))
+                             results))
+                (explode-1 (cons bcd rests)
+                           results)))
+       (else
+        (explode-1 rests
+                   (map (lambda (result)
+                          (cons x result))
+                     results)))))))
 
 
 ;;;
