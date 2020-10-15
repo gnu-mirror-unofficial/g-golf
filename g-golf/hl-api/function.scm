@@ -486,37 +486,46 @@ method with its 'old' definition.
        (next-method self '())
        (let* ((g-name (g-base-info-get-name info))
               (name (g-name->name g-name))
+              (closure (g-arg-info-get-closure info))
+              (destroy (g-arg-info-get-destroy info))
               (direction (g-arg-info-get-direction info))
+              (transfert (g-arg-info-get-ownership-transfer info))
+              (scope (g-arg-info-get-scope info))
               (type-info (g-arg-info-get-type info))
               (type-tag (g-type-info-get-tag type-info))
               (type-desc (type-description type-info #:type-tag type-tag))
               (is-pointer? (g-type-info-is-pointer type-info))
+              (may-be-null? (g-arg-info-may-be-null info))
+              (is-caller-allocate? (g-arg-info-is-caller-allocates info))
+              (is-optional? (g-arg-info-is-optional info))
+              (is-return-value? (g-arg-info-is-return-value info))
+              (is-skip? (g-arg-info-is-skip info))
               (forced-type (arg-info-forced-type direction type-tag is-pointer?)))
          (g-base-info-unref type-info)
+         (g-base-info-unref info)
          (mslot-set! self
                      'g-name g-name
                      'name name
-                     'closure (g-arg-info-get-closure info)
-                     'destroy (g-arg-info-get-destroy info)
+                     'closure closure
+                     'destroy destroy
                      'direction direction
-                     'transfert (g-arg-info-get-ownership-transfer info)
-                     'scope (g-arg-info-get-scope info)
+                     'transfert transfert
+                     'scope scope
                      'type-tag type-tag
                      'type-desc type-desc
                      'forced-type forced-type
                      'is-pointer? is-pointer?
-                     'may-be-null? (g-arg-info-may-be-null info)
-                     'is-caller-allocate? (g-arg-info-is-caller-allocates info)
-                     'is-optional? (g-arg-info-is-optional info)
-                     'is-return-value? (g-arg-info-is-return-value info)
-                     'is-skip? (g-arg-info-is-skip info)
-                     ;; the gi-argument-in or/and gi-argument-out slots can
-                     ;; only be set!  at the end of
-                     ;; function-arguments-and-gi-arguments, which needs to
-                     ;; proccess them all before it can compute their
-                     ;; respective pointer address (or/and because an
-                     ;; argument can be 'in, 'inout or 'out). See
-                     ;; finalize-arguments-gi-argument-pointers.
+                     'may-be-null? may-be-null?
+                     'is-caller-allocate? is-caller-allocate?
+                     'is-optional? is-optional?
+                     'is-return-value? is-return-value?
+                     'is-skip? is-skip?
+                     ;; the gi-argument-in and gi-argument-out slots can
+                     ;; only be set! at the end of
+                     ;; function-arguments-and-gi-arguments, which needs
+                     ;; to proccess them all before it can compute their
+                     ;; respective pointer address (see
+                     ;; finalize-arguments-gi-argument-pointers).
                      'gi-argument-field (gi-type-tag->field forced-type)))))))
 
 #;(define-method* (describe (self <argument>) #:key (port #t))
@@ -719,7 +728,6 @@ method with its 'old' definition.
                     gi-args-out-bv))
           (let* ((arg-info (g-callable-info-get-arg info i))
                  (argument (make <argument> #:info arg-info)))
-            (g-base-info-unref arg-info)
             (case (!direction argument)
               ((in)
                (mslot-set! argument
