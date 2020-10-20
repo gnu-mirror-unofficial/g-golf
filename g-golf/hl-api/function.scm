@@ -553,22 +553,22 @@ method with its 'old' definition.
        type-tag))))
 
 (define (type-description-interface info)
-  (let* ((info (g-type-info-get-interface info))
-         (type (g-base-info-get-type info)))
-    (case type
+  (let* ((iface-info (g-type-info-get-interface info))
+         (iface-type (g-base-info-get-type iface-info)))
+    (case iface-type
       ((callback)
-       (g-base-info-unref info)
+       (g-base-info-unref iface-info)
        ;; skeleton - wip
-       (list type #f #f #f #f))
+       (list iface-type #f #f #f #f))
       (else
-       (if (is-registered? type)
+       (if (is-registered? iface-type)
            (receive (id name gi-type confirmed?)
-               (registered-type->gi-type info type)
-             (g-base-info-unref info)
-             (list type name gi-type id confirmed?))
+               (registered-type->gi-type iface-info iface-type)
+             (g-base-info-unref iface-info)
+             (list iface-type name gi-type id confirmed?))
            (begin
-             (g-base-info-unref info)
-             type))))))
+             (g-base-info-unref iface-info)
+             iface-type))))))
 
 (define (type-description-array info)
   (let* ((type (g-type-info-get-array-type info))
