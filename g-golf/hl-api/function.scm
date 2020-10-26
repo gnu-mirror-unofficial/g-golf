@@ -62,6 +62,7 @@
           !g-name
           !name
           !type-desc
+          !array-type-desc
 
           !info		;; function
           !namespace
@@ -367,6 +368,7 @@ method with its 'old' definition.
   (caller-owns #:accessor !caller-owns)
   (return-type #:accessor !return-type)
   (type-desc #:accessor !type-desc)
+  (array-type-desc #:accessor !array-type-desc)
   (may-return-null? #:accessor !may-return-null?)
   (arguments #:accessor !arguments)
   (n-gi-arg-in #:accessor !n-gi-arg-in)
@@ -390,37 +392,39 @@ method with its 'old' definition.
            (flags (g-function-info-get-flags info))
            (is-method? (gi-function-info-is-method? info flags))
            (return-type-info (g-callable-info-get-return-type info))
-           (return-type (g-type-info-get-tag return-type-info))
-           (type-desc (type-description return-type-info #:type-tag return-type)))
-      (g-base-info-unref return-type-info)
-      (receive (n-arg args
-                n-gi-arg-in args-in gi-args-in gi-args-in-bv
-                n-gi-arg-out args-out gi-args-out gi-args-out-bv)
-          (function-arguments-and-gi-arguments info is-method? override?)
-        (mslot-set! self
-                    'info info
-                    'namespace namespace
-                    'g-name g-name
-                    'name name
-                    'override? override?
-                    'flags flags
-                    'is-method? is-method?
-                    'n-arg n-arg
-                    'caller-owns (g-callable-info-get-caller-owns info)
-                    'return-type return-type
-                    'type-desc type-desc
-                    'may-return-null? (g-callable-info-may-return-null info)
-                    'arguments args
-                    'n-gi-arg-in n-gi-arg-in
-                    'args-in args-in
-                    'gi-args-in gi-args-in
-                    'gi-args-in-bv gi-args-in-bv
-                    'n-gi-arg-out n-gi-arg-out
-                    'args-out args-out
-                    'gi-args-out gi-args-out
-                    'gi-args-out-bv gi-args-out-bv
-                    'gi-arg-result (make-gi-argument))
-        (function-finalizer self)))))
+           (return-type (g-type-info-get-tag return-type-info)))
+      (receive (type-desc array-type-desc)
+          (type-description return-type-info #:type-tag return-type)
+        (g-base-info-unref return-type-info)
+        (receive (n-arg args
+                  n-gi-arg-in args-in gi-args-in gi-args-in-bv
+                  n-gi-arg-out args-out gi-args-out gi-args-out-bv)
+            (function-arguments-and-gi-arguments info is-method? override?)
+          (mslot-set! self
+                      'info info
+                      'namespace namespace
+                      'g-name g-name
+                      'name name
+                      'override? override?
+                      'flags flags
+                      'is-method? is-method?
+                      'n-arg n-arg
+                      'caller-owns (g-callable-info-get-caller-owns info)
+                      'return-type return-type
+                      'type-desc type-desc
+                      'array-type-desc array-type-desc
+                      'may-return-null? (g-callable-info-may-return-null info)
+                      'arguments args
+                      'n-gi-arg-in n-gi-arg-in
+                      'args-in args-in
+                      'gi-args-in gi-args-in
+                      'gi-args-in-bv gi-args-in-bv
+                      'n-gi-arg-out n-gi-arg-out
+                      'args-out args-out
+                      'gi-args-out gi-args-out
+                      'gi-args-out-bv gi-args-out-bv
+                      'gi-arg-result (make-gi-argument))
+          (function-finalizer self))))))
 
 (define (function-finalizer f-inst)
   (let ((i-func (%i-func f-inst)))
@@ -459,6 +463,7 @@ method with its 'old' definition.
   (scope #:accessor !scope)
   (type-tag #:accessor !type-tag #:init-keyword #:type-tag)
   (type-desc #:accessor !type-desc #:init-keyword #:type-desc)
+  (array-type-desc #:accessor !array-type-desc)
   (forced-type #:accessor !forced-type #:init-keyword #:forced-type)
   (string-pointer #:accessor !string-pointer)
   (is-pointer? #:accessor !is-pointer? #:init-keyword #:is-pointer?)
@@ -493,7 +498,6 @@ method with its 'old' definition.
               (scope (g-arg-info-get-scope info))
               (type-info (g-arg-info-get-type info))
               (type-tag (g-type-info-get-tag type-info))
-              (type-desc (type-description type-info #:type-tag type-tag))
               (is-pointer? (g-type-info-is-pointer type-info))
               (may-be-null? (g-arg-info-may-be-null info))
               (is-caller-allocate? (g-arg-info-is-caller-allocates info))
@@ -501,32 +505,35 @@ method with its 'old' definition.
               (is-return-value? (g-arg-info-is-return-value info))
               (is-skip? (g-arg-info-is-skip info))
               (forced-type (arg-info-forced-type direction type-tag is-pointer?)))
-         (g-base-info-unref type-info)
-         (g-base-info-unref info)
-         (mslot-set! self
-                     'g-name g-name
-                     'name name
-                     'closure closure
-                     'destroy destroy
-                     'direction direction
-                     'transfert transfert
-                     'scope scope
-                     'type-tag type-tag
-                     'type-desc type-desc
-                     'forced-type forced-type
-                     'is-pointer? is-pointer?
-                     'may-be-null? may-be-null?
-                     'is-caller-allocate? is-caller-allocate?
-                     'is-optional? is-optional?
-                     'is-return-value? is-return-value?
-                     'is-skip? is-skip?
-                     ;; the gi-argument-in and gi-argument-out slots can
-                     ;; only be set! at the end of
-                     ;; function-arguments-and-gi-arguments, which needs
-                     ;; to proccess them all before it can compute their
-                     ;; respective pointer address (see
-                     ;; finalize-arguments-gi-argument-pointers).
-                     'gi-argument-field (gi-type-tag->field forced-type)))))))
+         (receive (type-desc array-type-desc)
+             (type-description type-info #:type-tag type-tag)
+           (g-base-info-unref type-info)
+           (g-base-info-unref info)
+           (mslot-set! self
+                       'g-name g-name
+                       'name name
+                       'closure closure
+                       'destroy destroy
+                       'direction direction
+                       'transfert transfert
+                       'scope scope
+                       'type-tag type-tag
+                       'type-desc type-desc
+                       'array-type-desc array-type-desc
+                       'forced-type forced-type
+                       'is-pointer? is-pointer?
+                       'may-be-null? may-be-null?
+                       'is-caller-allocate? is-caller-allocate?
+                       'is-optional? is-optional?
+                       'is-return-value? is-return-value?
+                       'is-skip? is-skip?
+                       ;; the gi-argument-in and gi-argument-out slots can
+                       ;; only be set! at the end of
+                       ;; function-arguments-and-gi-arguments, which needs
+                       ;; to proccess them all before it can compute their
+                       ;; respective pointer address (see
+                       ;; finalize-arguments-gi-argument-pointers).
+                       'gi-argument-field (gi-type-tag->field forced-type))))))))
 
 #;(define-method* (describe (self <argument>) #:key (port #t))
   (next-method self #:port port))
@@ -543,14 +550,17 @@ method with its 'old' definition.
                       (g-type-info-get-tag info))))
     (case type-tag
       ((interface)
-       (type-description-interface info))
+       (values (type-description-interface info)
+               #f))
       ((array)
        (type-description-array info))
       ((glist
         gslist)
-       (type-description-glist info type-tag))
+       (values (type-description-glist info type-tag)
+               #f))
       (else
-       type-tag))))
+       (values type-tag
+               #f)))))
 
 (define (type-description-interface info)
   (let* ((iface-info (g-type-info-get-interface info))
@@ -577,12 +587,24 @@ method with its 'old' definition.
          (param-n (g-type-info-get-array-length info))
          (param-type (g-type-info-get-param-type info 0))
          (param-tag (g-type-info-get-tag param-type)))
-    (g-base-info-unref param-type)
-    (list type
-          fixed-size
-          is-zero-terminated
-          param-n
-          param-tag)))
+    (case param-tag
+      ((interface)
+       (let ((i-desc (type-description-interface param-type)))
+         (g-base-info-unref param-type)
+         (values (list type
+                       fixed-size
+                       is-zero-terminated
+                       param-n
+                       param-tag)
+                 i-desc)))
+      (else
+       (g-base-info-unref param-type)
+       (values (list type
+                     fixed-size
+                     is-zero-terminated
+                     param-n
+                     param-tag)
+               param-tag)))))
 
 (define (type-description-glist info type-tag)
   (let* ((param-type (g-type-info-get-param-type info 0))
