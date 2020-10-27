@@ -879,33 +879,14 @@ method with its 'old' definition.
                                                 (else
                                                  (make-c-struct (!scm-types gi-type)
                                                                 arg)))))))
-                    ((object)
+                    ((object
+                      interface)
                      (gi-argument-set! gi-argument-in 'v-pointer
                                        (if arg
                                            (!g-inst arg)
                                            (if may-be-null?
                                                %null-pointer
                                                (error "Invalid arg: " arg)))))
-                    ((interface)
-                     ;; Interfaces (class implementation) is missing,
-                     ;; but g-object subclasses that implement
-                     ;; interface(s) may pass their instances as
-                     ;; arguments to functions that expect an interface.
-                     ;; For example a <gtk-list-store> instance is a
-                     ;; valid argument to the
-                     ;; gtk-tree-view-new-with-model function ...  This
-                     ;; means that we need, till interface classes are
-                     ;; fully implemented, to check if the argument the
-                     ;; function is receiving is a pointer - then we
-                     ;; pass it 'blindingly', or an instance, in which
-                     ;; case we must pass its g-inst slot value (which
-                     ;; holds a pointer to the GObject subclass
-                     ;; instance).
-                     (let ((foreign (cond ((not arg) %null-pointer)
-                                          ((pointer? arg) arg)
-                                          (else
-                                           (!g-inst arg)))))
-                       (gi-argument-set! gi-argument-in 'v-pointer foreign)))
                     ((callback)
                      (let ((name (!name arg-in)))
                        (if (not arg)
