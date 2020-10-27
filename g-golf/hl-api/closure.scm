@@ -30,7 +30,7 @@
   #:use-module (ice-9 threads)
   #:use-module (ice-9 match)
   #:use-module (ice-9 receive)
-  #:use-module (srfi srfi-1)
+  ;; #:use-module (srfi srfi-1)
   #:use-module (oop goops)
   #:use-module (g-golf support)
   #:use-module (g-golf gi)
@@ -301,7 +301,8 @@ stored in the g-value.
       ((pointer)
        (if param-arg
            (let ((type-tag (!type-tag param-arg))
-                 (type-desc (!type-desc param-arg)))
+                 (type-desc (!type-desc param-arg))
+                 (array-type-desc (!array-type-desc param-arg)))
              (case type-tag
                ((array)
                 (match type-desc
@@ -315,13 +316,17 @@ stored in the g-value.
                                             (g-value-ref-param-n param-vals
                                                                  param-args
                                                                  param-n))))
-                      ((interface)
-                       (if is-zero-terminated
-                           (gi-pointers->scm value)
-                           (gi-n-pointer->scm value
-                                              (g-value-ref-param-n param-vals
-                                                                   param-args
-                                                                   param-n))))
+                     ((interface)
+                      (match array-type-desc
+                        ((type name gi-type g-type confirmed?)
+                         (map (lambda (pointer)
+                                (make gi-type #:g-inst pointer))
+                           (if is-zero-terminated
+                               (gi-pointers->scm value)
+                               (gi-n-pointer->scm value
+                                                  (g-value-ref-param-n param-vals
+                                                                       param-args
+                                                                       param-n)))))))
                      (else
                       (warning
                        "Unimplemented (g-closure-marshal-g-value-ref) type - array;"
@@ -380,7 +385,8 @@ stored in the g-value.
 
 (define (g-closure-marshal-g-value-return-val g-value return-val)
   (case (g-value-type-tag g-value)
-    ((object)
+    ((object
+      interface)
      (!g-inst return-val))
     (else
      return-val)))
