@@ -821,7 +821,7 @@ method with its 'old' definition.
 (define %allow-none-exceptions
   '(child-setup-data-destroy))
 
-(define ($is-an-allow-none-exception? name)
+(define (%allow-none-exception? name)
   (memq name %allow-none-exceptions))
 
 (define (prepare-gi-args-in function args)
@@ -910,7 +910,7 @@ method with its 'old' definition.
                      (let ((name (!name arg-in)))
                        (if (not arg)
                            (if (or may-be-null?
-                                   ($is-an-allow-none-exception? name))
+                                   (%allow-none-exception? name))
                                (gi-argument-set! gi-argument-in 'v-pointer #f)
                                (error "Invalid callback argument: " name #f)))))))))
               ((array)
