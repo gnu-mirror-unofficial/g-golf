@@ -3,12 +3,28 @@
 @c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
+G-Golf will let you import and work with any GObject-Introspectable
+GNOME library, called @code{Typelib}@footnote{A @code{Typelib} is a
+binary, readonly, memory-mappable database containing reflective
+information about a GObject library}. Since we need to make a choice
+among so many, to guide new comers and let them started with G-Golf,
+let's pick-up @uref{@value{UGTK}, Gtk}, and show how to
+@uref{@value{UGTK-WEB}, Create interfaces that users just love}.
+
+Following the tradition, we will first look at and work on a couple of
+versions of the often seen @samp{Hello World!} familiar, friendly
+greeting program.
+
+We will then complete the section by walking through the necessary
+and/or recommended steps to build applications,
 
 @menu
 
-* Hello World::
+* Hello World!::
+@c * Building Application::
 
 @end menu
 
 
 @include ug-gswg-hello-world.texi
+@c @include ug-gswg-building-applications.texi
