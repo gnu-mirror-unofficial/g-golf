@@ -40,7 +40,7 @@
 
 @set UGI-wiki https://wiki.gnome.org/Projects/GObjectIntrospection
 @set UGI https://developer.gnome.org/stable/gi
-@set UGI-OVERVIEW https://developer.gnome.org/gi/stable/overview.html
+@set UGI-OVERVIEW https://gi.readthedocs.io/en/latest
 @set UGIRepository https://developer.gnome.org/gi/stable/GIRepository.html
 @set UGIcommontypes https://developer.gnome.org/gi/stable/gi-common-types.html
 @set UGIBaseInfo https://developer.gnome.org/gi/stable/gi-GIBaseInfo.html
