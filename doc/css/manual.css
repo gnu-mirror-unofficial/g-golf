@@ -48,11 +48,15 @@ Maybe later
 */
 
 .header {
-    background-color: #f2f2f2;
-    font-size: small;
-    padding: 0.2em 1em;
+    !background-color: #f2f2f2;
+    !font-size: small;
+    margin: 0 -1em;
+    padding: 0 1em;
 }
 
+.header p, .node p {
+    line-height: 2em;
+}
 
 /*
   This makes the very long tables of contents in Gnulib and other
@@ -85,6 +89,17 @@ Maybe later
     !color: #c84300;
     !color: #a33900;
     !color: #c1971f;
+}
+
+.float {
+    margin-top: -1em;
+    text-align: center;
+}
+
+.float-caption p {
+    margin-top: -1em;
+    margin-bottom: 1.3em;
+    text-align: center;
 }
 
 
@@ -144,14 +159,28 @@ a code {
     !color: #3e51b5;
 }
 
+a[href] { color: #005090; }
+a[href]:visited { color: #100070; }
+a[href]:active, a[href]:hover {
+   color: #100070;
+   text-decoration: none;
+}
 
 /*
   The shadow around the body is distracting.
 */
+html {
+    background-color: #e7e7e7;
+}
 
 body {
     box-shadow: 0 0 0 0;
     color: #333;
+    background-color: white;
+    max-width: 52em;
+    margin: 0 auto;
+    padding: .5em 1em 1em 1em;
+    border: .1em solid #c0c0c0;
 }
 
 code,
