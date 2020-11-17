@@ -1156,7 +1156,9 @@ method with its 'old' definition.
                                  (list 'object name class g-type #t))
                            (make class #:g-inst foreign))))))))
           ((interface)
-           (gi-argument-ref gi-argument 'v-pointer))))))
+           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+             (and foreign
+                  (make gi-type #:g-inst foreign))))))))
     ((array)
      (match type-desc
        ((array fixed-size is-zero-terminated param-n param-tag)
