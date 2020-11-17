@@ -50,3 +50,8 @@ the G-Golf Programmers Manual.
 
 @printindex tp
 
+
+@page
+@node List of Examples
+@unnumbered List of Examples
+@listoffloats Example

@@ -87,6 +87,7 @@ Indices
 * Procedure Index::
 * Variable Index::
 * Type Index::
+* List of Examples::
 @end menu
 
 

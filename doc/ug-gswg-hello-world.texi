@@ -4,6 +4,105 @@
 @c See the file g-golf.texi for copying conditions.
 
 
-@node Hello World
-@subsection Hello World
+@node Hello World!
+@subsection Hello World!
 
+Following the tradition, let's first see how the often seen @samp{Hello
+World!} familiar, minimal, friendly greeting program looks like in
+G-Golf:
+
+@lisp
+;; Load Gtk
+(use-modules (g-golf))
+(gi-import "Gtk")
+
+;; When the application is launched..
+(define (activate app)
+  ;; - Create a new window and a new button
+  (let ((window (make <gtk-application-window>
+                  #:title "Hello"
+                  #:application app))
+        (button (make <gtk-button>
+                  #:label "Hello, World!")))
+    ;; - Which closes the window when clicked
+    (connect button
+             'clicked
+             (lambda (b)
+               (close window)))
+    (add window button)
+    (show-all window)))
+
+;; Create a new application
+(let ((app (make <gtk-application>
+             #:application-id "com.example.GtkApplication")))
+  (connect app 'activate activate)
+  ;; Run the application
+  (run app 0 '()))
+@end lisp
+
+Providing you successfully installed G-Golf, you may run the above code
+in a Guile @abbr{REPL, Read Evaluate Print Loop}, which as described in
+its comments, starts the application, resulting in opening a (small)
+window named @samp{Hello}, with one button named @samp{Hello, World!},
+that will close the widow when clicked.
+
+@float Example, exa:exa1
+@ifnottex
+@image{images/hello-world-1,,,hello-world-1,png}
+@caption{Hello World! (1)}
+@end ifnottex
+@end float
+
+Wonderful! But you probably rightfully think that it was a bit
+slow. This is not because G-Golf nor Guile are slow, but because the
+@code{Gtk} namespace is absolutely huge, and although we only use a few
+components, we asked to import the all namespace. We will see how to
+only selectively import the namespace components we need in a moment,
+but let's first try the following, (a) close the window and (b)
+re-evaluate the last expression:
+
+@lisp
+(let ((app (make <gtk-application>
+             #:application-id "com.example.GtkApplication")))
+  (connect app 'activate activate)
+  (run app 0 '()))
+@end lisp
+
+Great! Now, the application was launched instantaneously. Since
+everything it needs was already imported, the time it takes to execute
+the code is nearly identical to the time it would take to execute the
+same code from C - if you accurately measure the execution time in both
+situation, you would see a difference in the results, but small enough
+that it is safe to declare it imperceptible.
+
+
+@ @ @sup{_} @strong{Selective Import} @*
+
+To selectively import namespace components, use @ref{gi-import-by-name},
+which takes two arguments, a namespace and a (component) name. Let's try
+on our minimal @samp{Hello World!} example and see how it goes. All we
+need to do, is to substitute the @code{(gi-import "Gtk")} call by the
+following expression:
+
+@lisp
+(for-each (lambda (name)
+            (gi-import-by-name "Gtk" name))
+    '("Application"
+      "ApplicationWindow"
+      "Button"))
+@end lisp
+
+With this change, everything else kept equal, if you (quit and) restart
+Guile, evaluate the updated @samp{Hello World!} example code, you will
+notice how the elapse time before the application window appears is now
+substantially reduced, compared to the version that inport the all
+@code{Gtk} namespace.
+
+Substantially reduced but not instantaneous: that is expected, although
+we only import a few @code{Gtk} namespace components, three GObject
+classes in this example, G-Golf will import those classes, their
+interface(s) if any, methods, enums, flags ... and do the same for their
+parent class, recursively - so, even for a tiny @samp{Hello World!}
+example, G-Golf has to import (and dynamically define) tens of classes,
+interfaces, enums, flags @dots{} as well as hundreds of methods and
+procedures @dots{}
