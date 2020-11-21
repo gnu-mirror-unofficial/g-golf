@@ -28,7 +28,6 @@ Maybe later
 @import url('/style.css');
 */
 
-
 /*
   makeinfo convert @deffn and similar functions to something inside
   <blockquote>.  style.css uses italic for blockquote.  This looks
@@ -109,6 +108,40 @@ Maybe later
 ***
 */
 
+table {
+    display: block;
+    overflow: auto;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+th {
+    padding: .3em .5em;
+    text-align: center; }
+
+td {
+    !border: 1px solid;
+    !padding: .2em .5em;
+}
+
+.menu td {
+    padding-top: .3em;
+}
+
+.menu td:nth-child(1) {
+    !border: 1px solid;
+    min-width: 18em;
+}
+
+.menu td:nth-child(2) {
+    !border: 1px solid;
+    max-width: 0px;
+}
+
+.menu td:nth-child(3) {
+    !border: 1px solid;
+}
+
 blockquote {
     font-style: normal;
 }
@@ -177,9 +210,9 @@ body {
     box-shadow: 0 0 0 0;
     color: #333;
     background-color: white;
-    max-width: 52em;
+    max-width: 45em;
     margin: 0 auto;
-    padding: .5em 1em 1em 1em;
+    padding: .5em 3em .5em 3em;
     border: .1em solid #c0c0c0;
 }
 
