@@ -15,6 +15,9 @@ let's pick-up @uref{@value{UGTK}, Gtk}, and show how to
 @menu
 * Hello World!:: Following the tradition, we will first look at the
   often seen @samp{Hello World!} familiar, friendly greeting program.
+* Selective Import:: In this section, we will show how you may and
+  should only selectively import the namespace components you need, not
+  the all namespace.
 * Scripting:: We will continue with a section on @samp{Scripting}, while
   revisiting our @samp{Hello World!} code, maybe some other example(s)
   and exploring a few more @uref{@value{UGTK}, Gtk} widgets.
@@ -27,6 +30,7 @@ let's pick-up @uref{@value{UGTK}, Gtk}, and show how to
 
 
 @include ug-gswg-hello-world.texi
+@include ug-gswg-selective-import.texi
 
 
 @node Scripting

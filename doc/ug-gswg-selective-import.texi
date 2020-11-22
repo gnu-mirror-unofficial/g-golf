@@ -1,0 +1,62 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@node Selective Import
+@subsection Selective Import
+
+To selectively import namespace components, use @ref{gi-import-by-name},
+which takes two arguments, a @var{namespace} and a (component)
+@var{name}. Let's try on our minimal @samp{Hello World!} example and see
+how it goes. All we need to do, is to substitute the @code{(gi-import
+"Gtk")} call by the following expression:
+
+@lisp
+(for-each (lambda (name)
+            (gi-import-by-name "Gtk" name))
+    '("Application"
+      "ApplicationWindow"
+      "Button"))
+@end lisp
+
+With this change, everything else kept equal, if you (quit and) restart
+Guile, evaluate the updated @samp{Hello World!} example code, you will
+notice how the elapse time before the application window appears is now
+substantially reduced@footnote{Substantially reduced but not
+instantaneous: that is expected, although we only import a few
+@code{Gtk} namespace components, three GObject classes in this example,
+G-Golf will import those classes, their interface(s) if any, methods,
+enums, flags ... and do the same for their parent class, recursively -
+so, even for a tiny @samp{Hello World!}  example, G-Golf has to import
+(and dynamically define) tens of classes, interfaces, enums, flags
+@dots{} as well as hundreds of methods and procedures @dots{}}, compared
+to the version that inport the all @code{Gtk} namespace.
+
+Both the @var{namespace} and @var{name} arguments are case
+sensitive. The @var{name} argument is used to retrieve the TypeLib
+@ref{Base Info} that holds the metadata of the introspectable library
+element it represents. Although there are a some exceptions, it is
+generally derived from and obtained by dropping the @var{namespace}
+prefix (without its version number if any) out of the original
+name. Here are a few more examples, organized by @var{namespace}:
+
+@indentedblock
+@table @code
+
+@item Gtk
+GtkWindow -> Window	@*
+gtk_init -> init	@*
+gtk_main -> main	@*
+gtk_main_quit -> main_quit @*
+@dots{}
+
+@item WebKit2
+WebKitWebView -> WebView	@*
+WebKitLoadEvent -> LoadEvent	@*
+@dots{}
+
+@item @dots{}
+@end table
+@end indentedblock
