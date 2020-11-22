@@ -41,10 +41,13 @@ G-Golf:
 @end lisp
 
 Providing you successfully installed G-Golf, you may run the above code
-in a Guile @abbr{REPL, Read Evaluate Print Loop}, which as described in
-its comments, starts the application, resulting in opening a (small)
-window named @samp{Hello}, with one button named @samp{Hello, World!},
-that will close the widow when clicked.
+in a Guile @abbr{REPL, Read Evaluate Print Loop}@footnote{If you haven't
+done so, please read the @ref{GOOPS Notes and Conventions},
+@samp{Merging Generics} subheading and configure your repl as proposed,
+before to run the example.}, which as described in its comments, starts
+the application, resulting in opening a (small) window named
+@samp{Hello}, with one button named @samp{Hello, World!}, that will
+close the widow when clicked.
 
 @float Example, exa:exa1
 @ifnottex
