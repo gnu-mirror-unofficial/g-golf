@@ -63,6 +63,14 @@ goops) - by calling @code{default-duplicate-binding-handler}:
     '(merge-generics replace warn-override-core warn last))
 @end example
 
+G-Golf regular users should consider adding the above lines to their
+@file{$HOME/.guile} or, when working in a multi-user environmet, should
+consider adding those lines the file named @file{init.scm} in the
+so-called Guile global site directory@footnote{You need write privileges
+to add or modify this file, contact your system administrator if you're
+not in charge of the system you are working on.}, here (evaluate the
+following expression in a terminal): @code{guile -c "(display
+(%global-site-dir))(newline)"}.
 
 
 @ @ @sup{_} @strong{Accessors Naming Convention}
