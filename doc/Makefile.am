@@ -25,6 +25,9 @@
 
 info_TEXINFOS = g-golf.texi
 
+DOC_IMAGES = \
+	$(wildcard images/*)
+
 DOC_CSS = \
 	$(wildcard css/*)
 
@@ -104,12 +107,15 @@ g_golf_TEXINFOS = \
   cr-hl-api-utils.texi		\
   indices.texi			\
   fdl.texi			\
+  $(DOC_IMAGES)			\
   $(DOC_CSS)
 
 nobase_doc_DATA = \
+	$(DOC_IMAGES)		\
 	$(DOC_CSS)
 
 EXTRA_DIST = \
+	$(DOC_IMAGES)		\
 	$(DOC_CSS)
 
 AM_MAKEINFOHTMLFLAGS = \
