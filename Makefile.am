@@ -172,6 +172,19 @@ uninstall-local:
 	  fi;					\
 	done
 
+install-html-local:
+	htmldir="$(datadir)/doc/@PACKAGE@/@PACKAGE@.html";	\
+	if ! [[ -e $$htmldir ]]; then				\
+	      mkdir -p "$$htmldir";				\
+	      cd "$$htmldir";					\
+	      ln -s ../images .;				\
+	else							\
+	      cd "$$htmldir";					\
+	      if ! [[ -L images ]]; then			\
+	            ln -s ../images .;				\
+	      fi;						\
+	fi
+
 
 ###
 ### Distclean
