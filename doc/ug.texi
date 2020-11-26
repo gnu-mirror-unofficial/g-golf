@@ -13,11 +13,9 @@
 
 
 @menu
-
 * Before you start::
 * Getting Started with G-Golf::
 * G-Golf Cache - Accessing::
-
 @end menu
 
 
