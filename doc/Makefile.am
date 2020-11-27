@@ -38,8 +38,10 @@ g_golf_TEXINFOS = \
   introduction.texi		\
   ug.texi			\
   ug-bys.texi			\
+  merging-generics.texi		\
   ug-bys-naming-conventions.texi		\
   ug-bys-goops-notes-and-conventions.texi	\
+  ug-bys-configuring-guile-for-g-golf.texi	\
   ug-bys-customizing-g-golf.texi		\
   ug-g-golf-cache.texi		\
   ug-gswg.texi			\

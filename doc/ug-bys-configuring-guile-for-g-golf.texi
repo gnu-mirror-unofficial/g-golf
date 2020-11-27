@@ -1,0 +1,17 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@node Configuring Guile for G-Golf
+@subsection Configuring Guile for G-Golf
+
+The following description and content is shared and identical to the
+@samp{Merging Generics} heading of the previous section.
+
+It is repeated it here, under its own section entry, so that it appears
+in the table of content and grab all users attention - those who do not
+follow our recommendation may void their warranty or poison their cat.
+
+@include merging-generics.texi

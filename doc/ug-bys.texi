@@ -5,13 +5,14 @@
 
 
 @menu
-
 * Naming Conventions::
 * GOOPS Notes and Conventions::
+* Configuring Guile for G-Golf::
 * Customizing G-Golf::
 @end menu
 
 
 @include ug-bys-naming-conventions.texi
 @include ug-bys-goops-notes-and-conventions.texi
+@include ug-bys-configuring-guile-for-g-golf.texi
 @include ug-bys-customizing-g-golf.texi

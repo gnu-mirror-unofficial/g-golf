@@ -1,0 +1,38 @@
+
+@ @ @sup{_} @strong{Merging Generics}
+
+In G-Golf, generic functions are always merged (@pxref{Merging
+Generics,,, guile, The GNU Guile Reference Manual}).
+
+Users are (highly) recommended to do the same, in their @code{repl},
+application/library modules and script(s). In its modules - those that
+import (oop goops) - G-Golf uses the following duplicate binding handler
+set:
+
+@example
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
+@end example
+
+In a @code{repl} or in scripts, these maybe set - after importing (oop
+goops) - by calling @code{default-duplicate-binding-handler}:
+
+
+@example
+(use-modules (oop goops))
+
+(default-duplicate-binding-handler
+    '(merge-generics replace warn-override-core warn last))
+@end example
+
+G-Golf regular users should consider adding the above lines to their
+@file{$HOME/.guile} or, when working in a multi-user environmet, should
+consider adding those lines the file named @file{init.scm} in the
+so-called Guile global site directory@footnote{You need write privileges
+to add or modify this file, contact your system administrator if you're
+not in charge of the system you are working on.}, here (evaluate the
+following expression in a terminal): @code{guile -c "(display
+(%global-site-dir))(newline)"}.
