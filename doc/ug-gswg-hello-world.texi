@@ -42,12 +42,12 @@ G-Golf:
 
 Providing you successfully installed G-Golf, you may run the above code
 in a Guile @abbr{REPL, Read Evaluate Print Loop}@footnote{If you haven't
-done so, please read the @ref{GOOPS Notes and Conventions},
-@samp{Merging Generics} subheading and configure your repl as proposed,
-before to run the example.}, which as described in its comments, starts
-the application, resulting in opening a (small) window named
-@samp{Hello}, with one button named @samp{Hello, World!}, that will
-close the widow when clicked.
+done so, please read the @ref{Configuring Guile for G-Golf},
+@emph{Merging Generics} and configure your repl as proposed, before to
+run the example.}, which as described in its comments, starts the
+application, resulting in opening a (small) window named @samp{Hello},
+with one button named @samp{Hello, World!}, that will close the widow
+when clicked.
 
 @float Example, exa:exa1
 @ifnottex
@@ -77,3 +77,62 @@ the code is nearly identical to the time it would take to execute the
 same code from C - if you accurately measure the execution time in both
 situation, you would see a difference in the results, but small enough
 that it is safe to declare it imperceptible.
+
+It is behond the scope of this introduction to describe the
+@code{<gtk-application> / g-application-run} instance creation and run
+mechanism in detail, for this, please consult and carefully read their
+respective entries in the @uref{@value{UGTK}, Gtk} and
+@uref{@value{UGIO}, Gio} reference manuals.
+
+The GNOME team also maintains a wiki called @uref{@value{UHDI}, HowDoI},
+and two pages are dedicated to this subject:
+@uref{@value{UHDI-GTKAPPLICATION}, HowDoI GtkApplication} and
+@uref{@value{UHDI-GTKAPPLICATION-CMDLINE}, HowDoI
+GtkApplication/CommandLine}.
+
+This said, let's just make a few hopefully usefull comments to
+newcomers:
+
+@itemize
+
+@item
+as you can see, we do not need to call @code{gtk-init}, it is done
+automatically (more on this in the @uref{@value{UGTK}, Gtk} Reference
+Manual);@*@*
+
+@item
+the @code{#:application-id} init-keyworkd is optional, although
+recommended, and when passed, the application ID must be valid (see
+below for more on this subject).
+
+@end itemize
+
+@ @ @sup{_} @strong{Is your application ID valid?}
+
+The set of rules that apply and determine if an @emph{Application
+Identifier} is valid is fully described in the Gio Reference Manual,
+@uref{@value{UGIO-G-APPLICATION-IS-VALID}, here}.
+
+In G-Golf, you may check if your application ID is valid by calling
+@code{g-application-id-is-valid}@footnote{After you at least import
+either directly @code{(gi-import-by-name "Gio" "Application")}, or
+@code{(gi-import-by-name "Gtk" "Application")}, which triggers the
+appropriate Gio imports, as described in the next section}, for
+example:
+
+@lisp
+(g-application-id-is-valid "com.example.GtkApplication")
+@result{} #t
+
+(g-application-id-is-valid "RedBear")
+@result{} #f
+@end lisp
+
+If you pass an invalid application ID to a @code{<gtk-application>}
+instance creation, you'll be noted with a message similar to this:
+
+@indentedblock
+@emph{(process:30818): GLib-GIO-CRITICAL **: 21:58:52.700:
+g_application_set_application_id: assertion 'application_id == NULL ||
+g_application_id_is_valid (application_id)' failed}
+@end indentedblock

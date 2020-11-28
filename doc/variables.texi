@@ -92,6 +92,23 @@
 @set UGTK https://developer.gnome.org/gtk3/stable/
 
 
+@c
+@c Gio
+@c
+
+@set UGIO https://developer.gnome.org/gio/stable/index.html
+@set UGIO-G-APPLICATION-IS-VALID https://developer.gnome.org/gio/stable/GApplication.html#g-application-id-is-valid
+
+
+
+@c
+@c HowDoI
+@c
+
+@set UHDI https://wiki.gnome.org/HowDoI
+@set UHDI-GTKAPPLICATION https://wiki.gnome.org/HowDoI/GtkApplication
+@set UHDI-GTKAPPLICATION-CMDLINE https://wiki.gnome.org/HowDoI/GtkApplication/CommandLine
+
 @c GG -> Guile-Gnome
 @set UGG https://www.gnu.org/software/guile-gnome
 
