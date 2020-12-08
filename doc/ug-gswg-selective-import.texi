@@ -24,15 +24,31 @@ how it goes. All we need to do, is to substitute the @code{(gi-import
 With this change, everything else kept equal, if you (quit and) restart
 Guile, evaluate the updated @samp{Hello World!} example code, you will
 notice how the elapse time before the application window appears is now
-substantially reduced@footnote{Substantially reduced but not
-instantaneous: that is expected, although we only import a few
-@code{Gtk} namespace components, three GObject classes in this example,
-G-Golf will import those classes, their interface(s) if any, methods,
-enums, flags ... and do the same for their parent class, recursively -
-so, even for a tiny @samp{Hello World!}  example, G-Golf has to import
-(and dynamically define) tens of classes, interfaces, enums, flags
-@dots{} as well as hundreds of methods and procedures @dots{}}, compared
-to the version that inport the all @code{Gtk} namespace.
+substantially reduced, compared to the version that inport the all
+@code{Gtk} namespace. Substantially reduced but @dots{} not
+instantaneous: well, that is expected!
+
+Although we only import a few @code{Gtk} namespace components, three
+GObject classes in this example, G-Golf will import those classes, their
+interface(s) if any, methods, enums, flags ... and do the same for their
+parent class, recursively. For those three classes only, G-Golf actually
+has to import (and dynamically define) tens of classes, interfaces,
+enums, flags @dots{} as well as hundreds of methods and procedures.
+
+@c The time G-Golf takes to get ready to launch your application or its
+@c first dialog is directly proportional to the number of elements and
+@c dependencies it has to import. You may check for yourself, how fast
+@c things are, if you import an element that has no dependencies (or nealry
+@c no dependencies
+
+G-Golf will also import classes, interfaces and their dependencies
+(enums, flags @dots{} recursively as well @dots{}) from other namespace
+if necessary. We already have an illustration of this, both with the
+original example and the change we just made: although we do not
+explicitly import the @code{GApplication} class from the @code{Gio}
+namespace, G-Golf did that for us, and so we may call @code{run} - which
+is the short method name for @code{g-application-run} - as if we did
+manually import it.
 
 Both the @var{namespace} and @var{name} arguments are case
 sensitive. The @var{name} argument is used to retrieve the TypeLib
