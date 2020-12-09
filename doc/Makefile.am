@@ -52,8 +52,9 @@ g_golf_TEXINFOS = \
   cr-ov-project-and-doc-struct.texi \
   cr-glib.texi			\
   cr-glib-mem-alloc.texi	\
-  cr-glib-main-event-loop.texi \
+  cr-glib-main-event-loop.texi	\
   cr-glib-io-channels.texi	\
+  cr-glib-misc-util-funcs.texi	\
   cr-glib-unix-utils.texi	\
   cr-glib-glist.texi		\
   cr-glib-gslist.texi		\
@@ -63,7 +64,7 @@ g_golf_TEXINFOS = \
   cr-gobject-gobject.texi	\
   cr-gobject-enum-flags.texi	\
   cr-gobject-gen-vals.texi	\
-  cr-gobject-params-vals.texi  \
+  cr-gobject-params-vals.texi	\
   cr-gobject-param-spec.texi	\
   cr-gobject-closures.texi	\
   cr-gobject-signals.texi	\
@@ -71,7 +72,7 @@ g_golf_TEXINFOS = \
   cr-gdk-events.texi		\
   cr-gdk-key-values.texi	\
   cr-gi.texi			\
-  cr-gi-repository.texi	\
+  cr-gi-repository.texi		\
   cr-gi-common-types.texi	\
   cr-gi-base-info.texi		\
   cr-gi-callable-info.texi	\
@@ -80,12 +81,12 @@ g_golf_TEXINFOS = \
   cr-gi-registered-type-info.texi	\
   cr-gi-enum-info.texi		\
   cr-gi-struct-info.texi	\
-  cr-gi-union-info.texi	\
+  cr-gi-union-info.texi		\
   cr-gi-object-info.texi	\
   cr-gi-interface-info.texi	\
   cr-gi-arg-info.texi		\
   cr-gi-constant-info.texi	\
-  cr-gi-field-info.texi	\
+  cr-gi-field-info.texi		\
   cr-gi-property-info.texi	\
   cr-gi-type-info.texi		\
   cr-gi-typelib.texi		\

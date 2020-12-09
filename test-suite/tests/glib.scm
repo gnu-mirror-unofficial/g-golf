@@ -133,6 +133,17 @@
 
 
 ;;;
+;;; Miscellaneous Utility Functions
+;;;
+
+(define-method (test-g-get/set-prgname (self <g-golf-test-glib>))
+  (assert-false (g-get-prgname))
+  (assert (g-set-prgname "org.gtk.example"))
+  (assert-true (string=? (g-get-prgname)
+                         "org.gtk.example")))
+
+
+;;;
 ;;; GSList
 ;;;
 

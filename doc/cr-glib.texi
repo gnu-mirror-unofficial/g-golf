@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -25,6 +25,7 @@ though they might be some exception in the future.
 * Memory Allocation:: General memory handling.
 * The Main Event Loop:: Manages all available sources of events.
 * IO Channels::  Portable support for using files, pipes and sockets.
+* Miscellaneous Utility Functions:: A selection of portable utility functions.
 * UNIX-specific utilities and integration:: Pipes, signal handling.
 * Doubly-Linked Lists:: Linked lists that can be iterated in both directions
 * Singly-Linked Lists:: Linked lists that can be iterated in one direction
@@ -35,6 +36,7 @@ though they might be some exception in the future.
 @include cr-glib-mem-alloc.texi
 @include cr-glib-main-event-loop.texi
 @include cr-glib-io-channels.texi
+@include cr-glib-misc-util-funcs.texi
 @include cr-glib-unix-utils.texi
 @include cr-glib-glist.texi
 @include cr-glib-gslist.texi
