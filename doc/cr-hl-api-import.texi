@@ -48,7 +48,7 @@ The G-Golf GIR namespace (Typelib) import high level API.
 
 
 @anchor{gi-import}
-@deffn Procedure gi-import namespace
+@deffn Procedure gi-import namespace [#:version #f]
 
 Returns nothing.
 
@@ -63,6 +63,9 @@ example:
 The @var{namespace} is a case sensitive string. It is an error to call
 this procedure using an invalid @var{namespace}.
 
+The optional @var{#:version} keyword argument may be used to require a
+specific @var{namespace} version, otherwise, the latest will be used.
+
 This procedure is certainly one of the first thing you will want to try
 and use, but it has a cost: you will not @samp{feel it} if the number of
 objects in @var{namespace} is relatively small, but importing the "Gtk"
@@ -76,7 +79,8 @@ of selective import instead, see @ref{gi-import-by-name} here below.
 
 
 @anchor{gi-import-by-name}
-@deffn Procedure gi-import-by-name namespace name [#:with-method #t]
+@deffn Procedure gi-import-by-name namespace name [#:version #f] @
+       [#:with-method #t]
 
 Returns the object or constant returned by @ref{gi-import-info} called
 upon the GIBaseInfo @code{info} named @var{name} in @var{namespace}.
@@ -85,6 +89,9 @@ Obtains and imports the GIBaseInfo @code{info} named @var{name} in
 @var{namespace}. The @var{namespace} and @var{name} arguments are case
 sensitive. It is an error to call this procedure using an invalid
 @var{namespace} or @var{name}.
+
+The optional @var{#:version} keyword argument may be used to require a
+specific @var{namespace} version, otherwise, the latest will be used.
 
 The optional keyword @var{#:with-method} argument - which is #t by
 default - is passed to the @code{gi-import-enum}, @code{gi-import-flag}

@@ -69,8 +69,9 @@
   (eq? (g-base-info-get-type info) type))
 
 (define* (gi-import namespace
-                    #:key (not-imported-warnings? #f))
-  (g-irepository-require namespace)
+                    #:key (version #f)
+                    (not-imported-warnings? #f))
+  (g-irepository-require namespace #:version version)
   (when not-imported-warnings?
     (dimfi "Namespace constants are not imported"))
   (let ((n-info (g-irepository-get-n-infos namespace)))
@@ -82,12 +83,13 @@
     (values)))
 
 (define* (gi-import-by-name namespace name
-                            #:key (not-imported-warnings? #f)
+                            #:key (version #f)
+                            (not-imported-warnings? #f)
                             (with-methods? #t)
                             (force? #f))
   (when (or force?
             (not (is-namespace-import-exception? namespace)))
-    (g-irepository-require namespace)
+    (g-irepository-require namespace #:version version)
     (let ((info (g-irepository-find-by-name namespace name)))
       (if info
           (gi-import-info info
