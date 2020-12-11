@@ -52,45 +52,53 @@
 
 (define (g-irepository-get-default)
   (g_irepository_get_default))
-  
+
 (define* (g-irepository-get-dependencies namespace
-                                         #:key (repository %null-pointer))
-  (gi->scm (g_irepository_get_dependencies repository
+                                         #:key (repository #f))
+  (gi->scm (g_irepository_get_dependencies (or repository
+                                               %null-pointer)
                                            (string->pointer namespace))
            'strings))
 
-(define* (g-irepository-get-loaded-namespaces #:key (repository %null-pointer))
-  (gi->scm (g_irepository_get_loaded_namespaces repository)
+(define* (g-irepository-get-loaded-namespaces #:key (repository #f))
+  (gi->scm (g_irepository_get_loaded_namespaces (or repository
+                                                    %null-pointer))
            'strings))
 
 (define* (g-irepository-get-n-infos namespace
-                                    #:key (repository %null-pointer))
-  (g_irepository_get_n_infos repository
+                                    #:key (repository #f))
+  (g_irepository_get_n_infos (or repository
+                                 %null-pointer)
 			     (string->pointer namespace)))
 
 (define* (g-irepository-get-info namespace index
-                                 #:key (repository %null-pointer))
-  (g_irepository_get_info repository
+                                 #:key (repository #f))
+  (g_irepository_get_info (or repository
+                              %null-pointer)
 			  (string->pointer namespace)
 			  index))
 
 (define* (g-irepository-enumerate-versions namespace
                                            #:key (repository #f))
   (map pointer->string
-    (gi->scm (g_irepository_enumerate_versions (scm->gi repository 'pointer)
+    (gi->scm (g_irepository_enumerate_versions (or repository
+                                                   %null-pointer)
                                                (string->pointer namespace))
              'glist)))
 
 (define* (g-irepository-get-typelib-path namespace
-                                         #:key (repository %null-pointer))
-  (gi->scm (g_irepository_get_typelib_path repository
+                                         #:key (repository #f))
+  (gi->scm (g_irepository_get_typelib_path (or repository
+                                               %null-pointer)
                                            (string->pointer namespace))
            'string))
 
 (define* (g-irepository-require namespace
-                                #:key (version #f) (repository %null-pointer))
+                                #:key (version #f)
+                                (repository #f))
   (with-gerror g-error
-	       (g_irepository_require repository
+	       (g_irepository_require (or repository
+                                          %null-pointer)
 				      (string->pointer namespace)
 				      (if version
 					  (string->pointer version)
@@ -99,31 +107,37 @@
 				      g-error)))
 
 (define* (g-irepository-get-c-prefix namespace
-                                     #:key (repository %null-pointer))
-  (gi->scm (g_irepository_get_c_prefix repository
+                                     #:key (repository #f))
+  (gi->scm (g_irepository_get_c_prefix (or repository
+                                           %null-pointer)
                                        (string->pointer namespace))
            'string))
 
 (define* (g-irepository-get-shared-library namespace
-                                           #:key (repository %null-pointer))
-  (gi->scm (g_irepository_get_shared_library repository
+                                           #:key (repository #f))
+  (gi->scm (g_irepository_get_shared_library (or repository
+                                                 %null-pointer)
                                              (string->pointer namespace))
            'csv-string))
 
 (define* (g-irepository-get-version namespace
-                                    #:key (repository %null-pointer))
-  (gi->scm (g_irepository_get_version repository
+                                    #:key (repository #f))
+  (gi->scm (g_irepository_get_version (or repository
+                                          %null-pointer)
                                       (string->pointer namespace))
            'string))
 
 (define* (g-irepository-find-by-gtype gtype
-                                      #:key (repository %null-pointer))
-  (gi->scm (g_irepository_find_by_gtype repository gtype)
+                                      #:key (repository #f))
+  (gi->scm (g_irepository_find_by_gtype (or repository
+                                            %null-pointer)
+                                        gtype)
            'pointer))
 
 (define* (g-irepository-find-by-name namespace name
-                                     #:key (repository %null-pointer))
-  (gi->scm (g_irepository_find_by_name repository
+                                     #:key (repository #f))
+  (gi->scm (g_irepository_find_by_name (or repository
+                                           %null-pointer)
                                        (string->pointer namespace)
                                        (string->pointer name))
            'pointer))

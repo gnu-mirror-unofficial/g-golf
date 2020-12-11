@@ -36,6 +36,13 @@ GIRepository — GObject Introspection repository manager.
 @end indentedblock
 
 
+@subheading Description
+
+@code{GIRepository} is used to manage repositories of
+namespaces. Namespaces are represented on disk by type libraries
+(.typelib files).
+
+
 @subheading Object Hierarchy
 
 @indentedblock
@@ -44,17 +51,13 @@ GObject           @*
 @end indentedblock
 
 
-@subheading Description
-
-@code{GIRepository} is used to manage repositories of
-namespaces. Namespaces are represented on disk by type libraries
-(.typelib files).
-
-
 @subheading Procedures
 
-Note: in this section, the @var{repository} optional keyword argument is
-[must be] a pointer to a @code{GIRepository} or @code{%null-pointer}.
+Note: in this section, when the @var{#:repository} optional keyword
+argument is passed, it is [must be] a pointer to a
+@code{GIRepository}. Its default value is @code{#f}, the scheme
+representation for @code{NULL}, meaning the singleton process-global
+default @code{GIRepository} (@pxref{g-irepository-get-default}).
 
 
 @anchor{g-irepository-get-default}
@@ -69,12 +72,12 @@ eventuality that it would become possible.
 
 All G-Golf low level API procedures on GIRepository also accept an
 optional @var{#:repository} keyword argument which defaults to
-@code{%null-pointer}, meaning this singleton process-global default
-GIRepository.
+@code{#f}, meaning this singleton process-global default
+@code{GIRepository}.
 @end deffn
 
 @anchor{g-irepository-get-dependencies}
-@deffn Procedure g-irepository-get-dependencies namespace #:key repository
+@deffn Procedure g-irepository-get-dependencies namespace [#:repository #f]
 
 Returns a list of all (transitive) versioned dependencies for
 @var{namespace}. Returned string are of the form
@@ -86,13 +89,13 @@ procedure such as @code{g-irepository-require} before calling this procedure.
 
 
 @anchor{g-irepository-get-loaded-namespaces}
-@deffn Procedure g-irepository-get-loaded-namespaces #:key repository
+@deffn Procedure g-irepository-get-loaded-namespaces [#:repository #f]
 
 Return the list of currently loaded namespaces.
 @end deffn
 
 @anchor{g-irepository-get-n-infos}
-@deffn Procedure g-irepository-get-n-infos namespace #:key repository
+@deffn Procedure g-irepository-get-n-infos namespace [#:repository #f]
 
 Returns the number of metadata entries in @var{namespace}. The
 @var{namespace} must have already been loaded before calling this
@@ -101,7 +104,7 @@ procedure.
 
 
 @anchor{g-irepository-get-info}
-@deffn Procedure g-irepository-get-info namespace index #:key repository
+@deffn Procedure g-irepository-get-info namespace index [#:repository #f]
 
 Returns a pointer to a particular metadata entry in the given
 @var{namespace}.
@@ -127,7 +130,7 @@ Obtains and returns an unordered (possibly empty) list of versions
 
 
 @anchor{g-irepository-get-typelib-path}
-@deffn Procedure g-irepository-get-typelib-path namespace #:key repository
+@deffn Procedure g-irepository-get-typelib-path namespace [#:repository #f]
 
 Returns the full path to the .typelib file @var{namespace} was loaded
 from, if loaded. If @var{namespace} is not loaded or does not exist, it
@@ -151,7 +154,7 @@ specified, the latest will be used.
 
 
 @anchor{g-irepository-get-c-prefix}
-@deffn Procedure g-irepository-get-c-prefix namespace #:key repository
+@deffn Procedure g-irepository-get-c-prefix namespace [#:repository #f]
 
 Returns the "C prefix", or the C level namespace associated with the
 given introspection @var{namespace}. Each C symbol starts with this
@@ -163,7 +166,7 @@ procedure such as @code{g-irepository-require} before calling this procedure.
 
 
 @anchor{g-irepository-get-shared-library}
-@deffn Procedure g-irepository-get-shared-library namespace #:key repository
+@deffn Procedure g-irepository-get-shared-library namespace [#:repository #f]
 
 Returns a list of paths to the shared C libraries associated with the
 given @var{namespace}. There may be no shared library path associated,
@@ -172,7 +175,7 @@ in which case this procedure will return an empty list.
 
 
 @anchor{g-irepository-get-version}
-@deffn Procedure g-irepository-get-version  namespace #:key repository
+@deffn Procedure g-irepository-get-version  namespace [#:repository #f]
 
 Returns the loaded version associated with the given @var{namespace}.
 
@@ -182,7 +185,7 @@ procedure such as @code{g-irepository-require} before calling this procedure.
 
 
 @anchor{g-irepository-find-by-gtype}
-@deffn Procedure g-irepository-find-by-gtype gtype #:key repository
+@deffn Procedure g-irepository-find-by-gtype gtype [#:repository #f]
 
 Returns a pointer to a @code{GIBaseInfo} representing metadata about
 @var{gtype}, or @code{#f}.
@@ -197,7 +200,7 @@ determining the namespace which corresponds to an arbitrary @code{GType}
 
 
 @anchor{g-irepository-find-by-name}
-@deffn Procedure g-irepository-find-by-name namespace name #:key repository
+@deffn Procedure g-irepository-find-by-name namespace name [#:repository #f]
 
 Returns a pointer to a @code{GIBaseInfo} representing metadata about
 type, or @code{#f}.
