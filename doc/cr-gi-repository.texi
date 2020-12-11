@@ -24,6 +24,7 @@ GIRepository — GObject Introspection repository manager.
 @item @ref{g-irepository-get-loaded-namespaces}
 @item @ref{g-irepository-get-n-infos}
 @item @ref{g-irepository-get-info}
+@item @ref{g-irepository-enumerate-versions}
 @item @ref{g-irepository-get-typelib-path}
 @item @ref{g-irepository-require}
 @item @ref{g-irepository-get-c-prefix}
@@ -110,6 +111,18 @@ procedure.  See @code{g-irepository-get-n-infos} to find the maximum number
 of entries.
 
 @var{index} is a 0-based offset into @var{namespace} for entry.
+@end deffn
+
+
+@anchor{g-irepository-enumerate-versions}
+@deffn Procedure g-irepository-enumerate-versions namespace @
+       [#:repository #f]
+
+Returns a (possibly empty) list.
+
+Obtains and returns an unordered (possibly empty) list of versions
+(either currently loaded or available) for @var{namespace} in
+@var{repository}.
 @end deffn
 
 

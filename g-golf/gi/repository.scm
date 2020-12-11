@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016
+;;;; Copyright (C) 2016, 2020
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -36,6 +36,7 @@
 	    g-irepository-get-loaded-namespaces
 	    g-irepository-get-n-infos
 	    g-irepository-get-info
+            g-irepository-enumerate-versions
 	    g-irepository-get-typelib-path
 	    g-irepository-require
 	    g-irepository-get-c-prefix
@@ -72,6 +73,13 @@
   (g_irepository_get_info repository
 			  (string->pointer namespace)
 			  index))
+
+(define* (g-irepository-enumerate-versions namespace
+                                           #:key (repository #f))
+  (map pointer->string
+    (gi->scm (g_irepository_enumerate_versions (scm->gi repository 'pointer)
+                                               (string->pointer namespace))
+             'glist)))
 
 (define* (g-irepository-get-typelib-path namespace
                                          #:key (repository %null-pointer))
@@ -154,6 +162,12 @@
                       (dynamic-func "g_irepository_get_info"
 				    %libgirepository)
                       (list '* '* int)))
+
+(define g_irepository_enumerate_versions
+  (pointer->procedure '*
+                      (dynamic-func "g_irepository_enumerate_versions"
+				    %libgirepository)
+                      (list '* '*)))
 
 (define g_irepository_get_typelib_path
   (pointer->procedure '*
