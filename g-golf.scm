@@ -223,7 +223,9 @@
 (gi-import-by-name "GObject" "ParamSpec"
                    #:with-methods? #f #:force? #t)
 
+#!
 (gi-import-by-name "Gdk" "Event" #:with-methods? #f)
 (gi-import-by-name "Gdk" "ModifierType")
 (gi-import-by-name "Gdk" "CrossingMode")
 (gi-import-by-name "Gdk" "NotifyType")
+!#
