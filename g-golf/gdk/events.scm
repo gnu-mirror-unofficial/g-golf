@@ -63,8 +63,8 @@
             gdk-event-get-window
             gdk-event-get-event-type
             ;; from libg-golf
-            gdk-event-get-changed-mask
-            gdk-event-get-new-window-state
+            ;; gdk-event-get-changed-mask
+            ;; gdk-event-get-new-window-state
 
             %gdk-event-type
             %gdk-window-state))
@@ -142,10 +142,10 @@
 (define-method (!type (self <gdk-event>))
   (gdk-event-get-event-type (!event self)))
 
-(define-method (!changed-mask (self <gdk-event>))
+#;(define-method (!changed-mask (self <gdk-event>))
   (gdk-event-get-changed-mask (!event self)))
 
-(define-method (!new-window-state (self <gdk-event>))
+#;(define-method (!new-window-state (self <gdk-event>))
   (gdk-event-get-new-window-state (!event self)))
 
 
@@ -222,7 +222,7 @@
 
 ;; From libg-golf
 
-(define (gdk-event-get-changed-mask event)
+#;(define (gdk-event-get-changed-mask event)
   (let ((changed-mask (gdk_event_get_changed_mask event)))
     (case changed-mask
       ((0)
@@ -230,7 +230,7 @@
       (else
        (gi-integer->gflags %gdk-window-state changed-mask)))))
 
-(define (gdk-event-get-new-window-state event)
+#;(define (gdk-event-get-new-window-state event)
   (let ((new-window-state (gdk_event_get_new_window_state event)))
     (case new-window-state
       ((0)
@@ -397,7 +397,7 @@
                         (left-resizable . 65536)))))
 
     (set! %gdk-event-type gdk-event-type)
-    (gi-cache-set! 'enum 'gdk-event-type gdk-event-type)
+    #;(gi-cache-set! 'enum 'gdk-event-type gdk-event-type)
 
     (set! %gdk-window-state gdk-window-state)
-    (gi-cache-set! 'flag 'gdk-window-state gdk-window-state)))
+    #;(gi-cache-set! 'flag 'gdk-window-state gdk-window-state)))

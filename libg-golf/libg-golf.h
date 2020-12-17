@@ -80,11 +80,15 @@ g_closure_ref_count (GClosure *closure);
  *
 */
 
+/*
+
 GdkWindowState
 gdk_event_get_changed_mask (GdkEvent *event);
 
 GdkWindowState
 gdk_event_get_new_window_state (GdkEvent *event);
+
+*/
 
 
 /*

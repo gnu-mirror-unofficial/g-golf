@@ -48,8 +48,8 @@
             g_closure_ref_count
 
             ;; Gdk
-            gdk_event_get_changed_mask
-            gdk_event_get_new_window_state
+            ;; gdk_event_get_changed_mask
+            ;; gdk_event_get_new_window_state
 
             ;; Test suite
             test_suite_n_string_ptr
@@ -151,13 +151,13 @@ later.
 ;;; Gdk
 ;;;
 
-(define gdk_event_get_changed_mask
+#;(define gdk_event_get_changed_mask
   (pointer->procedure int
                       (dynamic-func "gdk_event_get_changed_mask"
                                     %libg-golf)
                       (list '*)))
 
-(define gdk_event_get_new_window_state
+#;(define gdk_event_get_new_window_state
   (pointer->procedure int
                       (dynamic-func "gdk_event_get_new_window_state"
                                     %libg-golf)

@@ -32,7 +32,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
+/* #include <gtk/gtk.h> */
 /* #include <girepository.h> */
 
 /*
@@ -142,6 +142,8 @@ g_closure_ref_count (GClosure *closure)
  *
 */
 
+/*
+
 GdkWindowState
 gdk_event_get_changed_mask (GdkEvent *event)
 {
@@ -159,6 +161,8 @@ gdk_event_get_new_window_state (GdkEvent *event)
 
   return (((GdkEventWindowState *) event)->new_window_state);
 }
+
+*/
 
 
 /*
