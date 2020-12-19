@@ -42,7 +42,6 @@
   #:use-module (g-golf support flag)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gi cache)
-  #:use-module (g-golf gdk key-values)
 
   #:duplicates (merge-generics
 		replace
@@ -50,27 +49,12 @@
 		warn
 		last)
 
-  #:export (<gdk-event>
-
-            gdk-event-get-button
-            gdk-event-get-click-count
-            gdk-event-get-coords
-            gdk-event-get-keycode
-            gdk-event-get-keyval
-            gdk-event-get-root-coords
-            gdk-event-get-state
-            gdk-event-get-time
-            gdk-event-get-window
-            gdk-event-get-event-type
-            ;; from libg-golf
-            ;; gdk-event-get-changed-mask
-            ;; gdk-event-get-new-window-state
-
-            %gdk-event-type
-            %gdk-window-state))
+  ;; #:export (<gdk-event>)
+  )
 
 
-(g-export !event
+
+#;(g-export !event
           !button
           !click-count
           !coords
@@ -90,8 +74,10 @@
           !new-window-state)
 
 
-(define-class <gdk-event> ()
+#;(define-class <gdk-event> ()
   (event #:accessor !event #:init-keyword #:event))
+
+#!
 
 (define-method (!button (self <gdk-event>))
   (gdk-event-get-button (!event self)))
@@ -142,6 +128,8 @@
 (define-method (!type (self <gdk-event>))
   (gdk-event-get-event-type (!event self)))
 
+!#
+
 #;(define-method (!changed-mask (self <gdk-event>))
   (gdk-event-get-changed-mask (!event self)))
 
@@ -152,6 +140,8 @@
 ;;;
 ;;; Gdk Low level API
 ;;;
+
+#!
 
 (define (gdk-event-get-button event)
   (let ((bv (make-bytevector (sizeof unsigned-int) 0)))
@@ -220,6 +210,8 @@
   (enum->symbol %gdk-event-type
                 (gdk_event_get_event_type event)))
 
+!#
+
 ;; From libg-golf
 
 #;(define (gdk-event-get-changed-mask event)
@@ -242,6 +234,8 @@
 ;;;
 ;;; Gdk Bindings
 ;;;
+
+#!
 
 (define gdk_event_get_button
   (pointer->procedure int
@@ -312,11 +306,13 @@
 				    %libgdk)
                       (list '*)))	;; event
 
+!#
 
 ;;;
 ;;; Types and Values
 ;;;
 
+#!
 (define %gdk-event-type #f)
 (define %gdk-window-state #f)
 
@@ -401,3 +397,5 @@
 
     (set! %gdk-window-state gdk-window-state)
     #;(gi-cache-set! 'flag 'gdk-window-state gdk-window-state)))
+
+!#

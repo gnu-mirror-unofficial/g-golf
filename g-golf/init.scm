@@ -31,7 +31,7 @@
 
   #:export (%libgirepository
 	    %libglib
-            %libgdk
+            ;; %libgdk
 	    %libgobject
             %libg-golf
             %use-par-map))
@@ -39,7 +39,7 @@
 
 (define %libgirepository (dynamic-link "libgirepository-1.0"))
 (define %libglib (dynamic-link "libglib-2.0"))
-(define %libgdk (dynamic-link "libgdk-3"))
+;; (define %libgdk (dynamic-link "libgdk-3"))
 (define %libgobject (dynamic-link "libgobject-2.0"))
 
 (define %libg-golf (dynamic-link "libg-golf"))

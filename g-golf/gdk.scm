@@ -41,7 +41,7 @@
   #:use-module (g-golf init)
   #:use-module (g-golf gdk events)
   ;; #:use-module (g-golf gdk event-structures)
-  #:use-module (g-golf gdk key-values)
+  ;; #:use-module (g-golf gdk key-values)
 
   #:duplicates (merge-generics
 		replace
@@ -64,4 +64,5 @@
 			      (g-golf init)
 			      (g-golf gdk events)
                               ;; (g-golf gdk event-structures)
-                              (g-golf gdk key-values)))
+                              ;; (g-golf gdk key-values)
+                              ))
