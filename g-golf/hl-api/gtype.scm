@@ -40,9 +40,9 @@
   #:use-module (ice-9 format)
   #:use-module (oop goops)
   #:use-module (g-golf support)
-  #:use-module (g-golf gi)
   #:use-module (g-golf glib)
   #:use-module (g-golf gobject)
+  #:use-module (g-golf gi)
 
   #:duplicates (merge-generics
 		replace
