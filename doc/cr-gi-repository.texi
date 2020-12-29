@@ -140,7 +140,8 @@ in a shared library, it returns the special string "<builtin>".
 
 
 @anchor{g-irepository-require}
-@deffn Procedure g-irepository-require namespace #:key version repository
+@deffn Procedure g-irepository-require namespace [#:version #f] @
+       [#:repository #f]
 
 Returns a pointer a @code{GITypelib} structure, if the @code{Typelib}
 file for @var{namespace} exists. Otherwise, it raises an error.
