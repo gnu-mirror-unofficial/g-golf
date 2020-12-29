@@ -43,8 +43,6 @@ SOURCES = \
 	g-golf/support/bytevector.scm		\
 	g-golf/support.scm			\
 	g-golf/init.scm				\
-	g-golf/gdk/events.scm			\
-	g-golf/gdk.scm				\
 	g-golf/glib/mem-alloc.scm		\
 	g-golf/glib/main-event-loop.scm		\
 	g-golf/glib/io-channels.scm		\
@@ -84,6 +82,8 @@ SOURCES = \
 	g-golf/gi/type-info.scm			\
 	g-golf/gi/typelib.scm			\
 	g-golf/gi.scm				\
+	g-golf/gdk/events.scm			\
+	g-golf/gdk.scm				\
 	g-golf/override/override.scm		\
 	g-golf/override/gtk.scm			\
 	g-golf/override.scm			\
