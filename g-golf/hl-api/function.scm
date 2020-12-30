@@ -1109,6 +1109,9 @@ method with its 'old' definition.
                       gi-argument
                       function)))	;; the type-desc instance 'owner'
 
+(define %gdk-event-class
+  (@ (g-golf gdk events) gdk-event-class))
+
 (define* (gi-argument->scm type-tag type-desc gi-argument funarg
                            #:key (forced-type #f))
   ;; forced-type is only used for 'inout and 'out arguments, in which
@@ -1140,6 +1143,17 @@ method with its 'old' definition.
                         (!is-semi-opaque? gi-type))
                     foreign
                     (parse-c-struct foreign (!scm-types gi-type)))))))
+          ((union)
+           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+             (case name
+               ((gdk-event)
+                 ;; This means that we are in gdk3/gtk3 environment,
+                 ;; where the <gdk-event> class and accessors are (must
+                 ;; be) defined dynamically - hence (gdk-event-class)
+                (and foreign
+                     (make (%gdk-event-class) #:event foreign)))
+               (else
+                foreign))))
           ((object)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
              (case name
@@ -1285,7 +1299,11 @@ method with its 'old' definition.
                         g-union-info-get-n-methods
                         g-union-info-get-method
                         #:with-methods? with-methods?
-                        #:force? force?))
+                        #:force? force?)
+  (when (and (string=? (g-base-info-get-namespace info) "Gdk")
+             (string=? (g-base-info-get-name info) "Event")
+             (string=? (g-irepository-get-version "Gdk") "3.0"))
+    (gdk-event-class-redefine)))
 
 (define* (gi-import-registered info
                                type
@@ -1385,3 +1403,75 @@ method with its 'old' definition.
         #:may-be-null? #f
         #:arg-pos 0 ;; always the first argument
         #:gi-argument-field 'v-pointer))))
+
+
+;;;
+;;; Gdk (gdk-event-class-redefine)
+;;;
+
+(define (gdk-event-class-redefine)
+  (let* ((module (resolve-module '(g-golf hl-api gobject)))
+         (public-i (module-public-interface module))
+         (c-name '<gdk-event>)
+         (c-inst (make-class `(,<object>)
+                             (cons (%gdk-event-slot module public-i)
+                                   ;; the accessors
+                                   (gdk-event-virtual-slots module public-i))
+                             #:name c-name)))
+    (if (module-bound? module c-name)
+        (class-redefinition (module-ref module c-name) c-inst)
+        (begin
+          (module-define! module c-name c-inst)
+          (module-add! public-i c-name
+                       (module-variable module c-name))))
+    c-inst))
+
+(define %gdk-event-slot
+  (@@ (g-golf gdk events) gdk-event-slot))
+
+(define (gdk-event-virtual-slots module public-i)
+  (map (lambda (getter)
+         (gdk-event-virtual-slot getter module public-i))
+    (gdk-event-getters)))
+
+(define (gdk-event-virtual-slot getter module public-i)
+  (let* ((f-name (g-name->name getter))
+         ;; 14 is the length of "gdk_event_get_"
+         (slot-name (g-name->name (substring getter 14)))
+         (a-name (symbol-append '! slot-name))
+         (a-inst (if (module-variable module a-name)
+                     (module-ref module a-name)
+                     (let ((a-inst (make-accessor a-name)))
+                       (module-define! module a-name a-inst)
+                       (module-add! public-i a-name
+                                    (module-variable module a-name))
+                       a-inst)))
+         (f-inst (gi-cache-ref 'function f-name))
+         (procedure (if (!override? f-inst)
+                        (!o-func f-inst)
+                        (!i-func f-inst))))
+    (make <slot>
+      #:name slot-name
+      #:accessor a-inst
+      #:allocation #:virtual
+      #:slot-ref (lambda (obj)
+                   (dimfi obj slot-name (slot-ref obj 'event))
+                   (procedure (slot-ref obj 'event)))
+      #:slot-set! (lambda (obj val) (values)))))
+
+(define (gdk-event-getters)
+  (let* ((info (g-irepository-find-by-name "Gdk" "Event"))
+         (n-method (g-union-info-get-n-methods info)))
+    (let loop ((i 0)
+               (results '()))
+      (if (= i n-method)
+          (reverse! results)
+          (let* ((m-info (g-union-info-get-method info i))
+                 (name (g-function-info-get-symbol m-info)))
+            (loop (+ i 1)
+                  (if (gdk-event-getter? name)
+                      (cons name results)
+                      results)))))))
+
+(define (gdk-event-getter? name)
+  (string-contains name "gdk_event_get_"))

@@ -38,7 +38,6 @@
   #:use-module (g-golf support struct)
   #:use-module (g-golf support union)
   #:use-module (g-golf support utils)
-  #:use-module (g-golf gdk events)
   #:use-module (g-golf gi cache)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gobject type-info)
@@ -257,12 +256,18 @@
     (or (gi-cache-ref 'boxed name)
         (error "No such boxed type: " name))))
 
+(define %gdk-event-class
+  (@ (g-golf gdk events) gdk-event-class))
+
 (define (g-value-get-boxed g-value)
   (let ((gi-boxed (g-value-get-gi-boxed g-value))
         (value (g_value_get_boxed g-value)))
     (cond ((is-a? gi-boxed <gi-union>)
            (if (eq? (!name gi-boxed) 'gdk-event)
-               (make <gdk-event> #:event value)
+               ;; This means that we are in gdk3/gtk3 environment, where
+               ;; the <gdk-event> class and accessors are (must be)
+               ;; defined dynamically - hence (gdk-event-class)
+               (make (%gdk-event-class) #:event value)
                value))
           ((or (!is-opaque? gi-boxed)
                (!is-semi-opaque? gi-boxed))
