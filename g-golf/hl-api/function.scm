@@ -879,6 +879,8 @@ method with its 'old' definition.
                                                 (else
                                                  (make-c-struct (!scm-types gi-type)
                                                                 arg)))))))
+                    ((union)
+                     (gi-argument-set! gi-argument-in 'v-pointer arg))
                     ((object
                       interface)
                      (gi-argument-set! gi-argument-in 'v-pointer
