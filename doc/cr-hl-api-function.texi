@@ -448,7 +448,7 @@ Now, let's add this procedure name to @var{%gi-strip-boolean-result}:
 
 @lisp
 (push! 'clutter-color-from-string
-       %gi-function-call-strip-boolean-result)
+       %gi-strip-boolean-result)
 $6 = (clutter-color-from-string)
 
 (clutter-color-from-string "Blue")
