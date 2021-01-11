@@ -31,6 +31,7 @@
   #:use-module (ice-9 receive)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-4)
   #:use-module (oop goops)
   #:use-module (g-golf support)
   #:use-module (g-golf gi)
@@ -122,7 +123,8 @@
           %gi-import-namespace-exceptions
           string=?))
 
-(define %gi-strip-boolean-result '())
+(define %gi-strip-boolean-result
+  '())
 
 (define (%i-func f-inst)
   (lambda ( . args)
@@ -1041,10 +1043,11 @@ method with its 'old' definition.
                         (match type-desc
                           ((type name gi-type g-type confirmed?)
                            (case type
-                             ((enum)
-                              (gi-argument-set! gi-argument-out 'v-int -1))
-                             ((flags)
-                              (gi-argument-set! gi-argument-out 'v-int -1))
+                             ((enum
+                               flags)
+                              (let ((bv (make-bytevector (sizeof int) 0)))
+                                (gi-argument-set! gi-argument-out 'v-pointer
+                                                  (bytevector->pointer bv))))
                              ((struct)
                               (case name
                                 ((g-value)
@@ -1064,8 +1067,12 @@ method with its 'old' definition.
                                                            (!init-vals gi-type))))))))
                              ((object
                                interface)
-                              (gi-argument-set! gi-argument-out 'v-pointer
-                                                %null-pointer))))))
+                              (if is-pointer?
+                                  (let ((bv (make-bytevector (sizeof '*) 0)))
+                                    (gi-argument-set! gi-argument-out 'v-pointer
+                                                      (bytevector->pointer bv)))
+                                  (gi-argument-set! gi-argument-out 'v-pointer
+                                                    %null-pointer)))))))
                        ((array)
                         (match type-desc
                           ((array fixed-size is-zero-terminated param-n param-tag)
@@ -1082,12 +1089,21 @@ method with its 'old' definition.
                          filename)
                         ;; not sure, but this shouldn't arm.
                         (gi-argument-set! gi-argument-out 'v-pointer %null-pointer))
-                       ((int32)
-                        (gi-argument-set! gi-argument-out 'v-pointer
-                                          (bytevector->pointer
-                                           (make-s32vector 1 0))))
+                       ((boolean
+                         int8 uint8
+                         int16 uint16
+                         int32 uint32
+                         int64 uint64
+                         float double
+                         gtype)
+                        (let* ((field (gi-type-tag->field type-tag))
+                               (type (assq-ref %gi-argument-desc field))
+                               (bv (make-bytevector (sizeof type) 0)))
+                          (gi-argument-set! gi-argument-out 'v-pointer
+                                            (bytevector->pointer bv))))
                        (else
                         ;; not sure, but this shouldn't arm.
+                        (warning "Unimplemented type" (symbol->string type-tag))
                         (gi-argument-set! gi-argument-out 'v-ulong 0))))))
             (loop (+ i 1)))))))
 
@@ -1095,12 +1111,14 @@ method with its 'old' definition.
   (let ((type-tag (!type-tag argument))
         (type-desc (!type-desc argument))
         (gi-argument (!gi-argument-out argument))
-        (forced-type (!forced-type argument)))
+        (forced-type (!forced-type argument))
+        (is-pointer? (!is-pointer? argument)))
     (gi-argument->scm type-tag
                       type-desc
                       gi-argument
                       argument		;; the type-desc instance 'owner'
-                      #:forced-type forced-type)))
+                      #:forced-type forced-type
+                      #:is-pointer? is-pointer?)))
 
 (define (return-value->scm function)
   (let ((type-tag (!return-type function))
@@ -1115,7 +1133,7 @@ method with its 'old' definition.
   (@ (g-golf gdk events) gdk-event-class))
 
 (define* (gi-argument->scm type-tag type-desc gi-argument funarg
-                           #:key (forced-type #f))
+                           #:key (forced-type #f) (is-pointer? #f))
   ;; forced-type is only used for 'inout and 'out arguments, in which
   ;; case it is 'pointer - see 'simple' types below.
 
@@ -1129,11 +1147,23 @@ method with its 'old' definition.
        ((type name gi-type g-type confirmed?)
         (case type
           ((enum)
-           (let ((val (gi-argument-ref gi-argument 'v-int)))
+           (let ((val (case forced-type
+                        ((pointer)
+                         (let* ((foreign (gi-argument-ref gi-argument 'v-pointer))
+                                (bv (pointer->bytevector foreign (sizeof int))))
+                           (s32vector-ref bv 0)))
+                        (else
+                         (gi-argument-ref gi-argument 'v-int)))))
              (or (enum->symbol gi-type val)
                  (error "No such " name " value: " val))))
           ((flags)
-           (let ((val (gi-argument-ref gi-argument 'v-int)))
+           (let ((val (case forced-type
+                        ((pointer)
+                         (let* ((foreign (gi-argument-ref gi-argument 'v-pointer))
+                                (bv (pointer->bytevector foreign (sizeof int))))
+                           (s32vector-ref bv 0)))
+                        (else
+                         (gi-argument-ref gi-argument 'v-int)))))
              (gi-integer->gflags gi-type val)))
           ((struct)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
@@ -1157,13 +1187,20 @@ method with its 'old' definition.
                (else
                 foreign))))
           ((object)
-           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+           (let* ((gi-arg-val (gi-argument-ref gi-argument 'v-pointer))
+                  (foreign (if is-pointer?
+                               (dereference-pointer gi-arg-val)
+                               gi-arg-val)))
              (case name
                ((<g-param>) foreign)
                (else
                 (and foreign
                      ;; See the comment in registered-type->gi-type which
                      ;; describes the role of confirmed? in the pattern.
+                     (let* ((g-name (g-object-type-name foreign))
+                            (c-name (g-name->class-name g-name)))
+                       (dimfi g-name c-name)
+                       (dimfi type-desc))
                      (if confirmed?
                          (make gi-type #:g-inst foreign)
                          (receive (class name g-type)
@@ -1232,9 +1269,23 @@ method with its 'old' definition.
         (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
           (and foreign
                (case type-tag
-                 ((int32)
-                  (let ((s32 (pointer->bytevector foreign (sizeof int))))
-                    (s32vector-ref s32 0)))
+                 ((boolean
+                   int8 uint8
+                   int16 uint16
+                   int32 uint32
+                   int64 uint64
+                   float double
+                   gtype)
+                  (let* ((field (gi-type-tag->field type-tag))
+                         (type (assq-ref %gi-argument-desc field))
+                         (bv (pointer->bytevector foreign (sizeof type)))
+                         (acc (gi-type-tag->bv-acc type-tag))
+                         (val (acc bv 0)))
+                    (case type-tag
+                      ((boolean)
+                       (gi->scm val 'boolean))
+                      (else
+                       val))))
                  (else
                   (warning "Unimplemeted (pointer to) type-tag: " type-tag))))))
        (else
@@ -1294,6 +1345,9 @@ method with its 'old' definition.
                         #:with-methods? with-methods?
                         #:force? force?))
 
+(define %gi-import-by-name
+  (@ (g-golf hl-api import) gi-import-by-name))
+
 (define* (gi-import-union info #:key (with-methods? #t) (force? #f))
   (gi-import-registered info
                         'union
@@ -1305,7 +1359,27 @@ method with its 'old' definition.
   (when (and (string=? (g-base-info-get-namespace info) "Gdk")
              (string=? (g-base-info-get-name info) "Event")
              (string=? (g-irepository-get-version "Gdk") "3.0"))
-    (gdk-event-class-redefine)))
+    (for-each (lambda (item)
+                (%gi-import-by-name "Gdk" item #:version "3.0"))
+        '("ModifierType"
+          "CrossingMode"
+          "NotifyType"
+          "keyval_name"))
+    (gdk-event-class-redefine)
+    (set! %gi-strip-boolean-result
+          (append '(gdk-event-get-axis
+                    gdk-event-get-button
+                    gdk-event-get-click-count
+                    gdk-event-get-coords
+                    gdk-event-get-keycode
+                    gdk-event-get-keyval
+                    gdk-event-get-root-coords
+                    gdk-event-get-scroll-direction
+                    gdk-event-get-scroll-deltas
+                    gdk-event-get-state
+                    gdk-event-get-angle
+                    gdk-event-get-distance)
+                  %gi-strip-boolean-result))))
 
 (define* (gi-import-registered info
                                type
@@ -1432,9 +1506,10 @@ method with its 'old' definition.
   (@@ (g-golf gdk events) gdk-event-slot))
 
 (define (gdk-event-virtual-slots module public-i)
-  (map (lambda (getter)
-         (gdk-event-virtual-slot getter module public-i))
-    (gdk-event-getters)))
+  (append (map (lambda (getter)
+                 (gdk-event-virtual-slot getter module public-i))
+            (gdk-event-getters))
+          (gdk-event-additional-virtual-slots module public-i)))
 
 (define (gdk-event-virtual-slot getter module public-i)
   (let* ((f-name (g-name->name getter))
@@ -1457,7 +1532,6 @@ method with its 'old' definition.
       #:accessor a-inst
       #:allocation #:virtual
       #:slot-ref (lambda (obj)
-                   (dimfi obj slot-name (slot-ref obj 'event))
                    (procedure (slot-ref obj 'event)))
       #:slot-set! (lambda (obj val) (values)))))
 
@@ -1477,3 +1551,33 @@ method with its 'old' definition.
 
 (define (gdk-event-getter? name)
   (string-contains name "gdk_event_get_"))
+
+(define %gdk-event-additional-virtual-slots
+  `((keyname ,(lambda (obj)
+                (let* ((module (resolve-module '(g-golf hl-api function)))
+                       (keyname (module-ref module 'gdk-keyval-name))
+                       (keyval (module-ref module 'gdk-event-get-keyval)))
+                  (keyname (keyval (slot-ref obj 'event))))))))
+
+(define (gdk-event-additional-virtual-slots module public-i)
+  (map (lambda (slot-spec)
+         (gdk-event-additional-virtual-slot slot-spec module public-i))
+    %gdk-event-additional-virtual-slots))
+
+(define (gdk-event-additional-virtual-slot slot-spec module public-i)
+  (match slot-spec
+    ((slot-name slot-ref-proc)
+     (let* ((a-name (symbol-append '! slot-name))
+            (a-inst (if (module-variable module a-name)
+                        (module-ref module a-name)
+                        (let ((a-inst (make-accessor a-name)))
+                          (module-define! module a-name a-inst)
+                          (module-add! public-i a-name
+                                       (module-variable module a-name))
+                          a-inst))))
+       (make <slot>
+         #:name slot-name
+         #:accessor a-inst
+         #:allocation #:virtual
+         #:slot-ref slot-ref-proc
+         #:slot-set! (lambda (obj val) (values)))))))
