@@ -31,6 +31,7 @@
   #:use-module (ice-9 receive)
   #:use-module (system foreign)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-4)
   #:use-module (oop goops)
   #:use-module (g-golf support enum)
   #:use-module (g-golf support union)
@@ -51,7 +52,8 @@
             make-gi-argument
             gi-argument-ref
             gi-argument-set!
-            gi-type-tag->field))
+            gi-type-tag->field
+            gi-type-tag->bv-acc))
 
 
 ;;;
@@ -197,5 +199,23 @@ add as a comment)."
       error)
      'v-pointer)
     ((unichar) 'v-uint32)
+    (else
+     (error "No such GI type tag: " type-tag))))
+
+(define (gi-type-tag->bv-acc type-tag)
+  "Returns the srfi-4 bytevector accessor for type-tag."
+  (case type-tag
+    ((int8) s8vector-ref)
+    ((uint8) u8vector-ref)
+    ((int16) s16vector-ref)
+    ((uint16) u16vector-ref)
+    ((boolean
+      int32) s32vector-ref)
+    ((uint32) u32vector-ref)
+    ((int64) s64vector-ref)
+    ((uint64
+      gtype) u64vector-ref)
+    ((float) f32vector-ref)
+    ((double) f64vector-ref)
     (else
      (error "No such GI type tag: " type-tag))))
