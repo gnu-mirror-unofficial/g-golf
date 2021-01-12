@@ -1195,19 +1195,18 @@ method with its 'old' definition.
                ((<g-param>) foreign)
                (else
                 (and foreign
-                     ;; See the comment in registered-type->gi-type which
-                     ;; describes the role of confirmed? in the pattern.
-                     (let* ((g-name (g-object-type-name foreign))
-                            (c-name (g-name->class-name g-name)))
-                       (dimfi g-name c-name)
-                       (dimfi type-desc))
-                     (if confirmed?
-                         (make gi-type #:g-inst foreign)
-                         (receive (class name g-type)
-                             (g-object-find-class foreign)
-                           (set! (!type-desc funarg)
-                                 (list 'object name class g-type #t))
-                           (make class #:g-inst foreign))))))))
+                     (receive (class name g-type)
+                         (g-object-find-class foreign)
+                       ;; We used to update the funarg 'type-desc
+                       ;; argument when it wasn't confirmed?, but that
+                       ;; actually won't work anymore, see below [1] for
+                       ;; a complete description. However, I'll keep the
+                       ;; code, commented, for now, until I clear all
+                       ;; occurrences of the confirmed? pattern entries.
+                       #;(unless confirmed?
+                         (set! (!type-desc funarg)
+                               (list 'object name class g-type #t)))
+                       (make class #:g-inst foreign)))))))
           ((interface)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
              (and foreign
@@ -1232,19 +1231,13 @@ method with its 'old' definition.
              ((type name gi-type g-type confirmed?)
               (case type
                 ((object)
-                 (if confirmed?
-                     (map (lambda (item)
-                            (make gi-type #:g-inst item))
-                       lst)
-                     (match lst
-                       ((x . rest)
-                        (receive (class name g-type)
-                            (g-object-find-class x)
-                          (set! (!type-desc funarg)
-                                (list 'object name class g-type #t))
-                          (map (lambda (item)
-                                 (make class #:g-inst item))
-                            lst))))))
+                 (match lst
+                   ((x . rest)
+                    (receive (class name g-type)
+                        (g-object-find-class x)
+                      (map (lambda (item)
+                             (make class #:g-inst item))
+                        lst)))))
                 (else
                  (warning "Unprocessed g-list/g-slist"
                           (format #f "~S" type-desc))
@@ -1292,13 +1285,47 @@ method with its 'old' definition.
         (gi-argument-ref gi-argument
                          (gi-type-tag->field type-tag)))))))
 
+;; [1]
+
+;; Because g-object-find-class has been updated to define (sub)classes,
+;; when that is necessary, that (a) are not defined in the (their
+;; parent) namespace and (b) may differ from one call to another.
+
+;; For example, a call to webkit-web-view-get-tls-info may return, for
+;; it second 'out argument, a <g-tls-certificate-gnutls> instance, but
+;; (a) "GTlsCertificateGnutls" is a runtime class - that is, undefined
+;; in its corresponding namespace - subclass of "GTlsCertificate" and
+;; (b) a subsequent call to webkit-web-view-get-tls-info could very well
+;; return another certificate subclass type.
+
 (define (g-object-find-class foreign)
   (let* ((module (resolve-module '(g-golf hl-api gobject)))
          (g-type (g-object-type foreign))
          (g-name (g-object-type-name foreign))
          (name (g-name->class-name g-name))
-         (class (module-ref module name)))
-    (values class name g-type)))
+         (class-var (module-variable module name))
+         (class (and class-var (module-ref module name))))
+    (if class
+        (values class name g-type)
+        (let ((class (g-object-define-class g-type g-name name module)))
+          (values class name g-type)))))
+
+(define (g-object-define-class g-type g-name c-name module)
+  (let* ((parent (g-type-parent g-type))
+         (p-g-name (g-type-name parent))
+         (p-name (g-name->class-name p-g-name))
+         (p-class-var (module-variable module p-name))
+         (p-class (and p-class-var (module-ref module p-name))))
+    (if p-class
+        (let ((public-i (module-public-interface module))
+              (c-inst (make-class `(,p-class)
+                                  '()
+                                  #:name c-name)))
+          (module-define! module c-name c-inst)
+          (module-add! public-i c-name
+                       (module-variable module c-name))
+          c-inst)
+        (error "Undefined (parent) class: " p-name))))
 
 
 ;;;
