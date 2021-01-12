@@ -45,6 +45,7 @@
             symbol->g-type
 
             g-type-name
+            g-type-parent
             g-type-is-a
             g-type-class-ref
             g-type-class-peek
@@ -88,6 +89,9 @@
 (define (g-type-name g-type)
   (gi->scm (g_type_name g-type) 'string))
 
+(define (g-type-parent g-type)
+  (g_type_parent g-type))
+
 (define (g-type-is-a g-type is-a-g-type)
   (gi->scm (g_type_is_a g-type is-a-g-type)
            'boolean))
@@ -116,7 +120,13 @@
   (pointer->procedure '*
                       (dynamic-func "g_type_name"
 				    %libgobject)
-                      (list int64)))
+                      (list unsigned-long)))
+
+(define g_type_parent
+  (pointer->procedure unsigned-long
+                      (dynamic-func "g_type_parent"
+				    %libgobject)
+                      (list unsigned-long)))
 
 (define g_type_is_a
   (pointer->procedure int
