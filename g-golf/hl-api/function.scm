@@ -171,7 +171,7 @@
              (return-value->scm f-inst)))))))
 
 (define (%o-func f-inst i-func)
-  (let* ((%import (@@ (g-golf hl-api import) gi-import-by-name))
+  (let* ((%gi-import-by-name (@ (g-golf hl-api import) gi-import-by-name))
          (namespace (!namespace f-inst))
          (n-name (string->symbol (string-downcase namespace)))
          (m-name `(g-golf override ,n-name))
@@ -186,7 +186,7 @@
         (for-each (lambda (prereq)
                     (match prereq
                       ((namespace name)
-                       (%import namespace name))))
+                       (%gi-import-by-name namespace name))))
             prereqs))
       (set! (!o-spec-pos f-inst) o-spec-pos)
       (primitive-eval o-proc))))
@@ -1372,9 +1372,6 @@ method with its 'old' definition.
                         #:with-methods? with-methods?
                         #:force? force?))
 
-(define %gi-import-by-name
-  (@ (g-golf hl-api import) gi-import-by-name))
-
 (define* (gi-import-union info #:key (with-methods? #t) (force? #f))
   (gi-import-registered info
                         'union
@@ -1386,12 +1383,13 @@ method with its 'old' definition.
   (when (and (string=? (g-base-info-get-namespace info) "Gdk")
              (string=? (g-base-info-get-name info) "Event")
              (string=? (g-irepository-get-version "Gdk") "3.0"))
-    (for-each (lambda (item)
-                (%gi-import-by-name "Gdk" item #:version "3.0"))
-        '("ModifierType"
-          "CrossingMode"
-          "NotifyType"
-          "keyval_name"))
+    (let ((%gi-import-by-name (@ (g-golf hl-api import) gi-import-by-name)))
+      (for-each (lambda (item)
+                  (%gi-import-by-name "Gdk" item #:version "3.0"))
+          '("ModifierType"
+            "CrossingMode"
+            "NotifyType"
+            "keyval_name"))
     (gdk-event-class-redefine)
     (set! %gi-strip-boolean-result
           (append '(gdk-event-get-axis
@@ -1406,7 +1404,7 @@ method with its 'old' definition.
                     gdk-event-get-state
                     gdk-event-get-angle
                     gdk-event-get-distance)
-                  %gi-strip-boolean-result))))
+                  %gi-strip-boolean-result)))))
 
 (define* (gi-import-registered info
                                type
