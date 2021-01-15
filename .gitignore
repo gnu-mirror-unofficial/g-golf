@@ -42,6 +42,6 @@ libg-golf/libg_golf_la-libg-golf.lo
 *.vr
 *.vrs
 *.html
-*.info
+*.info*
 *.pdf
 *.go

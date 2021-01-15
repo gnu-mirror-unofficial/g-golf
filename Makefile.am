@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 - 2020
+#### Copyright (C) 2016 - 2021
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf
@@ -207,7 +207,7 @@ distclean-local:
 	rm -f libg-golf/libg-golf.so
 	rm -f libg-golf/libg_golf_la-libg-golf.lo
 	rm -rf doc/g-golf
-	rm -f doc/*.info
+	rm -f doc/*.info*
 	rm -f doc/*.pdf
 	rm -f doc/*~
 	rm -f doc/*.aux doc/*.cp doc/*.cps doc/*.fn doc/*.fns doc/*.ky
