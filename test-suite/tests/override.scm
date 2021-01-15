@@ -39,7 +39,7 @@
 
 
 (for-each (lambda (item)
-            (gi-import-by-name "Gtk" item))
+            (gi-import-by-name "Gtk" item #:version "3.0"))
     '("HPaned"
       "VPaned"
       "ListStore"

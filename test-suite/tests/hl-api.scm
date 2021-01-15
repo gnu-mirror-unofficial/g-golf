@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2020
+;;;; Copyright (C) 2019 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -74,8 +74,8 @@
 
 
 (define-method (test-g-property-object (self <g-golf-test-hl-api>))
-  (gi-import-by-name "Gtk" "Window")
-  (gi-import-by-name "Gtk" "init")
+  (gi-import-by-name "Gtk" "Window" #:version "3.0")
+  (gi-import-by-name "Gtk" "init" #:version "3.0")
   (gtk-init 0 #f)
   (let ((window1 (make <gtk-window> #:type 'toplevel))
         (window2 (make <gtk-window> #:type 'toplevel)))
@@ -195,8 +195,8 @@
 ;;;
 
 (define-method (test-glist-gslist->scm (self <g-golf-test-hl-api>))
-  (gi-import-by-name "Gtk" "RadioMenuItem")
-  (gi-import-by-name "Gtk" "init")
+  (gi-import-by-name "Gtk" "RadioMenuItem" #:version "3.0")
+  (gi-import-by-name "Gtk" "init" #:version "3.0")
   (gtk-init 0 #f)
   (let ((item-1 (make <gtk-radio-menu-item>  #:label "Item 1"))
         (item-2 (make <gtk-radio-menu-item>  #:label "Item 2")))

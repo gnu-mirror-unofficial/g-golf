@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -69,7 +69,7 @@
   (assert-equal "gfloat" (g-type-name 56)))
 
 (define-method (test-g-type-class-* (self <g-golf-test-gobject>))
-  (let* ((container (gi-import-by-name "Gtk" "Container"))
+  (let* ((container (gi-import-by-name "Gtk" "Container" #:version "3.0"))
          (g-type (!g-type container))
          (g-class (assert (g-type-class-ref g-type))))
     (assert (g-type-class-peek g-type))
@@ -203,7 +203,7 @@
 ;;;
 
 (define-method (test-g-param-spec (self <g-golf-test-gobject>))
-  (gi-import-by-name "Gtk" "HPaned")
+  (gi-import-by-name "Gtk" "HPaned" #:version "3.0")
   (let* ((g-class (!g-class <gtk-paned>))
          (p-spec (assert
                   (gtk-container-class-find-child-property g-class
