@@ -57,9 +57,15 @@
                             #f
                             with-methods?))
          (module (resolve-module '(g-golf hl-api gobject)))
-         (r-info-cpl (reverse! (g-object-class-precedence-list info))))
+         (r-info-cpl (g-object-info-cpl info #:reversed-order? #t)))
     (unless (is-g-object-subclass? r-info-cpl)
-      ;; A 'fundamental type' class, not a GObject subclass.
+      ;; A 'fundamental type' class, not a GObject subclass. We need to
+      ;; create the parent 'of all', which is the first element of the
+      ;; reversed info-cpl list computed above. It could very well be
+      ;; that the class has no child, but we need to created it before
+      ;; to run the following code, which parse the r-info-cpl assuming
+      ;; the parent class always exists - what must exist, to be
+      ;; precise, is the corresponding goops class.
       (match r-info-cpl
         ((parent . rest)
          (g-object-import-with-supers parent '() module
@@ -67,7 +73,16 @@
                                       #:force? force?))))
     (let loop ((r-info-cpl r-info-cpl))
       (match r-info-cpl
-        ((item) item) ;; the g-object subclass for info
+        ((item)
+         ;; by the very definition of this procedure, (a) the above
+         ;; code, (b) the fact that <gobject> is part of g-golf and (c)
+         ;; and the definition of this loop, last item of the r-info-cpl
+         ;; - which could very well be the unique item - has been created,
+         ;; Here, we just retrieve it.
+         (match item
+           ((info namespace name)
+            (module-ref module
+                        (g-name->class-name name)))))
         ((parent child . rest)
          (match parent
            ((p-info p-namespace p-name)
@@ -84,10 +99,7 @@
                                                  module
                                                  #:with-methods? with-methods?
                                                  #:force? force?)))
-                  (loop (cons (if (null? rest)
-                                  child-class
-                                  child)
-                              rest))))))))))
+                  (loop (cons child rest))))))))))
 
 (define (is-g-object-subclass? info-cpl)
   (letrec ((is-g-object-info-cpl-item?
@@ -128,13 +140,13 @@
              #;(gi-import-object-signals info)
              c-inst))))))
 
-(define (g-object-class-precedence-list info)
+(define* (g-object-info-cpl info #:key (reversed-order? #f))
   (let  loop ((parent (g-object-info-get-parent info))
               (results (list (list info
                                    (g-base-info-get-namespace info)
                                    (g-object-info-get-type-name info)))))
     (if (not parent)
-        (reverse! results)
+        (if reversed-order? results (reverse! results))
         (loop (g-object-info-get-parent parent)
               (cons (list parent
                           (g-base-info-get-namespace parent)
