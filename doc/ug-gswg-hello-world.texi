@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -29,12 +29,12 @@ G-Golf:
              'clicked
              (lambda (b)
                (close window)))
-    (add window button)
-    (show-all window)))
+    (set-child window button)
+    (show window)))
 
 ;; Create a new application
 (let ((app (make <gtk-application>
-             #:application-id "com.example.GtkApplication")))
+             #:application-id "org.example.GtkApplication")))
   (connect app 'activate activate)
   ;; Run the application
   (run app 0 '()))

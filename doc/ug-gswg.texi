@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 G-Golf will let you import and work with any GObject-Introspectable
@@ -11,6 +11,12 @@ information about a GObject library.}. Since we need to make a choice
 among so many, to guide new comers and get them started with G-Golf,
 let's pick-up @uref{@value{UGTK}, Gtk}, and show how to
 @uref{@value{UGTK-WEB}, Create interfaces that users just love}.
+
+Please note that in the entire course of the G-Golf manual, unless
+otherwise specified, examples are based on and use @uref{@value{UGTK},
+Gtk-4.0}, @uref{@value{UGDK}, Gdk-4.0} and @uref{@value{UGSK}, Gsk-4.0}
+ - which is new and only available with Gtk-4.0.
+
 
 @menu
 * Hello World!:: Following the tradition, we will first look at the
