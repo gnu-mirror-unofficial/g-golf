@@ -46,7 +46,7 @@ readonly, memory-mappable database containing reflective information
 about a GObject library.
 @end indentedblock
 
-G-Golf high level API makes (imported) GOBject classes and methods
+G-Golf high level API makes (imported) GObject classes and methods
 available using GOOPS, the Guile Object Oriented System (@pxref{GOOPS,,,
 guile, The GNU Guile Reference Manual}).
 
