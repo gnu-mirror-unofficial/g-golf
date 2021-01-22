@@ -81,8 +81,8 @@ that it is safe to declare it imperceptible.
 It would be behond the scope of this introduction to describe the
 @code{<gtk-application> / g-application-run} instance creation and run
 mechanism in detail, for this, please consult and carefully read their
-respective entries in the @uref{@value{UGTK}, Gtk} and
-@uref{@value{UGIO}, Gio} reference manuals.
+respective entries in the @uref{@value{UGTK-APPLICATION}, Gtk} and
+@uref{@value{UGIO-G-APPLICATION}, Gio} reference manuals.
 
 The GNOME team also maintains a wiki called @uref{@value{UHDI}, HowDoI},
 and two pages are dedicated to this subject:
@@ -97,8 +97,8 @@ newcomers:
 
 @item
 as you can see, we do not need to call @code{gtk-init}, it is done
-automatically (more on this in the @uref{@value{UGTK}, Gtk} Reference
-Manual);@*@*
+automatically (more on this in the @uref{@value{UGTK-APPLICATION},
+GtkApplication} section of the Gtk Reference Manual);@*@*
 
 @item
 the @code{#:application-id} init-keyworkd is optional, although

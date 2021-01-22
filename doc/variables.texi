@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -95,6 +95,7 @@
 
 @set UGTK-WEB https://gtk.org/
 @set UGTK https://developer.gnome.org/gtk4/stable/
+@set UGTK-APPLICATION https://developer.gnome.org/gtk4/stable/GtkApplication.html
 
 @set UGDK https://developer.gnome.org/gdk4/stable/
 
@@ -106,7 +107,9 @@
 @c
 
 @set UGIO https://developer.gnome.org/gio/stable/index.html
+@set UGIO-G-APPLICATION https://developer.gnome.org/gio/stable/GApplication.html
 @set UGIO-G-APPLICATION-IS-VALID https://developer.gnome.org/gio/stable/GApplication.html#g-application-id-is-valid
+
 
 
 
