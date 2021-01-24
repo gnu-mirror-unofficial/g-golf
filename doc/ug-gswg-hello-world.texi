@@ -46,7 +46,7 @@ done so, please read the @ref{Configuring Guile for G-Golf},
 @emph{Merging Generics} and configure your repl as proposed, before to
 run the example.}, which as described in its comments, starts the
 application, resulting in opening a (small) window named @samp{Hello},
-with one button named @samp{Hello, World!}, that will close the widow
+with one button named @samp{Hello, World!}, that will close the window
 when clicked.
 
 @float Example, exa:exa1
@@ -142,4 +142,4 @@ g_application_id_is_valid (application_id)' failed}
 
 Yes we can! In the next section, as promised above, we will walk you
 through @ref{Selective Import}, used to reduce the time G-Golf has to
-spend importing the Typelib(s) that your application requires.
+spend importing the typelib(s) that your application requires.
