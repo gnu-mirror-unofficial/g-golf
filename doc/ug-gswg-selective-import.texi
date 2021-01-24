@@ -24,7 +24,7 @@ how it goes. All we need to do, is to substitute the @code{(gi-import
 With this change, everything else kept equal, if you (quit and) restart
 Guile, evaluate the updated @samp{Hello World!} example code, you will
 notice how the elapse time before the application window appears is now
-substantially reduced, compared to the version that inport the all
+substantially reduced, compared to the version that imports the all
 @code{Gtk} namespace. Substantially reduced but @dots{} not
 instantaneous: well, that is expected!
 
@@ -76,3 +76,15 @@ WebKitLoadEvent -> LoadEvent	@*
 @item @dots{}
 @end table
 @end indentedblock
+
+
+@ @ @sup{_} @strong{Cool, selective import, but what about scripting?}
+
+Right! The 'Hello World!' example we have presented so far can only be
+run interactively.
+
+In the next section, we will see how we may turn it - and any other
+example or application - so it can be run as a script.
+
+@c (@pxref{Running Guile Interactively,,, guile, The GNU Guile Reference
+@c Manual})
