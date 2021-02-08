@@ -37,13 +37,8 @@ Gtk-4.0}, @uref{@value{UGDK}, Gdk-4.0} and @uref{@value{UGSK}, Gsk-4.0}
 
 @include ug-gswg-hello-world.texi
 @include ug-gswg-selective-import.texi
+@include ug-gswg-scripting.texi
 
-
-@node Scripting
-@subsection Scripting
-
-@c (also @pxref{Guile Scripting,,, guile, The GNU Guile Reference
-@c Manual})
 
 @node Building Applications
 @subsection Building Applications

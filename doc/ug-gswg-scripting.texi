@@ -1,0 +1,265 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2020 - 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+@node Scripting
+@subsection Scripting
+
+A Guile script is simply a file of Scheme code with some @samp{extra
+information at the beginning} which tells the @abbr{OS, operating
+system} how to invoke Guile, and then tells Guile how to handle the
+Scheme code.
+
+
+@ @ @sup{_} @strong{Invoking Guile}
+
+
+It would be behond the scope of this manual to expose the numerous ways
+one can define and invoke a Guile script, for a complete description of
+the subject, @pxref{Guile Scripting,,, guile, The GNU Guile Reference
+Manual}.
+
+In G-Golf, both provided examples and in this manual, we use the so
+called @samp{for maximum portability} scripting technique, which is to
+invoke the shell to execute guile with specified command line arguments.
+
+Here is what we do:
+
+@lisp
+#! /bin/sh
+# -*- mode: scheme; coding: utf-8 -*-
+exec guile -e main -s "$0" "$@@"
+!#
+@end lisp
+
+In the above, the first line is to specify which shell will be used to
+interpret the (OS part of the) @samp{extra information at the beginning}
+of the script.
+
+The second line is optional (and a comment from a shell point of view),
+that we use it to inform emacs (should you use emacs to edit the file)
+that despite the @samp{extra information at the beginning} (and the
+possible lack of filename extension in the script name), it should use
+the @code{scheme} mode as the script editing buffer mode.
+
+The third line tells the shell to execute guile, with the following
+arguments:
+
+@indentedblock
+@table @code
+@item -e main
+after reading the script, apply @code{main} to command line arguments
+
+@item -s "$0"
+load the source code from @code{"$0"} (which by shell rules, is bound to
+the fullname of the script itself)
+
+@item "$@@"
+
+the command line arguments
+@end table
+@end indentedblock
+
+Note that the top level script lines may contain other declaration(s),
+like environment variable definitions. Suppose you would like to be
+warned if your script uses any deprecated guile functionality. In this
+case, you add the following @code{export
+GUILE_WARN_DEPRECATED="detailed"} declaration, before the @code{exec
+guile @dots{}} call, like this:
+
+@lisp
+#! /bin/sh
+# -*- mode: scheme; coding: utf-8 -*-
+export GUILE_WARN_DEPRECATED="detailed"
+exec guile -e main -s "$0" "$@@"
+!#
+@end lisp
+
+
+@ @ @sup{_} @strong{Extra Guile information}
+
+Within the context of a G-Golf script, two other things must be taken
+care of - in addition to the @code{(use-modules (g-golf))} step - so
+that the script runs fine: (1) set-up Guile so that generic functions
+are merged; (2) import (all) typelib element(s) at @code{expand load
+eval} time.
+
+In a repl or in scripts, (1) is achieved by importing the @code{(oop
+goops)} module and calling
+@code{default-duplicate-binding-handler}@footnote{As seen in
+@ref{Configuring Guile for G-Golf} (and in @ref{GOOPS Notes and
+Conventions} - 'Merging Generics').}.
+
+In Guile, (2) is achieved by calling the @code{eval-when}
+syntax@footnote{@xref{Eval-when,,, guile, The GNU Guile Reference
+Manual} for a complete description.}.
+
+Now, bear with us :), since (2) will define generic functions and/or add
+methods to existing generic functions, we must make sure the (1) not
+only preceeds (2), but also happens at @code{expand load eval} time.
+
+With all the above in mind, here is how the extra Guile information
+looks like, for our @samp{Hello World!} script example:
+
+@example
+(eval-when (expand load eval)
+  (use-modules (oop goops))
+
+  (default-duplicate-binding-handler
+    '(merge-generics replace warn-override-core warn last))
+
+  (use-modules (g-golf))
+
+  (for-each (lambda (name)
+              (gi-import-by-name "Gtk" name))
+      '("Application"
+        "ApplicationWindow"
+         "Button")))
+@end example
+
+
+@ @ @sup{_} @strong{A Hello World! script}
+
+Let's put all this together, and while doing this, enhance a little our
+original example.
+
+Here is what we propose to do: (a) add a GtkLabel, (b) use a GtkBox and
+see how to declare its margins and orientation, (c) specify a default
+width and height for our application window, and (d) see how we can tell
+the label to horizontally and vertically expand, so it occupies the
+extra vertical space, while keeping the button to its minimal vertical
+size.
+
+Joining (1), (2) and the small enhancement, our @samp{Hello World!}
+script now looks like this:
+
+@lisp
+#! /bin/sh
+# -*- mode: scheme; coding: utf-8 -*-
+exec guile -e main -s "$0" "$@@"
+!#
+
+
+(eval-when (expand load eval)
+  (use-modules (oop goops))
+
+  (default-duplicate-binding-handler
+    '(merge-generics replace warn-override-core warn last))
+
+  (use-modules (g-golf))
+
+  (for-each (lambda (name)
+              (gi-import-by-name "Gtk" name))
+      '("Application"
+        "ApplicationWindow"
+        "Box"
+        "Label"
+        "Button")))
+
+
+(define (activate app)
+  (let ((window (make <gtk-application-window>
+                  #:title "Hello"
+                  #:default-width 320
+                  #:default-height 240
+                  #:application app))
+        (box    (make <gtk-box>
+                  #:margin-top 6
+                  #:margin-start 12
+                  #:margin-bottom 6
+                  #:margin-end 6
+                  #:orientation 'vertical))
+        (label  (make <gtk-label>
+                  #:label "Hello, World!"
+                  #:hexpand #t
+                  #:vexpand #t))
+        (button (make <gtk-button>
+                  #:label "Close")))
+
+    (connect button
+	     'clicked
+	     (lambda (b)
+               (close window)))
+
+    (set-child window box)
+    (append box label)
+    (append box button)
+    (show window)))
+
+
+(define (main args)
+  (let ((app (make <gtk-application>
+               #:application-id "org.gtk.example")))
+    (connect app 'activate activate)
+    (let ((status (run app 0 '())))
+      (exit status))))
+@end lisp
+
+If you save the above in a file, say @file{hello-world}, then
+@code{chmod a+x hello-world} and launch the script,
+@code{./hello-world}, here is what you’ll get on the screen:
+
+@float Example, exa:exa2
+@ifnottex
+@image{images/hello-world-2,,,hello-world-2,png}
+@caption{Hello World! (2)}
+@end ifnottex
+@end float
+
+
+@ @ @sup{_} @strong{A last few comments}
+
+We need to make a last few comments, that also applies and will be
+further addressed in the next section.
+
+@emph{Desktop Entry}
+
+If you are running a GNOME desktop, you probably noticed that in the
+GNOME menu bar, the application menu entry for our @samp{Hello World!}
+script is @code{org.gtk.example} (not @code{Hello}). This is because
+we're missing a @emph{Desktop Entry}. We will see how to create and
+install a @emph{Desktop Entry} in the next section.
+
+@emph{Command Line Arguments}
+
+As described in the first part of this section, we use the so called
+@samp{for maximum portability} scripting technique, and more precisely,
+the following incantation:
+
+@lisp
+exec guile -e main -s "$0" "$@@"
+@end lisp
+
+In the above, the last argument refers to the the command line
+arguments. It is actually optional, but when used, they are passed to
+the @code{main} (entry point) script procedure.
+
+However, as you may have noticed, we do not pass those (if any) to the
+Gtk application, which we launch using @code{(run app 0 '())}.
+
+This is intentional: (a) we (want to) always use the same incantation to
+invoke Guile - and sometimes. may quiclky hack something using
+additional debug args on the scheme side only @dots{}; (b) you may only
+pass those arguments to the Gtk application if you have defined the
+signal callback(s) to handle them.
+
+If you pass the command line arguments to a Gtk application that does
+not define the appropriate signal callback procedure to handle them,
+you'll get an error message in the terminal (and the application won't
+be launched).
+
+To illustrate, let's change the @code{g-application-run} call of our
+script, so it becomes @code{(run app (length args) args)}, then try to
+launch it, passing a few (fake) arguments, here is what happens:
+
+@example
+./hello-world 1 2 3
+@print{} (hello-world:216198): GLib-GIO-CRITICAL **: 22:26:41.135: This application can not open files.
+@end example
+
+And as mentioned above, the application is not launched.
+
+Although scripts may (also) accept and pass command line argument(s) to
+the Gtk application or dialog they define, we will see how to handle
+those in the next section, @ref{Building Applications}.
