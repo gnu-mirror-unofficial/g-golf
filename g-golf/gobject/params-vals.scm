@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -34,7 +34,7 @@
   #:use-module (g-golf init)
   #:use-module (g-golf support g-export)
   #:use-module (g-golf support enum)
-  #:use-module (g-golf support flag)
+  #:use-module (g-golf support flags)
   #:use-module (g-golf support struct)
   #:use-module (g-golf support union)
   #:use-module (g-golf support utils)
@@ -221,24 +221,24 @@
         (g_value_set_enum g-value val)
         (error "No such " (!name gi-enum) " key: " sym))))
 
-(define (g-value-get-gi-flag g-value)
+(define (g-value-get-gi-flags g-value)
   (let* ((g-name (g-value-type-name g-value))
          (name (g-name->name g-name)))
-    (or (gi-cache-ref 'flag name)
-        (error "No such flag type: " name))))
+    (or (gi-cache-ref 'flags name)
+        (error "No such flags type: " name))))
 
 (define (g-value-get-flags g-value)
-  (let ((gflags (g-value-get-gi-flag g-value))
+  (let ((gi-flags (g-value-get-gi-flags g-value))
         (val (g_value_get_flags g-value)))
-    (or (gi-integer->gflags gflags val)
-        (error "No such " (!name gflags) " value: " val))))
+    (or (integer->flags gi-flags val)
+        (error "No such " (!name gi-flags) " value: " val))))
 
 (define (g-value-set-flags g-value flags)
-  (let* ((gflags (g-value-get-gi-flag g-value))
-         (val (gi-gflags->integer gflags flags)))
+  (let* ((gi-flags (g-value-get-gi-flags g-value))
+         (val (flags->integer gi-flags flags)))
     (if val
         (g_value_set_flags g-value val)
-        (error "No such " (!name gflags) " key: " flags))))
+        (error "No such " (!name gi-flags) " key: " flags))))
 
 (define (g-value-get-string g-value)
   (let ((pointer (g_value_get_string g-value)))

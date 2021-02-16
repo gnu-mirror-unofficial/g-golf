@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -31,7 +31,7 @@
   #:use-module (system foreign)
   #:use-module (g-golf init)
   #:use-module (g-golf support enum)
-  #:use-module (g-golf support flag)
+  #:use-module (g-golf support flags)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gobject params-vals)
 
@@ -113,7 +113,7 @@
 ;;;
 
 (define %g-param-flags
-  (make <gi-flag>
+  (make <gi-flags>
     #:g-name "GParamFlags"
     #:enum-set '((readable . 1)
                  (writable . 2)

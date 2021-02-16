@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -45,7 +45,7 @@
   #:use-module (g-golf support push)
   #:use-module (g-golf support keyword)
   #:use-module (g-golf support enum)
-  #:use-module (g-golf support flag)
+  #:use-module (g-golf support flags)
   #:use-module (g-golf support struct)
   #:use-module (g-golf support union)
   #:use-module (g-golf support bytevector)
@@ -68,7 +68,7 @@
 			      (g-golf support push)
 			      (g-golf support keyword)
                               (g-golf support enum)
-                              (g-golf support flag)
+                              (g-golf support flags)
                               (g-golf support struct)
                               (g-golf support union)
                               (g-golf support bytevector)))

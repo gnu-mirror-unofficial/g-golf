@@ -37,7 +37,7 @@ SOURCES = \
 	g-golf/support/push.scm			\
 	g-golf/support/keyword.scm		\
 	g-golf/support/enum.scm			\
-	g-golf/support/flag.scm			\
+	g-golf/support/flags.scm			\
 	g-golf/support/struct.scm		\
 	g-golf/support/union.scm		\
 	g-golf/support/bytevector.scm		\
@@ -144,7 +144,8 @@ SUBDIRS = \
 ###
 
 SOURCES_TO_REMOVE = \
-	g-golf/gdk/event-structures.scm
+	g-golf/gdk/event-structures.scm		\
+	g-golf/support.flag.scm
 
 GOBJECTS_TO_REMOVE = $(SOURCES_TO_REMOVE:%.scm=%.go)
 

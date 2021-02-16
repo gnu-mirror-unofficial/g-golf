@@ -1,7 +1,7 @@
 @c -*-texinfo-*-
 
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2019 - 2020 Free Software Foundation, Inc.  See the
+@c Copyright (C) 2019 - 2021 Free Software Foundation, Inc.  See the
 @c file g-golf.texi for copying conditions.
 
 
@@ -23,7 +23,7 @@ The G-Golf GIR namespace (Typelib) import high level API.
 @item @ref{gi-import-by-name}
 @item @ref{gi-import-info}
 @item @ref{gi-import-enum}
-@item @ref{gi-import-flag}
+@item @ref{gi-import-flags}
 @item @ref{gi-import-struct}
 @item @ref{gi-import-function}
 @item @ref{gi-import-constant}
@@ -94,11 +94,11 @@ The optional @var{#:version} keyword argument may be used to require a
 specific @var{namespace} version, otherwise, the latest will be used.
 
 The optional keyword @var{#:with-method} argument - which is #t by
-default - is passed to the @code{gi-import-enum}, @code{gi-import-flag}
+default - is passed to the @code{gi-import-enum}, @code{gi-import-flags}
 and @code{gi-import-struct}. When @var{#:with-method} is #f, then the
-enum, flag or struct @code{info} will be imported without their
+enum, flags or struct @code{info} will be imported without their
 respective methods. This is likely to only be the case if/when you
-intend to selectively import an enum, gflag or struct from GLib or
+intend to selectively import an enum, flags or struct from GLib or
 GObject, which is what G-Golf itself does, for example, in the top level
 (g-golf) module:
 
@@ -112,7 +112,7 @@ GObject, which is what G-Golf itself does, for example, in the top level
 @deffn Procedure gi-import-info info
 
 Returns the object or constant returned by the one of the
-@code{gi-import-enum}, @code{gi-import-flag}, @dots{}, called upon
+@code{gi-import-enum}, @code{gi-import-flags}, @dots{}, called upon
 @code{info}.
 
 Obtains the GIBaseInfo type for @code{info} and uses it to dispatch a
@@ -132,10 +132,10 @@ $2 = #<pointer 0x5642cb065e30>
 $3 = #<pointer 0x5642cb067de0>
 
 (gi-import-info $3)
-$4 = #<<gi-flag> 5642cb13c5d0>
+$4 = #<<gi-flags> 5642cb13c5d0>
 
 (describe $4)
-#<<gi-flag> 5642cb13c5d0> is an instance of class <gi-flag>
+#<<gi-flags> 5642cb13c5d0> is an instance of class <gi-flags>
 Slots are:
      enum-set = ((mapped . 2) (realized . 4) (reactive . 8) (visible . 16) (no-layout . 32))
      g-type = 94844874149456
@@ -146,13 +146,13 @@ Slots are:
 
 
 @anchor{gi-import-enum}
-@anchor{gi-import-flag}
+@anchor{gi-import-flags}
 @anchor{gi-import-struct}
 @deffn Procedure gi-import-enum info [#:with-method #t]
-@deffnx Procedure gi-import-flag info [#:with-method #t]
+@deffnx Procedure gi-import-flags info [#:with-method #t]
 @deffnx Procedure gi-import-struct info [#:with-method #t]
 
-Returns a @ref{<gi-enum>}, a @ref{<gi-flag>} or a @ref{<gi-struct>}
+Returns a @ref{<gi-enum>}, a @ref{<gi-flags>} or a @ref{<gi-struct>}
 instance, respectively.
 
 The @var{info} argument is (must be) a pointer to @code{GIEnumInfo}, a
@@ -166,17 +166,17 @@ default - is passed using #f, then @var{info} will be imported without
 its respective methods. A description and an example ware also given
 here above, as part of the @ref{gi-import-by-name} documentation entry.
 
-Every imported @ref{<gi-enum>}, @ref{<gi-flag>} and @ref{<gi-struct>}
-instance is cached under the @code{'enum}, @code{'flag} and
+Every imported @ref{<gi-enum>}, @ref{<gi-flags>} and @ref{<gi-struct>}
+instance is cached under the @code{'enum}, @code{'flags} and
 @code{'boxed} main key (respectively), using the content of their
 (symbol) @code{name} slot as the secondary key. For example, reusing the
 "Clutter" "ActorFlags" namespace/name introduced above, you would
-retreive its @ref{<gi-flag>} instance as is:
+retreive its @ref{<gi-flags>} instance as is:
 
 @lisp
 @dots{}
-(gi-cache-ref 'flag 'clutter-actor-flags)
-$6 = #<<gi-flag> 5642cb13c5d0>
+(gi-cache-ref 'flags 'clutter-actor-flags)
+$6 = #<<gi-flags> 5642cb13c5d0>
 @end lisp
 @end deffn
 

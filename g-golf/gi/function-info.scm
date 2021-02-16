@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -30,7 +30,7 @@
   #:use-module (oop goops)
   #:use-module (system foreign)
   #:use-module (g-golf support enum)
-  #:use-module (g-golf support flag)
+  #:use-module (g-golf support flags)
   #:use-module (g-golf init)
   #:use-module (g-golf gi utils)
 
@@ -70,8 +70,8 @@
 ;;;
 
 (define (g-function-info-get-flags info)
-  (gi-integer->gflags %g-function-info-flags
-                      (g_function_info_get_flags info)))
+  (integer->flags %g-function-info-flags
+                  (g_function_info_get_flags info)))
 
 (define (g-function-info-get-property info)
   ;; The GI manual says only those functions with the flag 'is-getter or
@@ -150,7 +150,7 @@
 ;;;
 
 (define %g-function-info-flags
-  (make <gi-flag>
+  (make <gi-flags>
     #:g-name "GIFunctionInfoFlags"
     #:enum-set '((is-method . 1)
                  (is-constructor . 2)

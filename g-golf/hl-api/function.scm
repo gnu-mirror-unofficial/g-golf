@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2020
+;;;; Copyright (C) 2019 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -54,7 +54,7 @@
             <function>
             <argument>
             gi-import-enum
-            gi-import-flag
+            gi-import-flags
             gi-import-struct
             gi-import-union))
 
@@ -638,8 +638,8 @@ method with its 'old' definition.
       ((flags)
        (values id
                name
-               (or (gi-cache-ref 'flag name)
-                   (gi-import-flag info))
+               (or (gi-cache-ref 'flags name)
+                   (gi-import-flags info))
                #t))
       ((struct)
        (values id
@@ -857,7 +857,7 @@ method with its 'old' definition.
                            (gi-argument-set! gi-argument-in 'v-int e-val)
                            (error "No such symbol " arg " in " gi-type))))
                     ((flags)
-                     (let ((f-val (gi-gflags->integer gi-type arg)))
+                     (let ((f-val (flags->integer gi-type arg)))
                        (if f-val
                            (gi-argument-set! gi-argument-in 'v-int f-val)
                            (error "No such flag(s) " arg " in " gi-type))))
@@ -1164,7 +1164,7 @@ method with its 'old' definition.
                            (s32vector-ref bv 0)))
                         (else
                          (gi-argument-ref gi-argument 'v-int)))))
-             (gi-integer->gflags gi-type val)))
+             (integer->flags gi-type val)))
           ((struct)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
              (case name
@@ -1354,9 +1354,9 @@ method with its 'old' definition.
                         #:with-methods? with-methods?
                         #:force? force?))
 
-(define* (gi-import-flag info #:key (with-methods? #t) (force? #f))
+(define* (gi-import-flags info #:key (with-methods? #t) (force? #f))
   (gi-import-registered info
-                        'flag
+                        'flags
                         gi-enum-import
                         g-enum-info-get-n-methods
                         g-enum-info-get-method
@@ -1422,8 +1422,8 @@ method with its 'old' definition.
          (name (g-name->name g-name)))
     (or (gi-cache-ref type name)
         (let ((gi-type-inst (case type
-                              ((flag)
-                               (import-proc info #:flag #t))
+                              ((flags)
+                               (import-proc info #:flags #t))
                               ((union)
                                (import-union-1 info g-type g-name))
                               (else

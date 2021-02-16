@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2020
+;;;; Copyright (C) 2019 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -34,7 +34,7 @@
   #:use-module (srfi srfi-4)
   #:use-module (g-golf support utils)
   #:use-module (g-golf support enum)
-  #:use-module (g-golf support flag)
+  #:use-module (g-golf support flags)
   #:use-module (g-golf glib mem-alloc)
   #:use-module (g-golf glib quarks)
   #:use-module (g-golf gobject type-info)
@@ -91,7 +91,7 @@
        (list id
              (gi->scm name 'string)
              g-type
-             (gi-integer->gflags %g-signal-flags flags)
+             (integer->flags %g-signal-flags flags)
              (g-type->symbol return-type)
              n-param
              (decode-param-types n-param param-types))))))
@@ -183,7 +183,7 @@
 ;;;
 
 (define %g-signal-flags
-  (make <gi-flag>
+  (make <gi-flags>
     #:g-name "GsignalFlags"
     #:enum-set '((run-first . 1)
                  (run-last . 2)

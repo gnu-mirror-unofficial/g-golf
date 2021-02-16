@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2020
+;;;; Copyright (C) 2019 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -26,7 +26,7 @@
 ;;; Code:
 
 
-(define-module (g-golf support flag)
+(define-module (g-golf support flags)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (oop goops)
@@ -42,32 +42,22 @@
 		warn
 		last)
 
-  #:export (<gi-flag>
-
-            gi-gflags->integer
-            gi-integer->gflags))
+  #:export (<flags>
+            <gi-flags>))
 
 
-#;(g-export )
+(g-export flags->integer
+          integer->flags
+          !g-type
+          !g-name
+          !name)
 
 
-;;;
-;;; GI Flag
-;;;
+(define-class <flags> (<enum>))
 
-(define-class <gi-flag> (<gi-enum>)
-  )
 
-#;(define-method (initialize (self <gi-enum>) initargs)
-  (next-method)
-  (let ((g-name (get-keyword #:g-name initargs #f)))
-    (and g-name
-         (set! (!g-name self) g-name)
-         (set! (!name self)
-               (g-name->name g-name)))))
-
-(define (gi-gflags->integer gflags flags)
-  (let ((enum-set (!enum-set gflags)))
+(define-method (flags->integer (self <flags>) flags)
+  (let ((enum-set (!enum-set self)))
     (apply logior
            (map
                (lambda (flag)
@@ -75,8 +65,8 @@
                      (error "Unknown flag: " flag)))
              flags))))
 
-(define (gi-integer->gflags gflags n)
-  (let ((enum-set (!enum-set gflags)))
+(define-method (integer->flags (self <flags>) n)
+  (let ((enum-set (!enum-set self)))
     (filter-map
         (match-lambda
           ((key . val)
@@ -85,3 +75,24 @@
                     (= (logand n val) val))
                 key)))
         enum-set)))
+
+
+;;;
+;;; GI Flag
+;;;
+
+(define-class <gi-flags> (<flags>)
+  (g-type #:accessor !g-type
+          #:init-keyword #:g-type
+          #:init-value #f)
+  (g-name #:accessor !g-name
+          #:init-keyword #:g-name)
+  (name #:accessor !name))
+
+(define-method (initialize (self <gi-flags>) initargs)
+  (next-method)
+  (let ((g-name (get-keyword #:g-name initargs #f)))
+    (and g-name
+         (set! (!g-name self) g-name)
+         (set! (!name self)
+               (g-name->name g-name)))))

@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019
+;;;; Copyright (C) 2019, 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -31,7 +31,7 @@
   #:use-module (system foreign)
   #:use-module (g-golf init)
   #:use-module (g-golf support enum)
-  #:use-module (g-golf support flag)
+  #:use-module (g-golf support flags)
   #:use-module (g-golf support utils)
   #:use-module (g-golf gi cache)
   #:use-module (g-golf gi utils)
@@ -64,8 +64,8 @@
 
 (define (g-io-create-watch channel condition)
   (g_io_create_watch channel
-                     (gi-gflags->integer %g-io-condition
-                                         condition)))
+                     (flags->integer %g-io-condition
+                                     condition)))
 
 
 ;;;
@@ -110,7 +110,7 @@
 ;; decided to keep the 'imported' enum-set definition anyway.
 
 #;(define %g-io-condition
-  (make <gi-flag>
+  (make <gi-flags>
     #:g-name "gio-condition"
     #:enum-set '(in
                  out
@@ -122,7 +122,7 @@
 (define %g-io-condition #f)
 
 (eval-when (expand load eval)
-  (let ((g-io-condition (make <gi-flag>
+  (let ((g-io-condition (make <gi-flags>
                           #:g-name  "GIOCondition"
                           #:enum-set '((in . 1)
                                        (out . 4)
@@ -131,4 +131,4 @@
                                        (hup . 16)
                                        (nval . 32)))))
     (set! %g-io-condition g-io-condition)
-    (gi-cache-set! 'flag 'gio-condition g-io-condition)))
+    (gi-cache-set! 'flags 'gio-condition g-io-condition)))

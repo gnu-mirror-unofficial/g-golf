@@ -60,7 +60,7 @@
 (define %actor-flags-info
   (g-irepository-find-by-name "Clutter" "ActorFlags"))
 
-(gi-import-flag %actor-flags-info)
+(gi-import-flags %actor-flags-info)
 
 
 (define-class <g-golf-test-hl-api> (<test-case>))
@@ -131,7 +131,7 @@
 
 
 (define-method (test-closure-gi-flags (self <g-golf-test-hl-api>))
-  (let* ((flags (gi-cache-ref 'flag 'clutter-actor-flags))
+  (let* ((flags (gi-cache-ref 'flags 'clutter-actor-flags))
          (closure (make <closure>
                     #:function (lambda (a) a)
                     #:return-type flags

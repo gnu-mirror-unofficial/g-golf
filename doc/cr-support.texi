@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -15,7 +15,7 @@ support goops))}, ...
 * Module::
 * Goops::
 * Enum::
-* Flag::
+* Flags::
 * Struct::
 * Union::
 * Utilities_::
@@ -25,7 +25,7 @@ support goops))}, ...
 @include cr-support-module.texi
 @include cr-support-goops.texi
 @include cr-support-enum.texi
-@include cr-support-flag.texi
+@include cr-support-flags.texi
 @include cr-support-struct.texi
 @include cr-support-union.texi
 @include cr-support-utils.texi

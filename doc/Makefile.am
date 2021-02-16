@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 - 2020
+#### Copyright (C) 2016 - 2021
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf
@@ -96,7 +96,7 @@ g_golf_TEXINFOS = \
   cr-support-module.texi	\
   cr-support-goops.texi		\
   cr-support-enum.texi		\
-  cr-support-flag.texi		\
+  cr-support-flags.texi		\
   cr-support-struct.texi	\
   cr-support-union.texi		\
   cr-support-utils.texi		\

@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2020 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -35,7 +35,7 @@ only one is (partially) exposed to users (and with reserves, see
 below), also referred to as G-Golf @code{main cache} - not only for
 internal needs, but also to avoid reconstructing things
 @samp{on-the-fly} unnecessarily, such as already imported
-@ref{<gi-enum>}, @ref{<gi-flag>} and @ref{<gi-struct>} instances.
+@ref{<gi-enum>}, @ref{<gi-flags>} and @ref{<gi-struct>} instances.
 
 G-Golf @code{main cache} exposed functionality is @samp{access only} -
 users should not (never) attempt to change its content - and its design
@@ -75,27 +75,33 @@ Remember that you may (always) view the list of main and secondary key
 names (which is @samp{dynamic}, depending on what you have imported) by
 calling @ref{gi-cache-show} (without or with an @var{m-key} arg
 appropriately), but as a user, the two most important @var{m-key} are
-@code{'enum} and @code{'flag}, so you may check their member names, or
+@code{'enum} and @code{'flags}, so you may check their member names, or
 bind their instance locally.
 
 Main key names are given by G-Golf. Secondary key names are always the
 result of calling @ref{g-name->name} upon the @samp{object} original
-name. For example, let's retreive and visualize the content of the
-@code{GdkEventType} (enum) type (which is pre-imported in G-Golf):
+name.
+
+For example, let's import, then retreive and visualize the content of
+the @code{GtkPositionType} (enum) type:
 
 @example
 ,use (g-golf)
-(gi-cache-ref 'enum 'gdk-event-type)
+(gi-import-by-name "Gtk" "PositionType")
 @print{}
-$2 = #<<gi-enum> 55a9665d9e10>
+$2 = #<<gi-enum> 7ff938938b40>
 
-(describe $2)
-#<<gi-enum> 55a9665d9e10> is an instance of class <gi-enum>
+(gi-cache-ref 'enum 'gtk-position-type)
+@print{}
+$3 = #<<gi-enum> 7ff938938b40>
+
+(describe $3)
+#<<gi-enum> 7ff938938b40> is an instance of class <gi-enum>
 Slots are: 
-     enum-set = ((nothing . -1) (delete . 0) (destroy . 1) (expose . 2) (motion-notify . 3) (button-press . 4) (#@{2button-press@}# . 5) (double-button-press . 5) (#@{3button-press@}# . 6) (triple-button-press . 6) (button-release . 7) (key-press . 8) (key-release . 9) (enter-notify . 10) (leave-notify . 11) (focus-change . 12) (configure . 13) (map . 14) (unmap . 15) (property-notify . 16) (selection-clear . 17) (selection-request . 18) (selection-notify . 19) (proximity-in . 20) (proximity-out . 21) (drag-enter . 22) (drag-leave . 23) (drag-motion . 24) (drag-status . 25) (drop-start . 26) (drop-finished . 27) (client-event . 28) (visibility-notify . 29) (scroll . 31) (window-state . 32) (setting . 33) (owner-change . 34) (grab-broken . 35) (damage . 36) (touch-begin . 37) (touch-update . 38) (touch-end . 39) (touch-cancel . 40) (touchpad-swipe . 41) (touchpad-pinch . 42) (pad-button-press . 43) (pad-button-release . 44) (pad-ring . 45) (pad-strip . 46) (pad-group-mode . 47) (event-last . 48))
-     g-type = #f
-     g-name = "GdkEventType"
-     name = gdk-event-type
+     enum-set = ((left . 0) (right . 1) (top . 2) (bottom . 3))
+     g-type = 94673466933568
+     g-name = "GtkPositionType"
+     name = gtk-position-type
 @end example
 @end deffn
 

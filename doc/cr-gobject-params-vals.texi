@@ -251,10 +251,10 @@ Obtains and returns the (registered) list of flags for @var{g-value}.
 Returns nothing.
 
 Sets the content of @var{g-value} to @var{val}, or to the value given by
-calling @ref{gi-gflags->integer} upon the list of @var{flags},
+calling @ref{flags->integer} upon the list of @var{flags},
 respectively. The @var{val} or the @var{flags} must be valid (as in
-being a valid member of the (registered) gflags type for @var{g-value}),
-otherwise an exception is raised.
+being a valid member of the (registered) gi-flags type for
+@var{g-value}), otherwise an exception is raised.
 @end deffn
 
 

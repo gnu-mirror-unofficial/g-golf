@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -31,7 +31,7 @@
   #:use-module (system foreign)
   #:use-module (g-golf support utils)
   #:use-module (g-golf support enum)
-  #:use-module (g-golf support flag)
+  #:use-module (g-golf support flags)
   #:use-module (g-golf init)
   #:use-module (g-golf gobject type-info)
   #:use-module (g-golf gi utils)
@@ -59,11 +59,11 @@
 ;;; Build Interface
 ;;;
 
-(define* (gi-enum-import info #:key (flag #f))
+(define* (gi-enum-import info #:key (flags #f))
   (let* ((id (g-registered-type-info-get-g-type info))
          (g-name (g-type-name id))
 	 (e-vals (gi-enum-value-values info)))
-    (make (if flag <gi-flag> <gi-enum>)
+    (make (if flags <gi-flags> <gi-enum>)
       #:g-type id
       #:g-name g-name
       #:enum-set e-vals)))

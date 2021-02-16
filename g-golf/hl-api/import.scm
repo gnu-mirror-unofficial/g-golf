@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2020
+;;;; Copyright (C) 2018 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -116,7 +116,7 @@
        (unless (memq i-type
                      %gi-imported-base-info-types)
          (push! i-type %gi-imported-base-info-types))
-       (gi-import-flag info #:with-methods? with-methods? #:force? force?))
+       (gi-import-flags info #:with-methods? with-methods? #:force? force?))
       ((struct)
        (unless (memq i-type
                      %gi-imported-base-info-types)

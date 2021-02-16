@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -96,24 +96,24 @@
 
 
 ;;;
-;;; Flag
+;;; Flags
 ;;;
 
-(define-method (test-flag (self <g-golf-test-support>))
-  (assert (gi-integer->gflags %g-function-info-flags 2))
-  (assert-true (= (gi-gflags->integer %g-function-info-flags
-                                      '(is-constructor))
+(define-method (test-flags (self <g-golf-test-support>))
+  (assert (integer->flags %g-function-info-flags 2))
+  (assert-true (= (flags->integer %g-function-info-flags
+                                  '(is-constructor))
                   2))
-  ;; multiple-bit flag
-  (assert-true (= (gi-gflags->integer %g-param-flags
-                                      '(readable writable))
+  ;; multiple-bit flags
+  (assert-true (= (flags->integer %g-param-flags
+                                  '(readable writable))
                   3))
-  (assert-true (= (gi-gflags->integer %g-param-flags
-                                      '(readable writable readwrite))
+  (assert-true (= (flags->integer %g-param-flags
+                                  '(readable writable readwrite))
                   3))
   (let ((expected-flags '(readable writable readwrite))
-        (flags (gi-integer->gflags %g-param-flags
-                                   3)))
+        (flags (integer->flags %g-param-flags
+                               3)))
     (assert-true (and (= (length flags) 3)
                       (= (list->integer
                           (map (lambda (flag)
@@ -121,17 +121,17 @@
                             flags))
                          7))))
   ;; non-contiguous bits flags
-  (assert-true (= (gi-gflags->integer %g-param-flags
-                                      '(explicit-notify))
+  (assert-true (= (flags->integer %g-param-flags
+                                  '(explicit-notify))
                   1073741824))
-  (assert-true (eq? (car (gi-integer->gflags %g-param-flags
-                                             1073741824))
+  (assert-true (eq? (car (integer->flags %g-param-flags
+                                         1073741824))
                     'explicit-notify))
-  (assert-true (= (gi-gflags->integer %g-param-flags
-                                      '(deprecated))
+  (assert-true (= (flags->integer %g-param-flags
+                                  '(deprecated))
                   2147483648))
-  (assert-true (eq? (car (gi-integer->gflags %g-param-flags
-                                             2147483648))
+  (assert-true (eq? (car (integer->flags %g-param-flags
+                                         2147483648))
                     'deprecated)))
 
 

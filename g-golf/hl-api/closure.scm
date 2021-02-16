@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2020
+;;;; Copyright (C) 2019 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -158,7 +158,7 @@
   (@@ (g-golf gobject generic-values) g_value_init))
 
 (define (prepare-return-val g-value type)
-  (cond ((or (is-a? type <gi-flag>)
+  (cond ((or (is-a? type <gi-flags>)
              (is-a? type <gi-enum>))
          (let ((g-type (!g-type type)))
            (%g_value_init g-value (or g-type
@@ -174,7 +174,7 @@
   (cond ((eq? type 'boolean)
          (%g_value_init g-value (symbol->g-type type))
          (g-value-set! g-value (scm->gi val 'boolean)))
-        ((is-a? type <gi-flag>)
+        ((is-a? type <gi-flags>)
          (let ((g-type (!g-type type)))
            (if g-type
                (begin
@@ -183,7 +183,7 @@
                (begin
                  (%g_value_init g-value (symbol->g-type 'int))
                  (g-value-set! g-value
-                               (gi-gflags->integer type val))))))
+                               (flags->integer type val))))))
         ((is-a? type <gi-enum>)
          (let ((g-type (!g-type type)))
            (if g-type
@@ -210,10 +210,10 @@
 
 (define (return-val->scm type g-value)
   (let ((val (g-value-ref g-value)))
-    (cond ((is-a? type <gi-flag>)
+    (cond ((is-a? type <gi-flags>)
            (if (!g-type type)
                val
-               (gi-integer->gflags type val)))
+               (integer->flags type val)))
           ((is-a? type <gi-enum>)
            (if (!g-type type)
                val

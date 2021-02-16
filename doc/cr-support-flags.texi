@@ -1,0 +1,115 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2019 - 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@node Flags
+@subsection Flags
+
+G-Golf class, accessors, methods and procedures to deal with C flags
+types.
+
+
+@subheading Classes
+
+@indentedblock
+@table @code
+@item @ref{<flags>}
+@item @ref{<gi-flags>}
+@end table
+@end indentedblock
+
+
+@subheading Procedures, Accessors and Methods
+
+@indentedblock
+@table @code
+@item @ref{integer->flags}
+@item @ref{flags->integer}
+@item @ref{!g-type___}
+@item @ref{!g-name______}
+@item @ref{!name_____}
+@end table
+@end indentedblock
+
+
+@subheading Description
+
+G-Golf class, accessors, methods and procedures to deal with C flags
+types.
+
+
+@subheading Classes
+
+
+@anchor{<flags>}
+@deftp Class <flags>
+
+The @code{<flags>} class is a subclass of @ref{<enum>}.  It
+has no direct slots.
+@end deftp
+
+
+@anchor{<gi-flags>}
+@deftp Class <gi-flags>
+
+The @code{<gi-flags>} class is a subclass of @code{<flags>}. Its
+@code{class-direct-slots} are:
+
+@indentedblock
+@table @code
+@item @emph{g-type}
+#:accessor !g-type	 @*
+#:init-keyword #:g-type  @*
+#:init-value #f
+
+@item @emph{g-name}
+#:accessor !g-name @*
+#:init-keyword #:g-name
+
+@item @emph{name}
+#:accessor !name
+@end table
+@end indentedblock
+
+The @code{name} slot is automatically initialized.
+
+Instances of the @code{<gi-flags>} class are immutable (to be precise,
+there are not meant to be mutated, see @ref{GOOPS Notes and
+Conventions}, 'Slots are not Immutable').
+@end deftp
+
+
+@subheading Procedures, Accessors and Methods
+
+@anchor{integer->flags}
+@deffn Method integer->flags (inst <flags>) n
+
+Returns a possibly empty) list of symbol(s).
+
+Obtains and returns the list of (symbol) flags for the given
+@code{<flags>} instance and its integer representation @var{n}.
+@end deffn
+
+
+@anchor{flags->integer}
+@deffn Method flags->integer (inst <flags>) flags
+
+Returns an integer.
+
+Compute and returns the integer representation for the list of
+(symbol(s)) given by @var{flags} and the given @code{<flag>} instance.
+@end deffn
+
+
+@anchor{!g-type___}
+@anchor{!g-name______}
+@anchor{!name_____}
+@deffn Accessor !g-type (inst <gi-flags>)
+@deffnx Accessor !g-name (inst <gi-flags>)
+@deffnx Accessor !name (inst <gi-flags>)
+
+Returns the content of the g-type, g-name or name slot for @var{inst},
+respectively.
+@end deffn

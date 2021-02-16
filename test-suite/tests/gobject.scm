@@ -54,7 +54,7 @@
 (define %flags-info-g-type
   (g-registered-type-info-get-g-type %flags-info))
 
-(gi-import-flag %flags-info)
+(gi-import-flags %flags-info)
 
 
 (define-class <g-golf-test-gobject> (<test-case>))
