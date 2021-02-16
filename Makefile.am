@@ -145,6 +145,8 @@ SUBDIRS = \
 
 SOURCES_TO_REMOVE = \
 	g-golf/gdk/event-structures.scm		\
+	g-golf/gdk/event-class.scm		\
+	g-golf/support/modules.scm		\
 	g-golf/support.flag.scm
 
 GOBJECTS_TO_REMOVE = $(SOURCES_TO_REMOVE:%.scm=%.go)
