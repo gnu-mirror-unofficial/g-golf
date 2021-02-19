@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020
+;;;; Copyright (C) 2020 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -51,8 +51,8 @@
 ;;;
 ;;;
 
-(define (gi-find-by-property-name namespace name)
-  (g-irepository-require namespace)
+(define* (gi-find-by-property-name namespace name #:key (version #f))
+  (g-irepository-require namespace #:version version)
   (let loop ((n-info (g-irepository-get-n-infos namespace))
              (i 0)
              (results '()))
