@@ -7,7 +7,11 @@
 @node Module
 @subsection Module
 
-x
+G-Golf Module Utilities.@*
+
+
+@subheading Syntax
+
 @indentedblock
 @table @code
 @item @ref{re-export-public-interface}
@@ -16,7 +20,7 @@ x
 
 
 @anchor{re-export-public-interface}
-@defspec re-export-public-interface  . args
+@deffn Syntax re-export-public-interface  . args
 Re-export the public interface of a module or modules. Invoked as
-@code{(re-export-modules (mod1) (mod2)...)}.
-@end defspec
+@code{(re-export-public-interface (mod1) (mod2)...)}.
+@end deffn
