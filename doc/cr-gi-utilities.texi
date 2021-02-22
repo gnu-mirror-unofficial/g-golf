@@ -100,7 +100,7 @@ to @code{%null-pointer}).
 
 
 @anchor{with-gerror}
-@deffn Procedure with-gerror var body
+@deffn Syntax with-gerror var body
 
 Returns the result of the execution of @var{body}, or raises an
 exception.
