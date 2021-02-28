@@ -4,6 +4,9 @@
 @c See the file g-golf.texi for copying conditions.
 
 
+@node G-Golf Cache - Accessing
+@section G-Golf Cache - Accessing
+
 G-Golf Cache - Accessing.
 
 

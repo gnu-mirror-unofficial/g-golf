@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -19,22 +19,6 @@
 @end menu
 
 
-@node Before you start
-@section Before you start
-
 @include ug-bys.texi
-
-
-@node Getting Started with G-Golf
-@section Getting Started with G-Golf
-
 @include ug-gswg.texi
-
-
-@c Building applications
-
-
-@node G-Golf Cache - Accessing
-@section G-Golf Cache - Accessing
-
 @include ug-g-golf-cache.texi
