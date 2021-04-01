@@ -32,13 +32,6 @@ GNU G-Golf needs the following software to run:
 	[[http://www.nongnu.org/guile-lib/][Guile-Lib]]			>= 0.2.5
 	Glib-2.0			>= 2.48.0
 	Gobject-2.0			>= 2.48.0
-	Gtk+-3.0			>= 3.24.0
-
-	  The gtk+-3.0 module is required because it is the module that
-	  contains and installs libgdk-3, which G-Golf requires (as any
-	  other GI language binding) to support Gdk (in general) and Gdk
-	  Events (in particular).
-
 	GObject-Introspection-1.0	>= 1.48.0
 
 ** Install from the tarball
