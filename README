@@ -4,7 +4,7 @@
 
 #+BEGIN_COMMENT
 
-Copyright (C) 2016 - 2018
+Copyright (C) 2016 - 2021
 Free Software Foundation, Inc.
 
 This document is part of GNU G-Golf.
@@ -16,18 +16,26 @@ warranty.
 
 #+END_COMMENT
 
+
+                            G-Golf - README
+              ===========================================
+
+                   Please send G-Golf bug reports to
+                           bug-g-golf@gnu.org
+
+
 * GNU G-Golf
 
 [[http://www.gnu.org/software/g-golf][GNU G-Golf]]
-Gnome: (Guile [2] Object Library for).
+Gnome: ([[http://www.gnu.org/software/guile][Guile]] Object Library for).
 
 ** Description
 
 G-Golf is a Guile Object Library for Gnome.
 
-G-Golf is a library, composed of a direct binding to GObject
-Introspection [3] plus a higher functionality layer, which, importing
-Gnome libraries, makes GOBject classes and methods GOOPS [4] citizen.
+G-Golf is a library, composed of a direct binding to [[https://developer.gnome.org/gi/][GObject
+Introspection]] plus a higher functionality layer, which, importing Gnome
+libraries, makes GOBject classes and methods [[http://www.gnu.org/software/guile/manual/html_node/GOOPS.html#GOOPS][GOOPS]] citizen.
 
 G-Golf is a tool to develop modern graphical applications in Guile
 Scheme.
@@ -43,7 +51,7 @@ since the last release, as well as older news.
 
 ** Savannah
 
-GNU G-Golf also has a Savannah [5] project page.
+GNU G-Golf also has a Savannah [5] project page, [[https://savannah.gnu.org/projects/g-golf/][here]].
 
 ** License
 
@@ -51,13 +59,3 @@ GNU G-Golf is a free software, distributed under the terms of the GNU
 Lesser General Public License LGPLv3 or higher. You must be aware there
 is no warranty whatsoever for GNU G-Golf. This is described in full in
 the license.
-
-
-[1] http://www.gnu.org/software/g-golf/
-[2] GNU Guile
-    an interpreter and compiler for the Scheme [6] programming language
-    http://www.gnu.org/software/guile/
-[3] https://developer.gnome.org/gi/
-[4] http://www.gnu.org/software/guile/manual/html_node/GOOPS.html#GOOPS
-[5] https://savannah.gnu.org/projects/g-golf/
-[6] http://schemers.org/

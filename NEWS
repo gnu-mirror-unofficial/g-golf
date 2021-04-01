@@ -4,7 +4,7 @@
 
 #+BEGIN_COMMENT
 
-Copyright (C) 2016 - 2018
+Copyright (C) 2016 - 2018, 2021
 Free Software Foundation, Inc.
 
 This document is part of GNU G-Golf.
@@ -21,12 +21,12 @@ warranty.
                 ========================================
 
                    Please send G-Golf bug reports to
-
                            bug-g-golf@gnu.org
+
 
 * Latest News
 
-** dd Month year
+** March 2021
 
 [[http://www.gnu.org/software/g-golf][GNU G-Golf]] version 0.1.0 is released.
 
@@ -36,4 +36,4 @@ Here is a summary of the changes since version 0.0.0. See GNU G-Golf
 
 * Older News
 
-# For older News, see [[http://www.gnu.org/software/g-golf/news.html][here]]
+For older News, see [[http://www.gnu.org/software/g-golf/news.html][here]]
