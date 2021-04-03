@@ -1,19 +1,19 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
-@node Project and Documentation Structure
-@subsection Project and Documentation Structure
+@node Structure and Naming Conventions
+@subsection Structure and Naming Conventions
 
-The project and documentation both structure and naming is, whenever it
-is possible, based on the @samp{original} documentation structure and
-naming of the corresponding library. So far, these are the @code{glib}
-(GLib), @code{gobject} (GObject), @code{gdk} (Gdk) and @code{gi}
-(GObject Introspection) directories. To illustrate, here are just a few
-examples:
+G-Golf Core Reference modules and documentation structure and naming
+conventions are based, whenever it is possible, on the structure and
+naming conventions of the corresponding GNOME library.
 
+To illustrate, let's look at a few GLib, GObject and GObject
+Introspection sections and corresponding G-Golf sections and modules
+naming examples:
 
 @indentedblock
 @strong{Glib}
@@ -58,25 +58,6 @@ examples:
 
 
 @indentedblock
-@strong{Gdk}
-
-@table @code
-
-@item @uref{@value{UGDK-Events}, Events}
-@ref{Events} @*
-@code{(g-golf gdk events)}
-
-@item @uref{@value{UGDK-KeyValues}, Key Values}
-@ref{Key Values} @*
-@code{(g-golf gdk key-values)}
-
-@item @dots{}
-
-@end table
-@end indentedblock
-
-
-@indentedblock
 @strong{GObject Introspection}
 
 @table @code
@@ -99,7 +80,7 @@ examples:
 @end indentedblock
 
 
-Exceptions to the above are the G-Golf modules that provide support to
-the core project itself or additional functionality, so far organized in
-their respective @code{support}, @code{override} and @code{hl-api}
-directory.
+Support to the G-Golf Core Reference modules themselves, or additional
+functionality to G-Golf as a all, is organized and located in other
+(none GNOME library based) modules, such as @code{(g-golf support @dots{})},
+@code{g-golf override @dots{})} @dots{}

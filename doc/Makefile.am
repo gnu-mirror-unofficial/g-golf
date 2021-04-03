@@ -52,7 +52,7 @@ g_golf_TEXINFOS = \
   ug-wwg.texi			\
   cr.texi			\
   cr-overview.texi		\
-  cr-ov-project-and-doc-struct.texi \
+  cr-ov-structure-and-naming-conventions.texi	\
   cr-glib.texi			\
   cr-glib-mem-alloc.texi	\
   cr-glib-main-event-loop.texi	\
