@@ -35,7 +35,7 @@ Reference Manual}), in a way that is largely inspired by
 * Closure:: The G-Golf integration with GObject Closures.
 * Function:: The G-Golf GI function and argument high level API.
 @c * Object:: The G-Golf GI object import high level API.
-* Import:: The G-Golf GIR namespace (Typelib) import high level API.
+* Import_:: The G-Golf GI import interfaces.
 * Utilities__:: G-Golf additinal utilities.
 
 @end menu

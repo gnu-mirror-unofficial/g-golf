@@ -48,6 +48,8 @@ g_golf_TEXINFOS = \
   ug-gswg-hello-world.texi	\
   ug-gswg-selective-import.texi	\
   ug-gswg-scripting.texi	\
+  ug-wwg-import.texi		\
+  ug-wwg.texi			\
   cr.texi			\
   cr-overview.texi		\
   cr-ov-project-and-doc-struct.texi \

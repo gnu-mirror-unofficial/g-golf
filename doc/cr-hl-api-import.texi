@@ -1,26 +1,24 @@
 @c -*-texinfo-*-
 
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2019 - 2021 Free Software Foundation, Inc.  See the
-@c file g-golf.texi for copying conditions.
+@c Copyright (C) 2019 - 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
 
 
 @c @defindex ei
 
 
-@node Import
+@node Import_
 @subsection Import
 
-G-Golf Import high level API.@*
-The G-Golf GIR namespace (Typelib) import high level API.
+G-Golf GI import interfaces.@*
+The G-Golf GI namespace (Typelib) import interfaces.
 
 
 @subheading Procedures
 
 @indentedblock
 @table @code
-@item @ref{gi-import}
-@item @ref{gi-import-by-name}
 @item @ref{gi-import-info}
 @item @ref{gi-import-enum}
 @item @ref{gi-import-flags}
@@ -45,67 +43,6 @@ The G-Golf GIR namespace (Typelib) import high level API.
 
 
 @subheading Procedures
-
-
-@anchor{gi-import}
-@deffn Procedure gi-import namespace [#:version #f]
-
-Returns nothing.
-
-Imports the @var{namespace} GIR Typelib and exports its interface. For
-example:
-
-@lisp
-,use (g-golf
-(gi-import "Clutter")
-@end lisp
-
-The @var{namespace} is a case sensitive string. It is an error to call
-this procedure using an invalid @var{namespace}.
-
-The optional @var{#:version} keyword argument may be used to require a
-specific @var{namespace} version, otherwise, the latest will be used.
-
-This procedure is certainly one of the first thing you will want to try
-and use, but it has a cost: you will not @samp{feel it} if the number of
-objects in @var{namespace} is relatively small, but importing the "Gtk"
-namespace, on a laptop equiped with a i5-2450M CPU @ 2.50GHz × 4 and 6GB
-of memory takes nearly 2 seconds.
-
-So, either early in the development cycle, or when your application is
-more stable, at your best convenience, you may consider making a series
-of selective import instead, see @ref{gi-import-by-name} here below.
-@end deffn
-
-
-@anchor{gi-import-by-name}
-@deffn Procedure gi-import-by-name namespace name [#:version #f] @
-       [#:with-method #t]
-
-Returns the object or constant returned by @ref{gi-import-info} called
-upon the GIBaseInfo @code{info} named @var{name} in @var{namespace}.
-
-Obtains and imports the GIBaseInfo @code{info} named @var{name} in
-@var{namespace}. The @var{namespace} and @var{name} arguments are case
-sensitive. It is an error to call this procedure using an invalid
-@var{namespace} or @var{name}.
-
-The optional @var{#:version} keyword argument may be used to require a
-specific @var{namespace} version, otherwise, the latest will be used.
-
-The optional keyword @var{#:with-method} argument - which is #t by
-default - is passed to the @code{gi-import-enum}, @code{gi-import-flags}
-and @code{gi-import-struct}. When @var{#:with-method} is #f, then the
-enum, flags or struct @code{info} will be imported without their
-respective methods. This is likely to only be the case if/when you
-intend to selectively import an enum, flags or struct from GLib or
-GObject, which is what G-Golf itself does, for example, in the top level
-(g-golf) module:
-
-@lisp
-(gi-import-by-name "GLib" "IOChannel" #:with-method #f)
-@end lisp
-@end deffn
 
 
 @anchor{gi-import-info}
@@ -295,8 +232,8 @@ Initially, these variables are empty. As @ref{gi-import},
 @ref{gi-import-info} and/or @ref{gi-import-by-name} are being called,
 they are filled with new types, which are added to both lists.
 
-Note that theorder in which base info types appear in these two lists is
-rrelevant, and may slightly vary, depending on the order of the
+Note that the order in which base info types appear in these two lists
+is rrelevant, and may slightly vary, depending on the order of the
 namespace used for the successive @ref{gi-import} calls and how complete
 is @code{G-Golf}.
 @end defvar

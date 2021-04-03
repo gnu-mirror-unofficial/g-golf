@@ -15,10 +15,13 @@
 @menu
 * Before you start::
 * Getting Started with G-Golf::
+* Working with GNOME::
 * G-Golf Cache - Accessing::
 @end menu
 
 
 @include ug-bys.texi
 @include ug-gswg.texi
+@include ug-wwg.texi
+
 @include ug-g-golf-cache.texi
