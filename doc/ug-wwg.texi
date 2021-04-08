@@ -14,13 +14,9 @@ import and work with GObject-Introspectable GNOME libraries.
 
 @menu
 * Import:: Importing GNOME libraries.
-@c * Events__:: ...
+* Events:: Handling events from the window system.
 @end menu
 
 
 @include ug-wwg-import.texi
-
-
-@c @node Events__
-@c @subsection Events
-@c @include ug-wwg-events.texi
+@include ug-wwg-events.texi

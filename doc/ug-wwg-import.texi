@@ -11,8 +11,8 @@
 @node Import
 @subsection Import
 
-G-Golf Import high level API.@*
-The G-Golf GIR namespace (Typelib) import high level API.
+G-Golf Import interfaces.@*
+Importing GNOME libraries.
 
 
 @subheading Procedures
@@ -25,7 +25,9 @@ The G-Golf GIR namespace (Typelib) import high level API.
 @end indentedblock
 
 
-@c @subheading Description
+@subheading Description
+
+The G-Golf GIR namespace (Typelib) import interfaces.
 
 
 @subheading Procedures

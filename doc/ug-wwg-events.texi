@@ -1,0 +1,15 @@
+@c -*-texinfo-*-
+
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@c @defindex ei
+
+
+@node Events
+@subsection Events
+
+G-Golf Events interfaces.@*
+Handling events from the window system.

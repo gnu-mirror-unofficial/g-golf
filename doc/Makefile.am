@@ -49,6 +49,7 @@ g_golf_TEXINFOS = \
   ug-gswg-selective-import.texi	\
   ug-gswg-scripting.texi	\
   ug-wwg-import.texi		\
+  ug-wwg-events.texi		\
   ug-wwg.texi			\
   cr.texi			\
   cr-overview.texi		\

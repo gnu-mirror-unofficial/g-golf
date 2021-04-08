@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2020 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -22,7 +22,7 @@ they might be some exception in the future.
 
 @menu
 
-* Events:: Functions for handling events from the window system.
+* Events_:: Functions for handling events from the window system.
 @c * Event Structures:: Data structures specific to each type of event.
 * Key Values:: Functions for manipulating keyboard codes.
 @end menu
