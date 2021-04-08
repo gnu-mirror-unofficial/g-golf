@@ -24,7 +24,7 @@ The G-Golf integration with GObject Closures.
 @end indentedblock
 
 
-@subheading Procedures and Methods
+@subheading Accessors and Methods
 
 @indentedblock
 @table @code
