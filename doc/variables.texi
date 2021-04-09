@@ -83,8 +83,13 @@
 @set UGOBJECT-Signals https://developer.gnome.org/gobject/stable/gobject-Signals.html
 
 
-@set UGDK-Events https://developer.gnome.org/gdk3/stable/gdk3-Events.html
+@c
+@c Gtk-3.0, Gdk-3.0
+@c
+@set UGTK3 https://developer.gnome.org/gtk3/stable
 
+@set UGDK3 https://developer.gnome.org/gdk3/stable
+@set UGDK-Events https://developer.gnome.org/gdk3/stable/gdk3-Events.html
 @set UGDK-ModifierType https://developer.gnome.org/gdk3/stable/gdk3-Windows.html#GdkModifierType
 @set UGDK-KeyValues https://developer.gnome.org/gdk3/stable/gdk3-Keyboard-Handling.html
 
@@ -92,6 +97,8 @@
 @c
 @c Gtk-4.0, Gdk-4.0, Gsk-4.0
 @c
+
+@set UGTK-MIGRATING-3-TO-4 https://developer.gnome.org/gtk4/stable/gtk-migrating-3-to-4.html
 
 @set UGTK-WEB https://gtk.org/
 @set UGTK https://developer.gnome.org/gtk4/stable/

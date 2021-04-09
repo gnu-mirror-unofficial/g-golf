@@ -21,6 +21,13 @@ otherwise specified, examples are based on and use @uref{@value{UGTK},
 Gtk-4.0}, @uref{@value{UGDK}, Gdk-4.0} and @uref{@value{UGSK}, Gsk-4.0}
  - which is new and only available with Gtk-4.0.
 
+G-Golf itself perfectly works and support @uref{@value{UGTK3}, Gtk-3.0}
+and @uref{@value{UGDK3}, Gdk-3.0}.
+
+We shall complete this brief introduction mentioning that the GNOME team
+wrote a guide to help @uref{@value{UGTK-MIGRATING-3-TO-4}, Migrating
+from GTK 3.x to GTK 4}.
+
 
 @menu
 * Hello World!:: Following the tradition, we will first look at the
