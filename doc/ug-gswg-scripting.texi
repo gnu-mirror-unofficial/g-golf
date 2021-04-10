@@ -15,7 +15,7 @@ Scheme code.
 @ @ @sup{_} @strong{Invoking Guile}
 
 
-It would be behond the scope of this manual to expose the numerous ways
+It would be beyond the scope of this manual to expose the numerous ways
 one can define and invoke a Guile script, for a complete description of
 the subject, @pxref{Guile Scripting,,, guile, The GNU Guile Reference
 Manual}.
