@@ -13,3 +13,52 @@
 
 G-Golf Events interfaces.@*
 Handling events from the window system.
+
+
+@c @ @ @sup{_} @strong{Special Note}
+
+@sp 1
+@center @sup{_} @sc{Special Note} @sup{_}
+
+Most of the numerous, important and sometimes radical changes in between
+@uref{@value{UGTK3}, Gtk-3.0}/@uref{@value{UGDK3}, Gdk-3.0} and
+@uref{@value{UGTK}, Gtk-4.0}/@uref{@value{UGDK},
+Gdk-4.0}/@uref{@value{UGSK}, Gsk-4.0} have had no impact on G-Golf. And
+by most, we actually mean all but one: the GdkEvent and its API.
+
+For this reason, this section is split/organized in two subheading,
+namely @samp{In Gdk-3.0} and @samp{In Gdk-4.0}, how creative :), that
+expose their respective G-Golf interfaces.
+
+@c s@footnote{On purpose, to avoid to un-usefully increase the depth of the
+@c table of content, which incidentally might also confuse users (while
+@c accessing the table of content), since it is tually read the special
+@c note that introduces this section,}
+
+@c @center @sup{_} @sc{End of Special Note} @sup{_}
+@sp 1
+
+
+@ @ @sup{_} @strong{In Gdk-3.0}
+
+In @uref{@value{UGDK3}, Gdk-3.0}, a GdkEvent contains a union of all of
+the event types. Data fields may be accessed either directly, direct
+access to GdkEvent structs, or using accessors (but not all data fields
+have an accessor).
+
+In G-Golf however GdkEvent is a class, with an event slot - holding a
+pointer the Gdk event - all other slots are virtual and define an
+accessor, which is the only way users may retrieve data fields.
+
+
+@ @ @sup{_} @strong{In Gdk-4.0}
+
+In @uref{@value{UGDK}, Gdk-4.0}, GdkEvent is a class@footnote{From a GI
+point of view - internally, it is a C struct.}. GdkEvent structs are
+opaque and immutable. Direct access to GdkEvent structs is no longer
+possible in GTK 4. All event fields have accessors.
+
+In G-Golf - as in Gdk-4.0 GdkEvent is a class - no special treatment is
+performed anymore. In particular, no virtual slot is defined and users
+must access the GdkEvent structs data fields using the accesors provided
+by Gdk-4.0.
