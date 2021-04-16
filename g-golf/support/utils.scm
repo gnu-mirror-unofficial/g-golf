@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -49,6 +49,7 @@
 	    %g-name-transform-exceptions
             %g-studly-caps-expand-token-exceptions
 	    g-name->name
+            g-name->short-name
 	    g-name->class-name
 	    #;gi-class-name->method-name
 
@@ -209,11 +210,22 @@
     ("GObject" . "gobject")))
 
 (define* (g-name->name g-name #:optional (as-string? #f))
-  (let ((scm-name (or (assoc-ref %g-name-transform-exceptions g-name)
-                      (g-studly-caps-expand g-name))))
+  (let ((name (or (assoc-ref %g-name-transform-exceptions g-name)
+                  (g-studly-caps-expand g-name))))
     (if as-string?
-        scm-name
-        (string->symbol scm-name))))
+        name
+        (string->symbol name))))
+
+(define* (g-name->short-name g-name g-parent-name
+                             #:optional (as-string? #f))
+  "Returns a (method) short name for G-NAME, obtained by dropping the
+prefix given by G-PARENT-NAME - which is the container (class) name - or
+its plural form, and its trailing #\\_ (underscore) delimiter."
+  (let* ((p-scm-name (g-name->name g-parent-name 'as-string))
+         (its-length (string-length p-scm-name)))
+    (g-name->name (string-drop g-name
+                               (1+ (string-index g-name #\_ its-length)))
+                  as-string?)))
 
 (define (g-name->class-name g-name)
   (let ((scm-name (g-name->name g-name 'as-string)))

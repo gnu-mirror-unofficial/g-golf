@@ -155,7 +155,13 @@
   (assert-equal '<clutter-actor>
 		(g-name->class-name "ClutterActor"))
   (assert-equal 'g-variant-type-checked-
-                (g-name->name "g_variant_type_checked_")))
+                (g-name->name "g_variant_type_checked_"))
+  (assert-equal 'get-event-type
+                (g-name->short-name "gdk_event_get_event_type"
+                                    "GdkEvent"))
+  (assert-equal 'get-angle
+                (g-name->short-name "gdk_events_get_angle"
+                                    "GdkEvent")))
 
 
 (exit-with-summary (run-all-defined-test-cases))

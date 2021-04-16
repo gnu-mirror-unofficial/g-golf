@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -14,6 +14,7 @@
 @table @code
 @item @ref{g-studly-caps-expand}
 @item @ref{g-name->name}
+@item @ref{g-name->short-name}
 @item @ref{g-name->class-name}
 @item @ref{gi-type-tag->ffi}
 @item @ref{gi-type-tag->init-val}
@@ -81,27 +82,45 @@ $3 = "webkit-web-context"
 
 
 @anchor{g-name->name}
+@anchor{g-name->short-name}
 @anchor{g-name->class-name}
 @deffn Procedure g-name->name g-name [as-string? #f]
+@deffnx Procedure g-name->short-name g-name g-parent-name [as-string? #f]
 @deffnx Procedure g-name->class-name g-name
 
 Return a symbol name (or a string for the former, if the optional
 parameter is not @code{#f}).
 
-The former first obtains a string, the scheme representation for
+@ref{g-name->name} first obtains the scheme representation string for
 @var{g-name}, by looking for a possible entry in
-@ref{%g-name-transform-exceptions}, then, if it failed, by calling
-@ref{g-studly-caps-expand}. It then either returns that string, if the
-optional @var{as-string?} is not @code{#f}, or its symbol name, by
-calling @code{string->symbol}.
+@ref{%g-name-transform-exceptions}, or if it failed, by calling
+@ref{g-studly-caps-expand}. If the optional @var{as-string?} is not
+@code{#f}, it returns that string, otherwise, it returns its symbol
+name, by calling @code{string->symbol}.
 
-The later uses the former, surrounds the result using @code{#\<} and
-@code{#\>} characters then calls @code{string->symbol}. For example:
+@ref{g-name->short-name} returns a (method) short name for @var{g-name},
+obtained by dropping the prefix given by @var{g-parent-name} - which is
+the container (class) name - or its plural form, and its trailing #\_
+(underscore) delimiter. For example:
 
 @lisp
-(g-name->class-name "ClutterActor")
+(g-name->shortname "gdk_event_get_event_type" "GdkEvent")
 @print{}
-$2 = <clutter-actor>
+$2 = get-event-type
+
+(g-name->shortname "gdk_events_get_angle" "GdkEvent")
+@print{}
+$3 = get-angle
+@end lisp
+
+@ref{g-name->class-name} calls g-name->name, surrounds the result using
+@code{#\<} and @code{#\>} characters then calls
+@code{string->symbol}. For example:
+
+@lisp
+(g-name->class-name "GtkWindow")
+@print{}
+$4 = <gtk-window>
 @end lisp
 @end deffn
 
