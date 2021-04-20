@@ -69,14 +69,12 @@ Here are two examples:
 
 @lisp
 (g-studly-caps-expand "GStudlyCapsExpand")
-@print{}
-$2 = "g-studly-caps-expand"
+@result{} "g-studly-caps-expand"
 @end lisp
 
 @lisp
 (g-studly-caps-expand "WebKitWebContext")
-@print{}
-$3 = "webkit-web-context"
+@result{} "webkit-web-context"
 @end lisp
 @end deffn
 
@@ -86,41 +84,60 @@ $3 = "webkit-web-context"
 @anchor{g-name->class-name}
 @deffn Procedure g-name->name g-name [as-string? #f]
 @deffnx Procedure g-name->short-name g-name g-parent-name [as-string? #f]
-@deffnx Procedure g-name->class-name g-name
+@deffnx Procedure g-name->class-name g-name [as-string? #f]
 
-Return a symbol name (or a string for the former, if the optional
-parameter is not @code{#f}).
+Return a symbol name, or a string name if @var{as-string} is #t.
 
 @ref{g-name->name} first obtains the scheme representation string for
 @var{g-name}, by looking for a possible entry in
 @ref{%g-name-transform-exceptions}, or if it failed, by calling
-@ref{g-studly-caps-expand}. If the optional @var{as-string?} is not
-@code{#f}, it returns that string, otherwise, it returns its symbol
-name, by calling @code{string->symbol}.
+@ref{g-studly-caps-expand}. Then, if @var{as-string} is #t, it returns
+that string, otherwise, it calls and returns the result of
+@code{string->symbol}.
 
-@ref{g-name->short-name} returns a (method) short name for @var{g-name},
-obtained by dropping the prefix given by @var{g-parent-name} - which is
-the container (class) name - or its plural form, and its trailing #\_
-(underscore) delimiter. For example:
+@ref{g-name->short-name} returns a (method) short name for
+@var{g-name}. It first obtains the scheme representation string for both
+argument, @var{name} and @var{parent-name}, which is the container
+(class) name, then:
+
+@itemize
+@item
+if @var{parent-name} is (fully) contained in @var{name}, it drops the
+@var{parent-name} prefix - or its plural form - and its trailing #\-
+(hiphen) delimiter from @var{name};
+@ifhtml
+@*@*
+@end ifhtml
+
+@item
+otherwise, it drops the longest common string prefix it finds.
+@end itemize
+
+Then, if @var{as-string} is #t, it returns that string, otherwise, it
+calls and returns the result of @code{string->symbol}.
+
+To illustrate, here is an example for each of the three above exposed
+cases:
 
 @lisp
 (g-name->shortname "gdk_event_get_event_type" "GdkEvent")
-@print{}
-$2 = get-event-type
+@result{} get-event-type
 
 (g-name->shortname "gdk_events_get_angle" "GdkEvent")
-@print{}
-$3 = get-angle
+@result{} get-angle
+
+(g-name->short-name "gtk_drag_begin" "GtkWidget")
+@result{} drag-begin
 @end lisp
 
-@ref{g-name->class-name} calls g-name->name, surrounds the result using
-@code{#\<} and @code{#\>} characters then calls
-@code{string->symbol}. For example:
+@ref{g-name->class-name} calls @ref{g-name->name}, surrounds the result
+using @code{#\<} and @code{#\>} characters then either return that
+string, if @var{as-string?} is @code{#t}, otherwise it calls and returns
+the result of @code{string->symbol}:
 
 @lisp
 (g-name->class-name "GtkWindow")
-@print{}
-$4 = <gtk-window>
+@result{} <gtk-window>
 @end lisp
 @end deffn
 

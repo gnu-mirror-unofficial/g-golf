@@ -216,22 +216,30 @@
         name
         (string->symbol name))))
 
-(define* (g-name->short-name g-name g-parent-name
+(define* (g-name->short-name g-name
+                             g-parent-name
                              #:optional (as-string? #f))
-  "Returns a (method) short name for G-NAME, obtained by dropping the
-prefix given by G-PARENT-NAME - which is the container (class) name - or
-its plural form, and its trailing #\\_ (underscore) delimiter."
-  (let* ((p-scm-name (g-name->name g-parent-name 'as-string))
-         (its-length (string-length p-scm-name)))
-    (g-name->name (string-drop g-name
-                               (1+ (string-index g-name #\_ its-length)))
-                  as-string?)))
+  (let* ((name (g-name->name g-name 'as-string))
+         (parent-name (g-name->name g-parent-name 'as-string))
+         (short-name
+          (if (string-contains name parent-name)
+              (let* ((spl (string-length parent-name))
+                     (delim (string-index name #\- spl)))
+                (string-drop name (1+ delim)))
+              (let* ((name (g-name->name g-name 'as-string))
+                     (parent-name (g-name->name g-parent-name 'as-string))
+                     (spl (string-prefix-length name parent-name)))
+                (string-drop name spl)))))
+    (if as-string?
+        short-name
+        (string->symbol short-name))))
 
-(define (g-name->class-name g-name)
-  (let ((scm-name (g-name->name g-name 'as-string)))
-    (string->symbol (string-append "<"
-                                   scm-name
-                                   ">"))))
+(define* (g-name->class-name g-name #:optional (as-string? #f))
+  (let* ((name (g-name->name g-name 'as-string))
+         (class-name (string-append "<" name ">")))
+    (if as-string?
+        class-name
+        (string->symbol class-name))))
 
 ;; Not sure this is used but let's keep it as well
 #;(define (gi-class-name->method-name class-name name)

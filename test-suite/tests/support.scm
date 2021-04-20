@@ -161,7 +161,10 @@
                                     "GdkEvent"))
   (assert-equal 'get-angle
                 (g-name->short-name "gdk_events_get_angle"
-                                    "GdkEvent")))
+                                    "GdkEvent"))
+  (assert-equal 'drag-begin
+                (g-name->short-name "gtk_drag_begin"
+                                    "GtkWidget")))
 
 
 (exit-with-summary (run-all-defined-test-cases))
