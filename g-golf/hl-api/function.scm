@@ -216,19 +216,17 @@
         (module-set! module name (!i-func f-inst)))))
 
 (define (gi-add-method f-inst fallback)
-  (let* ((parent (g-base-info-get-container (!info f-inst)))
+  (let* ((info (!info f-inst))
+         (parent (g-base-info-get-container info))
          (type-tag (g-base-info-get-type parent)))
     (case type-tag
       ((interface
         object)
-       (let* ((p-g-name (g-registered-type-info-get-type-name parent))
-              (p-name (g-name->name p-g-name 'as-string))
-              (n-drop (+ (string-length p-name) 1))
+       (let* ((g-name (!g-name f-inst))
+              (g-parent-name (g-registered-type-info-get-type-name parent))
               (m-long-name (!name f-inst))
-              (m-long-name-str (symbol->string m-long-name))
               (m-long-generic (gi-add-method-gf m-long-name))
-              (m-short-name-str (string-drop m-long-name-str n-drop))
-              (m-short-name (string->symbol m-short-name-str))
+              (m-short-name (g-name->short-name g-name g-parent-name))
               (m-short-generic (gi-add-method-gf-sn m-short-name))
               (specializers (gi-add-method-specializers f-inst))
               (procedure (if (!override? f-inst)
@@ -1312,8 +1310,8 @@ method with its 'old' definition.
 
 (define (g-object-define-class g-type g-name c-name module)
   (let* ((parent (g-type-parent g-type))
-         (p-g-name (g-type-name parent))
-         (p-name (g-name->class-name p-g-name))
+         (g-p-name (g-type-name parent))
+         (p-name (g-name->class-name g-p-name))
          (p-class-var (module-variable module p-name))
          (p-class (and p-class-var (module-ref module p-name))))
     (if p-class
