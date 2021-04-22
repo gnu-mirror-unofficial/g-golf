@@ -1399,9 +1399,7 @@ method with its 'old' definition.
                     gdk-event-get-root-coords
                     gdk-event-get-scroll-direction
                     gdk-event-get-scroll-deltas
-                    gdk-event-get-state
-                    gdk-event-get-angle
-                    gdk-event-get-distance)
+                    gdk-event-get-state)
                   %gi-strip-boolean-result)))))
 
 (define* (gi-import-registered info
