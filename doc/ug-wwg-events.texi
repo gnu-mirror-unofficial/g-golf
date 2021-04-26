@@ -50,6 +50,297 @@ In G-Golf however GdkEvent is a class, with an event slot - holding a
 pointer the Gdk event - all other slots are virtual and define an
 accessor, which is the only way users may retrieve data fields.
 
+@subheading Class
+
+@indentedblock
+@table @code
+@item @ref{<gdk-event>}
+@end table
+@end indentedblock
+
+
+@subheading Accessors
+
+@indentedblock
+@table @code
+@item @ref{!event}
+@item @ref{!axis}
+@item @ref{!button}
+@item @ref{!click-count}
+@item @ref{!coords}
+@item @ref{!device}
+@item @ref{!device-tool}
+@item @ref{!event-sequence}
+@item @ref{!event-type}
+@item @ref{!keycode}
+@item @ref{!keyval}
+@item @ref{!pointer-emulated}
+@item @ref{!root-coords}
+@item @ref{!scancode}
+@item @ref{!screen}
+@item @ref{!scroll-deltas}
+@item @ref{!scroll-direction}
+@item @ref{!seat}
+@item @ref{!source-device}
+@item @ref{!state}
+@item @ref{!time}
+@item @ref{!window}
+@item @ref{!keyname}
+@item @ref{!x}
+@item @ref{!y}
+@item @ref{!root-x}
+@item @ref{!root-y}
+@end table
+@end indentedblock
+
+
+@subheading Class
+
+@anchor{<gdk-event>}
+@deftp Class <gdk-event>
+
+Class Precedence List:
+
+@indentedblock
+@table @code
+@item <gdk-event>
+@item <object>
+@item <top>
+@end table
+@end indentedblock
+
+Direct slots are:
+
+@indentedblock
+@table @code
+
+@item event @*
+#:accessor !event @*
+#:init-keyword #:event @*
+
+A pointer to a @code{GdkEvent}.
+
+@item axis @*
+#:accessor !axis @*
+#:allocation #:virtual @*
+
+@item button @*
+#:accessor !button @*
+#:allocation #:virtual @*
+
+@item click-count @*
+#:accessor !click-count @*
+#:allocation #:virtual @*
+
+@item coords @*
+#:accessor !coords @*
+#:allocation #:virtual @*
+
+@item device @*
+#:accessor !device @*
+#:allocation #:virtual @*
+
+@item device-tool @*
+#:accessor !device-tool @*
+#:allocation #:virtual @*
+
+@item event-sequence @*
+#:accessor !event-sequence @*
+#:allocation #:virtual @*
+
+@item event-type @*
+#:accessor !event-type @*
+#:allocation #:virtual @*
+
+@item keycode @*
+#:accessor !keycode @*
+#:allocation #:virtual @*
+
+@item keyval @*
+#:accessor !keyval @*
+#:allocation #:virtual @*
+
+@item pointer-emulated @*
+#:accessor !pointer-emulated @*
+#:allocation #:virtual @*
+
+@item root-coords @*
+#:accessor !root-coords @*
+#:allocation #:virtual @*
+
+@item scancode @*
+#:accessor !scancode @*
+#:allocation #:virtual @*
+
+@item screen @*
+#:accessor !screen @*
+#:allocation #:virtual @*
+
+@item scroll-deltas @*
+#:accessor !scroll-deltas @*
+#:allocation #:virtual @*
+
+@item scroll-direction @*
+#:accessor !scroll-direction @*
+#:allocation #:virtual @*
+
+@item seat @*
+#:accessor !seat @*
+#:allocation #:virtual @*
+
+@item source-device @*
+#:accessor !source-device @*
+#:allocation #:virtual @*
+
+@item state @*
+#:accessor !state @*
+#:allocation #:virtual @*
+
+@item time @*
+#:accessor !time @*
+#:allocation #:virtual @*
+
+@item window @*
+#:accessor !window @*
+#:allocation #:virtual @*
+
+@item keyname @*
+#:accessor !keyname @*
+#:allocation #:virtual @*
+
+@item x @*
+#:accessor !x @*
+#:allocation #:virtual @*
+
+@item y @*
+#:accessor !y @*
+#:allocation #:virtual @*
+
+@item root-x @*
+#:accessor !root-x @*
+#:allocation #:virtual @*
+
+@item root-y @*
+#:accessor !root-y @*
+#:allocation #:virtual @*
+@end table
+@end indentedblock
+@end deftp
+
+@anchor{!event}
+@deffn Accessor !event (inst <gdk-event>)
+Returns the content of the event slot for @var{inst}, a pointer to a
+@code{GdkEvent}.
+@end deffn
+
+@anchor{!axis}
+@anchor{!button}
+@anchor{!click-count}
+@anchor{!coords}
+@anchor{!device}
+@anchor{!device-tool}
+@anchor{!event-sequence}
+@anchor{!event-type}
+@anchor{!keycode}
+@anchor{!keyval}
+@anchor{!pointer-emulated}
+@anchor{!root-coords}
+@anchor{!scancode}
+@anchor{!screen}
+@anchor{!scroll-deltas}
+@anchor{!scroll-direction}
+@anchor{!seat}
+@anchor{!source-device}
+@anchor{!state}
+@anchor{!time}
+@anchor{!window}
+@deffn Accessor !axis (inst <gdk-event>)
+@deffnx Accessor !button (inst <gdk-event>)
+@deffnx Accessor !click-count (inst <gdk-event>)
+@deffnx Accessor !coords (inst <gdk-event>)
+@deffnx Accessor !device (inst <gdk-event>)
+@deffnx Accessor !device-tool (inst <gdk-event>)
+@deffnx Accessor !event-sequence (inst <gdk-event>)
+@deffnx Accessor !event-type (inst <gdk-event>)
+@deffnx Accessor !keycode (inst <gdk-event>)
+@deffnx Accessor !keyval (inst <gdk-event>)
+@deffnx Accessor !pointer-emulated (inst <gdk-event>)
+@deffnx Accessor !root-coords (inst <gdk-event>)
+@deffnx Accessor !scancode (inst <gdk-event>)
+@deffnx Accessor !screen (inst <gdk-event>)
+@deffnx Accessor !scroll-deltas (inst <gdk-event>)
+@deffnx Accessor !scroll-direction (inst <gdk-event>)
+@deffnx Accessor !seat (inst <gdk-event>)
+@deffnx Accessor !source-device (inst <gdk-event>)
+@deffnx Accessor !state (inst <gdk-event>)
+@deffnx Accessor !time (inst <gdk-event>)
+@deffnx Accessor !window (inst <gdk-event>)
+
+Respectively returns the scheme representation of the content of the
+@var{inst} event (struct) element - refered to by its name. It is an
+error to call an accessor on a @var{inst} for which the event (struct)
+does not deliver the element.
+
+Internally, each of the above @code{<gdk-event>} accessor calls the
+corresponding @code{GdkEvent} accessor, passing the content of the
+@code{event} slot. For example, lets see what happens when a user
+performs a left button (single) click upon a widget that tracks the
+@code{'button-press-event} signal callback:
+
+@lisp
+(!button @var{inst})
+@expansion{} (gdk-event-get-button (!event @var{inst}))
+@result{} 1
+
+(!click-count @var{inst})
+@expansion{} (gdk-event-get-click-count (!event @var{inst}))
+@result{} 1
+@end lisp
+
+Please refer to the @uref{@value{UGDK-Events}, Gdk Events} documentation
+for a description of the event (struct) element accessor returned value.
+@end deffn
+
+To complete the above listed @code{<gdk-event>} virtual slots and
+accessors automatically provided by introspecting @code{GdkEvent},
+G-Golf also defines a few additional rather convinient virtual slots and
+accessors:
+
+@anchor{!keyname}
+@deffn Accessor !keyname (inst <gdk-event>)
+
+Returns the key (symbol) name that was pressed or released.
+
+Note that there is actually no such element in any (gdk) event. This
+accessor calls @code{gdk-keyval-name} on the keyval of the event). Here
+is what happens if a user press the 'a' keyboard key in a widget that
+tracks the @code{'key-press-event} signal callback:
+
+@lisp
+(!keyname @var{inst})
+@expansion{} (gdk-keyval-name (!keyval @var{inst}))
+@expansion{} (gdk-keyval-name (gdk-event-get-keyval @var{inst}))
+@result{} a
+@end lisp
+
+@end deffn
+
+@anchor{!x}
+@anchor{!y}
+@anchor{!root-x}
+@anchor{!root-y}
+@deffn Accessor !x (inst <gdk-event>)
+@deffnx Accessor !y (inst <gdk-event>)
+@deffnx Accessor !root-x (inst <gdk-event>)
+@deffnx Accessor !root-y (inst <gdk-event>)
+
+Respectively returns the x, y, root-x and root-y coordinate for
+@var{inst}.
+
+The result is simply obtained by destructuring and selecting one of the
+@ref{!coords} and @ref{!root-coords} list values, respectively.
+@end deffn
+
 
 @ @ @sup{_} @strong{In Gdk-4.0}
 
