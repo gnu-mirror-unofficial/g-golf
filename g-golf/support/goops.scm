@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016, 2020
+;;;; Copyright (C) 2016, 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -38,6 +38,7 @@
 
 
 (define-module (g-golf support goops)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 receive)
   #:use-module (srfi srfi-1)
@@ -54,7 +55,8 @@
 
   #:export (define-method*
             mslot-set!
-            generic?))
+            generic?
+            texinfo-class-definition))
 
 
 (g-export class-direct-virtual-slots
@@ -137,3 +139,85 @@
 
 (define (generic? value)
   (is-a? value <generic>))
+
+
+;;;
+;;; Doc support - Draft, wip
+;;;
+
+(define* (texinfo-class-definition class #:key (port #t) (anchor? #t))
+  (let ((name (class-name class)))
+    (when anchor?
+      (format port "@anchor{~A}~%" name))
+    (format port "@deftp Class ~A~%" name)
+    (texinfo-class-precedence-list class #:port port)
+    (texinfo-class-slots class #:port port)
+    (format port "@end deftp~%")
+    (values)))
+
+(define %texinfo-cpl-start
+   "\nClass Precedence List:
+
+@indentedblock
+@table @code\n")
+
+(define %texinfo-cpl-end
+   "@end table
+@end indentedblock\n")
+
+(define* (texinfo-class-precedence-list class #:key (port #t))
+  (format port "~A" %texinfo-cpl-start)
+  (for-each (lambda (cpl-item)
+              (format port "@item ~A~%" (class-name cpl-item)))
+      (class-precedence-list class))
+  (format port "~A" %texinfo-cpl-end))
+
+(define %texinfo-class-direct-slots-start
+   "\nDirect slots are:
+
+@indentedblock
+@table @code\n")
+
+(define %texinfo-class-direct-virtual-slots-start
+   "\nDirect virtual slots are:
+
+@indentedblock
+@table @code\n")
+
+(define %texinfo-class-slots-end
+   "@end table
+@end indentedblock\n")
+
+(define* (texinfo-class-slots class #:key (port #t))
+  (let ((name (class-name class))
+        (slots (class-direct-slots class))
+        (virtual-slots (class-direct-virtual-slots class)))
+    (format port "~A" %texinfo-class-direct-slots-start)
+    (for-each texinfo-slot-definition
+        #;(lset-difference eq? slots virtual-slots)
+        slots)
+    (format port "~A" %texinfo-class-slots-end)
+    #;(format port "~A" %texinfo-class-direct-virtual-slots-start)
+    #;(for-each texinfo-slot-definition
+        virtual-slots)
+    #;(format port "~A" %texinfo-class-slots-end)))
+
+(define* (texinfo-slot-definition slot #:key (port #t))
+  (let ((slot-options (slot-definition-options slot)))
+    (let loop ((options slot-options))
+      (match options
+        (() 'nothing)
+        ((kw val . rests)
+         (case kw
+           ((#:name)
+            (format port "~%@item ~A @*~%" val))
+           ((#:accessor)
+            (format port "~A ~A @*~%" kw
+                    (generic-function-name val)))
+           #;((#:allocation)
+            'nothing)
+           ((#:slot-ref #:slot-set!)
+            'nothing)
+           (else
+            (format port "~A ~A @*~%" kw val)))
+         (loop rests))))))
