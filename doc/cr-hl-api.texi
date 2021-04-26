@@ -29,7 +29,6 @@ Reference Manual}), in a way that is largely inspired by
 
 @menu
 
-* Events__:: The G-Golf integration with Gdk events.
 * GType:: The base of the GObject type system.
 * GObject__:: The G-Golf integration with the GObject object system.
 * Closure:: The G-Golf integration with GObject Closures.
@@ -41,7 +40,6 @@ Reference Manual}), in a way that is largely inspired by
 @end menu
 
 
-@include cr-hl-api-events.texi
 @include cr-hl-api-gtype.texi
 @include cr-hl-api-gobject.texi
 @include cr-hl-api-closure.texi

@@ -72,9 +72,6 @@ g_golf_TEXINFOS = \
   cr-gobject-param-spec.texi	\
   cr-gobject-closures.texi	\
   cr-gobject-signals.texi	\
-  cr-gdk.texi			\
-  cr-gdk-events.texi		\
-  cr-gdk-key-values.texi	\
   cr-gi.texi			\
   cr-gi-repository.texi		\
   cr-gi-common-types.texi	\
@@ -104,7 +101,6 @@ g_golf_TEXINFOS = \
   cr-support-union.texi		\
   cr-support-utils.texi		\
   cr-hl-api.texi		\
-  cr-hl-api-events.texi		\
   cr-hl-api-gtype.texi		\
   cr-hl-api-gobject.texi	\
   cr-hl-api-closure.texi	\
