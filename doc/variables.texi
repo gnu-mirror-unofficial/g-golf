@@ -138,3 +138,11 @@
 @set UGGMGOG https://www.gnu.org/software/guile-gnome/docs/gobject/html/gnome-gobject-generics.html#gnome-gobject-generics
 
 @set UWIKI-CAMELCASE https://en.wikipedia.org/wiki/Camel_case
+
+
+@c
+@c Freedesktop.org
+@c
+
+@c XDG Base Directory Specification
+@set UXDG-BASEDIR-SPEC http://www.freedesktop.org/Standards/basedir-spec

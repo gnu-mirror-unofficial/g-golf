@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2020 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -20,6 +20,8 @@ Miscellaneous Utility Functions - a selection of portable utility functions
 @table @code
 @item @ref{g-get-prgname}
 @item @ref{g-set-prgname}
+@item @ref{g-get-system-data-dirs}
+@item @ref{g-get-system-config-dirs}
 @end table
 @end indentedblock
 
@@ -85,6 +87,64 @@ If you are using @code{GApplication}, the program name is set in
 Note that for thread-safety reasons this function can only be called
 once.
 
+@end deffn
+
+
+@anchor{g-get-system-data-dirs}
+@deffn Procedure g-get-system-data-dirs
+
+Returns an ordered list of base directories in which to access
+system-wide application data.
+
+On UNIX platforms this is determined using the mechanisms described in
+the @uref{@value{UXDG-BASEDIR-SPEC}, XDG Base Directory
+Specification}. In this case the list of directories retrieved will be
+@code{XDG_DATA_DIRS}.
+
+On Windows it follows XDG Base Directory Specification if XDG_DATA_DIRS
+is defined. If XDG_DATA_DIRS is undefined, the first elements in the
+list are the Application Data and Documents folders for All
+Users. (These can be determined only on Windows 2000 or later and are
+not present in the list on other Windows versions.) See documentation
+for CSIDL_COMMON_APPDATA and CSIDL_COMMON_DOCUMENTS.
+
+Then follows the "share" subfolder in the installation folder for the
+package containing the DLL that calls this function, if it can be
+determined.
+
+Finally the list contains the "share" subfolder in the installation
+folder for GLib, and in the installation folder for the package the
+application's .exe file belongs to.
+
+The installation folders above are determined by looking up the folder
+where the module (DLL or EXE) in question is located. If the folder's
+name is "bin", its parent is used, otherwise the folder itself.
+
+Note that on Windows the returned list can vary depending on where this
+function is called.
+@end deffn
+
+
+@anchor{g-get-system-config-dirs}
+@deffn Procedure g-get-system-config-dirs
+
+Returns an ordered list of base directories in which to access
+system-wide configuration information.
+
+On UNIX platforms this is determined using the mechanisms described in
+the @uref{@value{UXDG-BASEDIR-SPEC}, XDG Base Directory
+Specification}. In this case the list of directories retrieved will be
+@code{XDG_CONFIG_DIRS}.
+
+On Windows it follows XDG Base Directory Specification if
+XDG_CONFIG_DIRS is defined. If XDG_CONFIG_DIRS is undefined, the
+directory that contains application data for all users is used
+instead. A typical path is C:\Documents and Settings\All
+Users\Application Data. This folder is used for application data that is
+not user specific. For example, an application can store a spell-check
+dictionary, a database of clip art, or a log file in the
+CSIDL_COMMON_APPDATA folder. This information will not roam and is
+available to anyone using the computer.
 @end deffn
 
 

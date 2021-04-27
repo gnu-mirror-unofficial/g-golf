@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020
+;;;; Copyright (C) 2020 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -29,9 +29,12 @@
 (define-module (g-golf glib misc-util-funcs)
   #:use-module (system foreign)
   #:use-module (g-golf init)
+  #:use-module (g-golf gi utils)
 
   #:export (g-get-prgname
-	    g-set-prgname))
+	    g-set-prgname
+            g-get-system-data-dirs
+            g-get-system-config-dirs))
 
 
 ;;;
@@ -39,13 +42,16 @@
 ;;;
 
 (define (g-get-prgname)
-  (let ((foreign (g_get_prgname)))
-    (if (null-pointer? foreign)
-        #f
-        (pointer->string foreign))))
+  (gi->scm (g_get_prgname) 'string))
 
 (define (g-set-prgname name)
-  (g_set_prgname (string->pointer name)))
+  (g_set_prgname (scm->gi name 'string)))
+
+(define (g-get-system-data-dirs)
+  (gi->scm (g_get_system_data_dirs) 'strings))
+
+(define (g-get-system-config-dirs)
+  (gi->scm (g_get_system_config_dirs) 'strings))
 
 
 ;;;
@@ -63,3 +69,15 @@
                       (dynamic-func "g_set_prgname"
 				    %libglib)
                       (list '*)))	;; name
+
+(define g_get_system_data_dirs
+  (pointer->procedure '*
+                      (dynamic-func "g_get_system_data_dirs"
+				    %libglib)
+                      (list )))		;; void
+
+(define g_get_system_config_dirs
+  (pointer->procedure '*
+                      (dynamic-func "g_get_system_config_dirs"
+				    %libglib)
+                      (list )))		;; void

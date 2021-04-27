@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -141,6 +141,10 @@
   (assert (g-set-prgname "org.gtk.example"))
   (assert-true (string=? (g-get-prgname)
                          "org.gtk.example")))
+
+(define-method (test-g-get-system-*-dirs (self <g-golf-test-glib>))
+  (assert (g-get-system-data-dirs))
+  (assert (g-get-system-config-dirs)))
 
 
 ;;;
