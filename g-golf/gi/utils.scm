@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -167,14 +167,14 @@
           (null-pointer? pointer))
       '()
       (letrec ((gi-strings->scm-1
-                     (lambda (pointer result)
-                       (receive (d-pointer)
-	                   (dereference-pointer pointer)
-                         (if (null-pointer? d-pointer)
-                             (reverse! result)
-                             (gi-strings->scm-1 (gi-pointer-inc pointer)
-                                                (cons (pointer->string d-pointer)
-                                                      result)))))))
+                (lambda (pointer result)
+                  (receive (d-pointer)
+	              (dereference-pointer pointer)
+                    (if (null-pointer? d-pointer)
+                        (reverse! result)
+                        (gi-strings->scm-1 (gi-pointer-inc pointer)
+                                           (cons (pointer->string d-pointer)
+                                                 result)))))))
              (gi-strings->scm-1 pointer '()))))
 
 (define (gi-csv-string->scm pointer)
