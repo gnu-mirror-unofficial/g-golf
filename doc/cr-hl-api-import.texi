@@ -63,21 +63,21 @@ time, but here is a example:
 @lisp
 ,use (g-golf)
 (g-irepository-require "Clutter")
-$2 = #<pointer 0x5642cb065e30>
+@result{} $2 = #<pointer 0x5642cb065e30>
 
 (g-irepository-find-by-name "Clutter" "ActorFlags")
-$3 = #<pointer 0x5642cb067de0>
+@result{} $3 = #<pointer 0x5642cb067de0>
 
 (gi-import-info $3)
-$4 = #<<gi-flags> 5642cb13c5d0>
+@result{} $4 = #<<gi-flags> 5642cb13c5d0>
 
 (describe $4)
-#<<gi-flags> 5642cb13c5d0> is an instance of class <gi-flags>
-Slots are:
-     enum-set = ((mapped . 2) (realized . 4) (reactive . 8) (visible . 16) (no-layout . 32))
-     g-type = 94844874149456
-     g-name = "ClutterActorFlags"
-     name = clutter-actor-flags
+@print{} #<<gi-flags> 5642cb13c5d0> is an instance of class <gi-flags>
+@print{} Slots are:
+@print{}      enum-set = ((mapped . 2) (realized . 4) (reactive . 8) (visible . 16) (no-layout . 32))
+@print{}      g-type = 94844874149456
+@print{}      g-name = "ClutterActorFlags"
+@print{}      name = clutter-actor-flags
 @end lisp
 @end deffn
 
@@ -113,7 +113,7 @@ retreive its @ref{<gi-flags>} instance as is:
 @lisp
 @dots{}
 (gi-cache-ref 'flags 'clutter-actor-flags)
-$6 = #<<gi-flags> 5642cb13c5d0>
+@result{} $6 = #<<gi-flags> 5642cb13c5d0>
 @end lisp
 @end deffn
 
@@ -136,27 +136,27 @@ instance @code{name} slot as the secondary key. Here is an example:
 @lisp
 ,use (g-golf)
 (g-irepository-require "Clutter")
-$2 = #<pointer 0x55c191f3fe30>
+@result{} $2 = #<pointer 0x55c191f3fe30>
 
 (g-irepository-find-by-name "Clutter" "init")
-$3 = #<pointer 0x55c191f41de0>
+@result{} $3 = #<pointer 0x55c191f41de0>
 
 (gi-import-function $3)
-$4 = #<<function> 55c191e81510>
+@result{} $4 = #<<function> 55c191e81510>
 
 (describe $4)
-#<<function> 55c191e81510> is an instance of class <function>
-Slots are:
-     info = #<pointer 0x55c191f41de0>
-     name = clutter-init
-     flags = ()
-     n-arg = 2
-     caller-owns = nothing
-     return-type = interface
+@print{} #<<function> 55c191e81510> is an instance of class <function>
+@print{} Slots are:
+@print{}      info = #<pointer 0x55c191f41de0>
+@print{}      name = clutter-init
+@print{}      flags = ()
+@print{}      n-arg = 2
+@print{}      caller-owns = nothing
+@print{}      return-type = interface
 @dots{}
 
 (gi-cache-ref 'function 'clutter-init)
-$5 = #<<function> 55c191e81510>
+@result{} $5 = #<<function> 55c191e81510>
 @end lisp
 
 @emph{Returned value(s):}
@@ -196,14 +196,14 @@ example:
 @lisp
 ,use (g-golf)
 (g-irepository-require "GLib")
-#<pointer 0x55ad58e6ae00>
+@result{} #<pointer 0x55ad58e6ae00>
 
 (g-irepository-find-by-name "GLib" "PRIORITY_DEFAULT_IDLE")
-$3 = #<pointer 0x55ad58e6cde0>
+@result{} $3 = #<pointer 0x55ad58e6cde0>
 
 (gi-import-constant $3)
-$4 = 200
-$5 = "PRIORITY_DEFAULT_IDLE"
+@result{} $4 = 200
+@result{} $5 = "PRIORITY_DEFAULT_IDLE"
 @end lisp
 
 Constants are curently not being automatically imported, though this

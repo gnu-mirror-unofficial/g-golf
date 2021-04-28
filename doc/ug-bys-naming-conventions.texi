@@ -1,4 +1,5 @@
 @c -*-texinfo-*-
+
 @c This is part of the GNU G-Golf Reference Manual.
 @c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
@@ -43,9 +44,9 @@ Manual}), and their respective name is given by the result of calling
 @ref{g-name->class-name}, for example:
 
 @lisp
-GtkWindow -> <gtk-window>
-ClutterActor -> <clutter-actor>
-WebKitWebView -> <webkit-web-view>@footnote{By default, G-Golf sets
+GtkWindow @result{} <gtk-window>
+ClutterActor @result{} <clutter-actor>
+WebKitWebView @result{} <webkit-web-view>@footnote{By default, G-Golf sets
 @code{WebKit} as a renaming exception token, otherwise, the class name
 would be <web-kit-web-view>.}
 @dots{}
@@ -89,8 +90,8 @@ Gnome library functions are imported as procedures, renamed by calling
 @ref{g-name->name}. For example:
 
 @lisp
-gtk_window_new -> gtk-window-new
-clutter_actor_new -> clutter-actor-new
+gtk_window_new @result{} gtk-window-new
+clutter_actor_new @result{} clutter-actor-new
 @dots{}
 @end lisp
 
@@ -108,15 +109,15 @@ illustrate, here is an example:
 ,use (g-golf)
 
 (gi-import-by-name "Gtk" "WindowPosition")
-$2 = #<<gi-enum> 5618c7a18090>
+@result{} $2 = #<<gi-enum> 5618c7a18090>
 
 (describe $2)
-#<<gi-enum> 5618c7a18090> is an instance of class <gi-enum>
-Slots are:
-     enum-set = ((none . 0) (center . 1) (mouse . 2) (center-always . 3) (center-on-parent . 4))
-     g-type = 94664428197600
-     g-name = "GtkWindowPosition"
-     name = gtk-window-position
+@print{} #<<gi-enum> 5618c7a18090> is an instance of class <gi-enum>
+@print{} Slots are:
+@print{}      enum-set = ((none . 0) (center . 1) (mouse . 2) (center-always . 3) (center-on-parent . 4))
+@print{}      g-type = 94664428197600
+@print{}      g-name = "GtkWindowPosition"
+@print{}      name = gtk-window-position
 @end lisp
 
 
@@ -132,10 +133,10 @@ Introspection function always use the @samp{original} name, except that
 
 @example
 g_main_loop_new
--> @ref{g-main-loop-new}
+@result{} @ref{g-main-loop-new}
 
 g_irepository_get_loaded_namespaces
--> @ref{g-irepository-get-loaded-namespaces}
+@result{} @ref{g-irepository-get-loaded-namespaces}
 @end example
 
 G-Golf also comes with its own set of procedures, syntax and variables,
@@ -182,6 +183,5 @@ For example, from the @code{GIBaseInfo} section:
 
 @example
 GIInfoType
-->
-@ref{%gi-info-type}
+@result{} @ref{%gi-info-type}
 @end example

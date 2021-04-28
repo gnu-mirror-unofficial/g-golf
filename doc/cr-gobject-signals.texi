@@ -1,6 +1,7 @@
 @c -*-texinfo-*-
+
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2019 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2019 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -65,16 +66,16 @@ to query any of its class signal(s).}:
 (gi-import "Clutter")
 
 (make <clutter-actor>)
-$2 = #<<clutter-actor> 565218c88a80>
+@result{} $2 = #<<clutter-actor> 565218c88a80>
 
 (!g-type (class-of $2))
-$3 = 94910597864000
+@result{} $3 = 94910597864000
 
 (g-signal-list-ids $3)
-$4 = (5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
+@result{} $4 = (5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
 
 (g-signal-query 20)
-$5 = (20 "enter-event" 94910597864000 (run-last) boolean 1 (boxed))
+@result{} $5 = (20 "enter-event" 94910597864000 (run-last) boolean 1 (boxed))
 @end lisp
 
 As you may have noticed, the signal query argument(s) list does not

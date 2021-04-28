@@ -1,6 +1,7 @@
 @c -*-texinfo-*-
+
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2020 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -101,27 +102,26 @@ pointed to by @var{info}:
 @lisp
 ,use (g-golf)
 (g-irepository-require "Gtk")
-$2 = #<pointer 0x55649014c780>
+@result{} $2 = #<pointer 0x55649014c780>
 
 (g-irepository-find-by-name "Gtk" "Orientable")
-$3 = #<pointer 0x5564901531e0>
+@result{} $3 = #<pointer 0x5564901531e0>
 
 (gi-interface-show $3)
+@print{} #<pointer 0x5564901531e0> is a (pointer to a) GIInterfaceInfo:
 @print{}
-#<pointer 0x5564901531e0> is a (pointer to a) GIInterfaceInfo:
-
-          namespace: "Gtk"
-               name: "Orientable"
-             g-type: 93890405098944
-        g-type-name: "GtkOrientable"
-    n-prerequisites: 0
-       n-properties: 1
-          n-methods: 2
-          n-signals: 0
-          n-vfuncts: 0
-        n-constants: 0
-       iface-struct: #<pointer 0x556490153140>
-  iface-struct-name: "OrientableIface"
+@print{}           namespace: "Gtk"
+@print{}                name: "Orientable"
+@print{}              g-type: 93890405098944
+@print{}         g-type-name: "GtkOrientable"
+@print{}     n-prerequisites: 0
+@print{}        n-properties: 1
+@print{}           n-methods: 2
+@print{}           n-signals: 0
+@print{}           n-vfuncts: 0
+@print{}         n-constants: 0
+@print{}        iface-struct: #<pointer 0x556490153140>
+@print{}   iface-struct-name: "OrientableIface"
 @end lisp
 @end deffn
 

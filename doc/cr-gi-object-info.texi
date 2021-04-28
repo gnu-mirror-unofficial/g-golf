@@ -1,6 +1,7 @@
 @c -*-texinfo-*-
+
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -100,34 +101,34 @@ Obtains and displays the following informations about the object
 @lisp
 ,use (g-golf)
 (g-irepository-require "Clutter")
-$2 = #<pointer 0x56396a4f9f80>
+@result{} $2 = #<pointer 0x56396a4f9f80>
 
 (g-irepository-find-by-name "Clutter" "Actor")
-$3 = #<pointer 0x56396a4fdc00>
+@result{} $3 = #<pointer 0x56396a4fdc00>
 
 (gi-object-show $3)
 @print{}
-#<pointer 0x56396a4fdc00> is a (pointer to a) GIObjectInfo:
-
-  Parent:
-          namespace: "GObject"
-               name: "InitiallyUnowned"
-             g-type: 94804596757600
-        g-type-name: "GInitiallyUnowned"
-
-  Object:
-          namespace: "Clutter"
-               name: "Actor"
-             g-type: 94804596864480
-        g-type-name: "ClutterActor"
-           abstract: #f
-        n-constants: 0
-           n-fields: 4
-       n-interfaces: 4
-          n-methods: 238
-       n-properties: 82
-          n-signals: 26
-          n-vfuncts: 35
+@print{} #<pointer 0x56396a4fdc00> is a (pointer to a) GIObjectInfo:
+@print{}
+@print{}   Parent:
+@print{}           namespace: "GObject"
+@print{}                name: "InitiallyUnowned"
+@print{}              g-type: 94804596757600
+@print{}         g-type-name: "GInitiallyUnowned"
+@print{}
+@print{}   Object:
+@print{}           namespace: "Clutter"
+@print{}                name: "Actor"
+@print{}              g-type: 94804596864480
+@print{}         g-type-name: "ClutterActor"
+@print{}            abstract: #f
+@print{}         n-constants: 0
+@print{}            n-fields: 4
+@print{}        n-interfaces: 4
+@print{}           n-methods: 238
+@print{}        n-properties: 82
+@print{}           n-signals: 26
+@print{}           n-vfuncts: 35
 
 @end lisp
 @end deffn

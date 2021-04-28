@@ -1,4 +1,5 @@
 @c -*-texinfo-*-
+
 @c This is part of the GNU G-Golf Reference Manual.
 @c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
@@ -75,8 +76,7 @@ accessed by calling either @ref{g-irepository-find-by-name},
 ,use (g-golf gi)
 (g-irepository-require "Gtk")
 (g-irepository-find-by-name "Gtk" "Button")
-@print{}
-$4 = #<pointer 0x20e0000>
+@result{} $4 = #<pointer 0x20e0000>
 ... use button info ...
 (g-base-info-unref $4)
 @end lisp

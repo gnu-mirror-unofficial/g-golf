@@ -1,7 +1,8 @@
 @c -*-texinfo-*-
-@c This is part of the GNU G-Golf Reference Manual.  Copyright (C) 2019
-@c Free Software Foundation, Inc.  See the file g-golf.texi for copying
-@c conditions.
+
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2019 - 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
 
 
 @c @defindex ei
@@ -430,18 +431,16 @@ the @code{clutter-color-from-string} procedure:
 ,use (g-golf)
 (gi-import "Clutter")
 (clutter-color-from-string "Blue")
-@print{}
-$2 = #t
-$3 = (0 0 255 255)
+@result{} $2 = #t
+@result{} $3 = (0 0 255 255)
 @end lisp
 
 And call it with an undefined color name:
 
 @lisp
 (clutter-color-from-string "Bluee")
-@print{}
-$4 = #f
-$5 = (0 0 0 0)
+@result{} $4 = #f
+@result{} $5 = (0 0 0 0)
 @end lisp
 
 Now, let's add this procedure name to @var{%gi-strip-boolean-result}:
@@ -449,20 +448,18 @@ Now, let's add this procedure name to @var{%gi-strip-boolean-result}:
 @lisp
 (push! 'clutter-color-from-string
        %gi-strip-boolean-result)
-$6 = (clutter-color-from-string)
+@result{} $6 = (clutter-color-from-string)
 
 (clutter-color-from-string "Blue")
-@print{}
-$7 = (0 0 255 255)
+@result{} $7 = (0 0 255 255)
 @end lisp
 
 And call it with an undefined color name:
 
 @lisp
 (clutter-color-from-string "Bluee")
+@print{} scm-error" "clutter-color-from-string" failed."
 @print{}
-scm-error" "clutter-color-from-string" failed."
-
-Entering a new prompt.  Type `,bt' for a backtrace or `,q' to continue.
+@print{} Entering a new prompt.  Type `,bt' for a backtrace or `,q' to continue.
 @end lisp
 @end defvar

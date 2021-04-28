@@ -1,8 +1,8 @@
 @c -*-texinfo-*-
 
-@c This is part of the GNU G-Golf Reference Manual.  Copyright (C) 2019
-@c Free Software Foundation, Inc.  See the file g-golf.texi for copying
-@c conditions.
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2019 - 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
 
 
 @c @defindex ei
@@ -60,12 +60,10 @@ Closures can be invoked with @ref{invoke}, for example:
       #:function (lambda (a b) (+ a b))
       #:return-type 'int
       #:param-types '(int int))
-@print{}
-$2 = #<<closure> 55f24a0228d0>
+@result{} $2 = #<<closure> 55f24a0228d0>
 
 (invoke $2 3 2)
-@print{}
-$3 = 5
+@result{} $3 = 5
 @end lisp
 
 
