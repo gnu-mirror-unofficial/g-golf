@@ -127,7 +127,7 @@
   '())
 
 (define (%i-func f-inst)
-  (lambda ( . args)
+  (lambda args
     (let ((f-inst f-inst)
           (info (!info f-inst))
           (name (!name f-inst))
