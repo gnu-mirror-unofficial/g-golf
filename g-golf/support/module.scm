@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -30,6 +30,26 @@
   #:export (re-export-public-interface))
 
 
+(define-macro (re-export-public-interface . args)
+  "Re-export the public interface of a module or modules. Invoked as
+@code{(re-export-public-interface (mod1) (mod2)...)}."
+  (if (null? args)
+      '(if #f #f)
+      `(begin
+	 ,@(map (lambda (mod)
+		  (or (list? mod)
+		      (error "Invalid module specification" mod))
+		  `(module-use! (module-public-interface (current-module))
+				(resolve-interface ',mod)))
+		args))))
+
+
+#!
+
+;; Below is a fix for 'static' module(s). G-Golf, on the other end,
+;; won't be able to use it, since it adds bindings dynamically ...
+;; keeping the code 'for the record' ...
+
 (define (re-export-public-interfaces modules)
   (let ((public-i (module-public-interface (current-module))))
     (for-each
@@ -51,24 +71,5 @@
     "Re-export the public interface of a module or modules. Invoked as
 @code{(re-export-public-interface (mod1) (mod2)...)}."
   (re-export-public-interfaces '(module ...)))
-
-
-#!
-
-;; Here is the previous definition, kept 'for the record', and if
-;; guile-3 fixes module-use!, maybe I'll (re)use it again.
-
-(define-macro (re-export-public-interface . args)
-  "Re-export the public interface of a module or modules. Invoked as
-@code{(re-export-public-interface (mod1) (mod2)...)}."
-  (if (null? args)
-      '(if #f #f)
-      `(begin
-	 ,@(map (lambda (mod)
-		  (or (list? mod)
-		      (error "Invalid module specification" mod))
-		  `(module-use! (module-public-interface (current-module))
-				(resolve-interface ',mod)))
-		args))))
 
 !#
