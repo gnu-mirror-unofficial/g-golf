@@ -51,7 +51,18 @@ since the last release, as well as older news.
 
 ** Savannah
 
-GNU G-Golf also has a Savannah [5] project page, [[https://savannah.gnu.org/projects/g-golf/][here]].
+GNU G-Golf also has a [[https://savannah.gnu.org/][Savannah]] project page, [[https://savannah.gnu.org/projects/g-golf/][here]].
+
+** Join the GNU Project
+
+GNU G-Golf is part of the GNU Operating System, developed by the GNU
+Project. To learn more about Free (libre) Software, you can read
+[[https://gnu.org/philosophy/free-sw.html][this page]].
+
+If you are the author of an awesome program and want to join us in
+writing Free (libre) Software, please consider making it an official
+GNU program and become a GNU Maintainer. You can find instructions
+on how to do this [[http://www.gnu.org/help/evaluation][here]].
 
 ** License
 

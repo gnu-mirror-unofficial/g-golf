@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -12,6 +12,7 @@ G-Golf version @value{VERSION}.
 
 @menu
 * Contributors to this manual::
+* Join the GNU Project::
 * G-Golf License::
 @end menu
 
@@ -30,6 +31,22 @@ who is also the author and maintainer of G-Golf.
 
 You are most welcome to join and help.  Visit G-Golf's web site at
 @uref{@value{UG-GOLF}} to find out how to get involved.
+
+
+@node Join the GNU Project
+@unnumberedsec Join the GNU Project
+@cindex the GNU Project
+
+GNU G-Golf is part of the GNU Operating System, developed by the GNU
+Project. To learn more about Free (libre) Software, you can read
+@uref{@value{UGNU-PHILOSOPHY}, this page}
+
+If you are the author of an awesome program and want to join us in
+writing Free (libre) Software, please consider making it an official
+GNU program and become a GNU Maintainer. You can find instructions
+on how to do this @uref{@value{UGNU-EVALUATION}, here}.
+
+here: http://www.gnu.org/help/evaluation
 
 
 @node G-Golf License

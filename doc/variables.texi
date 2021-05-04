@@ -146,3 +146,10 @@
 
 @c XDG Base Directory Specification
 @set UXDG-BASEDIR-SPEC http://www.freedesktop.org/Standards/basedir-spec
+
+@c
+@c GNU
+@c
+
+@set UGNU-PHILOSOPHY https://gnu.org/philosophy/free-sw.html
+@set UGNU-EVALUATION http://www.gnu.org/help/evaluation
