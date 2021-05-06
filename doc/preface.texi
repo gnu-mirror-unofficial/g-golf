@@ -38,8 +38,7 @@ You are most welcome to join and help.  Visit G-Golf's web site at
 @cindex the GNU Project
 
 GNU G-Golf is part of the GNU Operating System, developed by the GNU
-Project. To learn more about Free (libre) Software, you can read
-and please share @uref{@value{UGNU-PHILOSOPHY}, this page}.
+Project.
 
 If you are the author of an awesome program and want to join us in
 writing Free (libre) Software, please consider making it an official GNU
@@ -48,6 +47,9 @@ do this @uref{@value{UGNU-EVALUATION}, here}.
 
 You don't have a program to contribute? Look at all the other ways you
 may @uref{@value{UGNU-HELP}, help}.
+
+To learn more about Free (libre) Software, you can read and please share
+@uref{@value{UGNU-PHILOSOPHY}, this page}.
 
 
 @node G-Golf License
