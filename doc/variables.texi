@@ -152,4 +152,5 @@
 @c
 
 @set UGNU-PHILOSOPHY https://gnu.org/philosophy/free-sw.html
-@set UGNU-EVALUATION http://www.gnu.org/help/evaluation
+@set UGNU-EVALUATION https://www.gnu.org/help/evaluation.html
+@set UGNU-HELP https://www.gnu.org/help/help.html
