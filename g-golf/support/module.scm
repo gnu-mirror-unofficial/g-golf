@@ -27,7 +27,9 @@
 
 
 (define-module (g-golf support module)
-  #:export (re-export-public-interface))
+  #:export (re-export-public-interface
+            re-export-and-replace!
+            re-export-and-replace-names!))
 
 
 (define-macro (re-export-public-interface . args)
@@ -73,3 +75,17 @@
   (re-export-public-interfaces '(module ...)))
 
 !#
+
+(define (re-export-and-replace-names! module names)
+  (cond-expand
+    (guile-3.0
+     (module-re-export! module names #:replace? #t))
+    (guile-2.2
+     (module-re-export! module names))
+    (guile-2
+     (module-re-export! module names))
+    (else
+     (module-re-export! module names #:replace? #t))))
+
+(define-syntax-rule (re-export-and-replace! module name ...)
+  (re-export-and-replace-names! module '(name ...)))
