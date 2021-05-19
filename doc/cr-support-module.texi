@@ -20,7 +20,10 @@ G-Golf Module Utilities.@*
 
 
 @anchor{re-export-public-interface}
-@deffn Syntax re-export-public-interface  . args
-Re-export the public interface of a module or modules. Invoked as
-@code{(re-export-public-interface (mod1) (mod2)...)}.
+@deffn Syntax re-export-public-interface mod1 mod2 ...
+
+Re-export the public interface of a @var{mod1} @var{mod2} @dots{}
+
+Invoked like @code{use-modules}, where each @var{mod1} @var{mod2}
+@dots{} is a module name (a list of symbol(s)).
 @end deffn
