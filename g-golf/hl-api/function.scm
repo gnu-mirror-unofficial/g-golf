@@ -283,12 +283,14 @@ method with its 'old' definition.
 !#
 
 (define* (gi-add-method-gf name #:optional (module #f))
-  (let* ((module (or module
+  (let* ((g-golf (resolve-module '(g-golf)))
+         (module (or module
                      (resolve-module '(g-golf hl-api gobject))))
          (variable (module-variable module name))
          (value (and variable
                      (variable-bound? variable)
-                     (variable-ref variable))))
+                     (variable-ref variable)))
+         (names `(,name)))
     (if value
         (cond ((generic? value)
                value)
@@ -296,12 +298,13 @@ method with its 'old' definition.
                (gi-add-method-gf (syntax-name->method-name name)
                                  module))
               (else
-               (module-replace! module `(,name))
+               (module-replace! module names)
+               (re-export-and-replace-names! g-golf names)
                (let ((gf (ensure-generic value name)))
                  (module-set! module name gf)
                  gf)))
         (begin
-          (module-export! module `(,name))
+          (module-export! module names)
           (let ((gf (make <generic> #:name name)))
             (module-set! module name gf)
             gf)))))

@@ -113,7 +113,14 @@
 		warn
 		last))
 
+
 (eval-when (expand load eval)
+  (re-export-and-replace! (current-module)
+                          connect
+                          delete
+                          member
+                          map
+                          for-each)
   (re-export-public-interface (oop goops)
                               (oop goops describe)
 			      (ice-9 match)
