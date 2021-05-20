@@ -342,8 +342,7 @@
                      rest))))))))
 
 (define (scm->gi-pointer value)
-  (if value
-      value
+  (or value
       %null-pointer))
 
 (define* (scm->gi-n-pointer lst #:optional (n-pointer #f))
