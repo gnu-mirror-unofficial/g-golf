@@ -114,6 +114,8 @@ AC_CONFIG_FILES([
   libg-golf/Makefile
   doc/Makefile
   test-suite/Makefile
+  examples/Makefile
+  examples/gtk-4/Makefile
 ])
 
 AC_OUTPUT

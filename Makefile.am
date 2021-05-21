@@ -136,7 +136,8 @@ ETAGS_ARGS = \
 SUBDIRS = \
 	libg-golf			\
 	test-suite			\
-	doc
+	doc				\
+	examples
 
 
 ###
