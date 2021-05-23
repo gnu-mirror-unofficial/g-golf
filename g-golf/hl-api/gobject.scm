@@ -88,14 +88,13 @@
 
 (define-class <gobject-class> (<gtype-class>))
 
-(define (has-slot? name slots)
+(define (has-slot? slots name)
   (let loop ((slots slots))
     (match slots
       (#f #f)
       (() #f)
       ((slot . rest)
-       (or (eq? name
-                (slot-definition-name slot))
+       (or (eq? (slot-definition-name slot) name)
            (loop rest))))))
 
 (define (has-valid-property-flag? g-flags)
@@ -121,7 +120,7 @@
 	                           (g-type (gi-property-g-type g-property))
                                    (name (g-name->name g-name)))
                               (and #;(has-valid-property-flag? g-flags)
-                               (not (has-slot? name slots))
+                               (not (has-slot? slots name))
                                g-type
                                (let* ((k-name (symbol->keyword name))
                                       (a-name (symbol-append '! name))
