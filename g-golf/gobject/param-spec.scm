@@ -27,11 +27,13 @@
 
 
 (define-module (g-golf gobject param-spec)
+  #:use-module (ice-9 format)
   #:use-module (oop goops)
   #:use-module (system foreign)
   #:use-module (g-golf init)
   #:use-module (g-golf support enum)
   #:use-module (g-golf support flags)
+  #:use-module (g-golf support utils)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gobject params-vals)
 
@@ -41,7 +43,8 @@
 		warn
 		last)
 
-  #:export (g-param-spec-type
+  #:export (gi-g-param-spec-show
+            g-param-spec-type
             g-param-spec-type-name
             g-param-spec-get-default-value
             g-param-spec-get-name
@@ -49,6 +52,37 @@
             g-param-spec-get-blurb
 
             %g-param-flags))
+
+
+;;;
+;;; G-Gold additional functionality
+;;;
+
+(define %g-param-spec-fmt
+  "
+~S is a (pointer to a) GParamSpec:
+
+               name: ~S
+               nick: ~S
+              blurb: ~S
+             g-type: ~A
+        g-type-name: ~s
+          type-name: ~s
+
+")
+
+(define* (gi-g-param-spec-show info
+                               #:optional (port (current-output-port)))
+  (let ((g-type-name (g-param-spec-type-name info)))
+    (format port "~?" %g-param-spec-fmt
+            (list info
+                  (g-param-spec-get-name info)
+                  (g-param-spec-get-nick info)
+                  (g-param-spec-get-blurb info)
+                  (g-param-spec-type info)
+                  g-type-name
+                  (g-name->name g-type-name)))
+    (values)))
 
 
 ;;;

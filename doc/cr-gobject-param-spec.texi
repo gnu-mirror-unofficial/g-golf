@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -15,6 +15,7 @@ GParamSpec — Metadata for parameter specifications.
 
 @indentedblock
 @table @code
+@item @ref{gi-g-param-spec-show}
 @item @ref{g-param-spec-type}
 @item @ref{g-param-spec-type-name}
 @item @ref{g-param-spec-get-default-value}
@@ -44,6 +45,47 @@ required to specify parameters, such as e.g. GObject properties.
 
 Note: in this section, the @var{p-spec} argument is [must be] a pointer
 to a @code{GParamSpec}.
+
+
+@anchor{gi-g-param-spec-show}
+@deffn Procedure gi-g-param-spec-show p-spec
+
+Returns nothing.
+
+Obtains and displays the following informations about the interface
+pointed to by @var{p-spec}:
+
+@lisp
+,use (g-golf)
+(g-irepository-require "Gtk" #:version "4.0")
+@result{} $2 = #<pointer 0x55ae43d74a60>
+
+(gi-import-by-name "Gtk" "Label")
+@result{} $3 = #<<gobject-class> <gtk-label> 7f1a75436a50>
+
+(!g-class <gtk-label>)
+@result{} $4 = #<pointer 0x55ae43deb0c0>
+
+(g-object-class-find-property $4 "css-classes")
+@result{} $5 = #<pointer 0x55ae43d9d510>
+
+(gi-g-param-spec-show $5)
+@print{}
+@print{} #<pointer 0x55ae43d9d510> is a (pointer to a) GParamSpec:
+@print{}
+@print{}                name: "css-classes"
+@print{}                nick: "CSS Style Classes"
+@print{}               blurb: "List of CSS classes"
+@print{}              g-type: 94206951022032
+@print{}         g-type-name: "GStrv"
+@print{}           type-name: g-strv
+@print{}
+@end lisp
+
+Note that the last item, @code{type-name: g-strv} is not part of the
+@code{GParamSpec} structure. It is obtained (and used by G-Golf
+internally by calling @code{(@ref{g-name->name} g-type-name)}.
+@end deffn
 
 
 @anchor{g-param-spec-type}
