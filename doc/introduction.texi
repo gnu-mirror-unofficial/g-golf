@@ -276,7 +276,7 @@ following instructions on their respective
 @subheading IRC
 
 Most of the time you can find me on irc, channel @emph{#guile},
-@emph{#guix} and @emph{#scheme} on @emph{irc.freenode.net},
+@emph{#guix} and @emph{#scheme} on @emph{irc.libera.chat},
 @emph{#clutter} and @emph{#introspection} on @emph{irc.gnome.org}, under
 the nickname @emph{daviid}.
 
