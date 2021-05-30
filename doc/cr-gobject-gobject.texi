@@ -15,6 +15,7 @@ GObject — The base object type
 
 @indentedblock
 @table @code
+@item @ref{g-object-class-find-property}
 @item @ref{g-object-new}
 @item @ref{g-object-new-with-properties}
 @item @ref{g-object-ref}
@@ -65,6 +66,17 @@ the GObject reference manual for a complete description.
 
 Note: in this section, unless otherwise specified, the @var{object}
 argument is [must be] a pointer to a @code{GObject} (instance).
+
+
+@anchor{g-object-class-find-property}
+@deffn Procedure g-object-class-find-property g-class name
+
+Returns a pointer or @code{#f}.
+
+Obtains and returns (a pointer to) the @code{GParamSpec} for @var{name},
+or @code{#f} if @var{g-class} (a pointer to a @code{GObjectClass})
+doesn't have a property of that @var{name}.
+@end deffn
 
 
 @anchor{g-object-new}

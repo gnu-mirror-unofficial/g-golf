@@ -43,7 +43,8 @@
 		warn
 		last)
 
-  #:export (g-object-new
+  #:export (g-object-class-find-property
+            g-object-new
             g-object-new-with-properties
             g-object-ref
             g-object-unref
@@ -59,6 +60,11 @@
 ;;;
 ;;; GObject Low level API
 ;;;
+
+(define (g-object-class-find-property g-class property-name)
+  (gi->scm (g_object_class_find_property g-class
+                                         (string->pointer property-name))
+           'pointer))
 
 (define (g-object-new gtype)
   (gi->scm (g_object_new gtype %null-pointer) 'pointer))
@@ -103,6 +109,13 @@
 ;;;
 ;;; GObject Bindings
 ;;;
+
+(define g_object_class_find_property
+  (pointer->procedure '*
+                      (dynamic-func "g_object_class_find_property"
+				    %libgobject)
+                      (list '*		;; g-class
+                            '*)))	;; property name
 
 (define g_object_new
   (pointer->procedure '*
