@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2020
+;;;; Copyright (C) 2016 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -46,6 +46,7 @@
             g_object_ref_count
             g_closure_size
             g_closure_ref_count
+            g_param_spec_get_flags
 
             ;; Gdk
             ;; gdk_event_get_changed_mask
@@ -143,6 +144,12 @@ later.
 (define g_closure_ref_count
   (pointer->procedure unsigned-int
                       (dynamic-func "g_closure_ref_count"
+                                    %libg-golf)
+                      (list '*)))
+
+(define g_param_spec_get_flags
+  (pointer->procedure int
+                      (dynamic-func "g_param_spec_get_flags"
                                     %libg-golf)
                       (list '*)))
 

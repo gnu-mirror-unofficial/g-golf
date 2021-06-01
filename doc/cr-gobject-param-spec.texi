@@ -22,6 +22,7 @@ GParamSpec — Metadata for parameter specifications.
 @item @ref{g-param-spec-get-name}
 @item @ref{g-param-spec-get-nick}
 @item @ref{g-param-spec-get-blurb}
+@item @ref{g-param-spec-get-flags}
 @end table
 @end indentedblock
 
@@ -122,6 +123,16 @@ Returns a string.
 
 Obtains and returns the name, nickname or short description for
 @var{p-spec}, respectively.
+@end deffn
+
+
+@anchor{g-param-spec-get-flags}
+@deffn Procedure g-param-spec-get-flags p-spec
+
+Returns a (possibly empty) list.
+
+Obtains and returns a list of the combination of @ref{%g-param-flags}
+that applies to @var{p-spec}.
 @end deffn
 
 

@@ -34,6 +34,7 @@
   #:use-module (g-golf support enum)
   #:use-module (g-golf support flags)
   #:use-module (g-golf support utils)
+  #:use-module (g-golf support libg-golf)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gobject params-vals)
 
@@ -50,6 +51,8 @@
             g-param-spec-get-name
             g-param-spec-get-nick
             g-param-spec-get-blurb
+            ;; from libg-golf
+            g-param-spec-get-flags
 
             %g-param-flags))
 
@@ -66,8 +69,9 @@
                nick: ~S
               blurb: ~S
              g-type: ~A
-        g-type-name: ~s
-          type-name: ~s
+        g-type-name: ~S
+          type-name: ~S
+              flags: ~S
 
 ")
 
@@ -81,7 +85,8 @@
                   (g-param-spec-get-blurb info)
                   (g-param-spec-type info)
                   g-type-name
-                  (g-name->name g-type-name)))
+                  (g-name->name g-type-name)
+                  (g-param-spec-get-flags info)))
     (values)))
 
 
@@ -111,6 +116,11 @@
 (define (g-param-spec-get-blurb p-spec)
   (gi->scm (g_param_spec_get_blurb p-spec)
            'string))
+
+;; from libg-golf
+(define (g-param-spec-get-flags p-spec)
+  (integer->flags %g-param-flags
+                  (g_param_spec_get_flags p-spec)))
 
 
 ;;;

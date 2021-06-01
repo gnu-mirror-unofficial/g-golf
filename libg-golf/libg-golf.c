@@ -1,7 +1,7 @@
 /*  -*- mode: C; coding: utf-8 -*-
 
 ####
-#### Copyright (C) 2016 - 2020
+#### Copyright (C) 2016 - 2021
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf.
@@ -134,6 +134,12 @@ uint
 g_closure_ref_count (GClosure *closure)
 {
   return (closure->ref_count);
+}
+
+GParamFlags
+g_param_spec_get_flags (GParamSpec *pspec)
+{
+    return pspec->flags;
 }
 
 

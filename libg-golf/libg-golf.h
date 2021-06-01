@@ -1,7 +1,7 @@
 /*  -*- mode: C; coding: utf-8 -*-
 
 ####
-#### Copyright (C) 2016 - 2020
+#### Copyright (C) 2016 - 2021
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf.
@@ -73,6 +73,9 @@ g_closure_size ();
 
 uint
 g_closure_ref_count (GClosure *closure);
+
+GParamFlags
+g_param_spec_get_flags (GParamSpec *pspec);
 
 
 /*
