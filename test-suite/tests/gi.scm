@@ -155,8 +155,11 @@
 ;;;
 
 (define-method (test-registered-type-info (self <g-golf-test-gi>))
-  (let ((align-info (g-irepository-find-by-name "Clutter" "ActorAlign")))
-    (assert-true (g-registered-type-info-get-g-type align-info))))
+  (let ((g-param-flags-info (g-irepository-find-by-name "GObject" "ParamFlags")))
+    (assert (g-registered-type-info-get-g-type g-param-flags-info))
+    (assert-false (g-registered-type-info-get-type-name g-param-flags-info))
+    (assert-equal (gi-registered-type-info-name g-param-flags-info)
+                  "GObjectParamFlags")))
 
 
 ;;;

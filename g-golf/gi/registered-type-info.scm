@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016
+;;;; Copyright (C) 2016, 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -30,10 +30,26 @@
   #:use-module (system foreign)
   #:use-module (g-golf init)
   #:use-module (g-golf gi utils)
+  #:use-module (g-golf gi base-info)
 
-  #:export (g-registered-type-info-get-type-name
+  #:export (gi-registered-type-info-name
+
+            g-registered-type-info-get-type-name
 	    g-registered-type-info-get-type-init
 	    g-registered-type-info-get-g-type))
+
+
+(define (gi-registered-type-info-name info)
+  ;; Some registered type are not 'registered', and getting their
+  ;; registered-info name returns #f. Another symptom for those is if
+  ;; you call (g-type-name g-type), it returns "void".  Since even
+  ;; though they are 'unnamed', some are present in their typelib, like
+  ;; "GLib" "SpawnFlags", or "GObject" "ParamFlags", they may be
+  ;; imported, sometimes manually, sometimes automatically. G-Golf
+  ;; needs to make sure they have a (unique) name.
+  (or (g-registered-type-info-get-type-name info)
+      (string-append (g-base-info-get-namespace info)
+                     (g-base-info-get-name info))))
 
 
 ;;;

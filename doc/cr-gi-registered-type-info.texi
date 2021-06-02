@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -18,6 +18,7 @@ GIRegisteredTypeInfo — Struct representing a struct with a @code{GType}.
 
 @indentedblock
 @table @code
+@item @ref{gi-registered-type-info-name}
 @item @ref{g-registered-type-info-get-type-name}
 @item @ref{g-registered-type-info-get-type-init}
 @item @ref{g-registered-type-info-get-g-type}
@@ -62,13 +63,54 @@ Note: in this section, the @var{info} argument is [must be] a pointer to
 a @code{GIRegisteredTypeInfo}.
 
 
+@anchor{gi-registered-type-info-name}
+@deffn Procedure gi-registered-type-info-name info
+
+Returns a type name.
+
+Some registered type are not @samp{registered}, and calling
+@ref{g-registered-type-info-get-type-name} returns
+@code{#f}@footnote{Another symptom for those is that if if you call
+@code{(@ref{g-type-name} g-type)}, it returns @code{"void"}.}.
+
+Even though they are @samp{unnamed}, some are present in their typelib,
+like @code{"GLib" "SpawnFlags"}, or @code{"GObject" "ParamFlags"}, and
+may be imported - sometimes manually, sometimes automatically.
+
+In G-Golf, imported @code{GIRegisteredTypeInfo} must have a unique name,
+since it is used as the secondary key in its cache @samp{mechanism} (See
+@ref{G-Golf Cache - Accessing}).
+
+Obtains and returns a unique name for @var{info}. If
+@ref{g-registered-type-info-get-type-name} returns a name, that name is
+returned. Otherwise, it returns a name composed of the @code{namespace}
+and @code{name} for @var{info}.
+
+Here is an example, to illustrate:
+
+@lisp
+(g-irepository-find-by-name "GObject" "ParamFlags")
+@result{} $2 = #<pointer 0x5654c59ee4f0>
+
+(g-registered-type-info-get-type-name $2)
+@result{} $3 = #f
+
+(gi-registered-type-info-name $2)
+@result{} $4 = "GObjectParamFlags"
+
+(g-name->name $4)
+@result{} $5 = g-object-param-flags
+@end lisp
+@end deffn
+
+
 @anchor{g-registered-type-info-get-type-name}
 @deffn Procedure g-registered-type-info-get-type-name info
 
 Returns the type name.
 
 Obtain the type name of the struct within the GObject type system. This
-type can be passed to g_type_name() to get a GType.
+name can be passed to g_type_from_name to get a GType.
 @end deffn
 
 
