@@ -45,6 +45,7 @@
             symbol->g-type
 
             g-type-name
+            g-type-from-name
             g-type-parent
             g-type-is-a
             g-type-class-ref
@@ -86,6 +87,12 @@
 ;;; GObject Low level API
 ;;;
 
+(define (g-type-from-name name)
+  (let ((result (g_type_from_name (string->pointer name))))
+    (if (= result 0)
+        #f
+        result)))
+
 (define (g-type-name g-type)
   (gi->scm (g_type_name g-type) 'string))
 
@@ -121,6 +128,12 @@
                       (dynamic-func "g_type_name"
 				    %libgobject)
                       (list unsigned-long)))
+
+(define g_type_from_name
+  (pointer->procedure unsigned-long
+                      (dynamic-func "g_type_from_name"
+				    %libgobject)
+                      (list '*)))
 
 (define g_type_parent
   (pointer->procedure unsigned-long

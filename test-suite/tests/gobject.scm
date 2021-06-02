@@ -68,6 +68,10 @@
   (assert-equal "ClutterActorAlign" (g-type-name %align-info-g-type))
   (assert-equal "gfloat" (g-type-name 56)))
 
+(define-method (test-g-type-from-name (self <g-golf-test-gobject>))
+  (assert (g-type-from-name "GObject"))
+  (assert-false (g-type-from-name "GObject3")))
+
 (define-method (test-g-type-class-* (self <g-golf-test-gobject>))
   (let* ((container (gi-import-by-name "Gtk" "Container" #:version "3.0"))
          (g-type (!g-type container))

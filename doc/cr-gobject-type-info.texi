@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -18,6 +18,7 @@ Type Information — The GLib Runtime type identification and management system
 @item @ref{g-type->symbol}
 @item @ref{symbol->g-type}
 @item @ref{g-type-name}
+@item @ref{g-type-from-name}
 @item @ref{g-type-parent}
 @item @ref{g-type-is-a}
 @item @ref{g-type-class-ref}
@@ -93,6 +94,18 @@ Get the unique name that is assigned to @var{g-type}, a type ID. Note
 that this function (like all other GType API) cannot cope with invalid
 type IDs. It accepts validly registered type ID, but randomized type IDs
 should not be passed in and will most likely lead to a crash.
+@end deffn
+
+
+@anchor{g-type-from-name}
+@deffn Procedure g-type-from-name name
+
+Returns a type ID or @code{#f}.
+
+Obtains and returns the type ID for the given type @var{name}, or
+@code{#f} if no type has been registered under this @var{name} (this is
+the preferred method to find out by name whether a specific type has
+been registered yet).
 @end deffn
 
 
