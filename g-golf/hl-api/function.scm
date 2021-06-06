@@ -39,6 +39,7 @@
   #:use-module (g-golf gobject)
   #:use-module (g-golf override)
   #:use-module (g-golf hl-api gtype)
+  #:use-module (g-golf hl-api utils)
 
   #:duplicates (merge-generics
 		replace
@@ -626,30 +627,30 @@ method with its 'old' definition.
              is-pointer?)))))
 
 (define (registered-type->gi-type info type)
-  (let* ((id (g-registered-type-info-get-g-type info))
-         (g-name (g-type-name id))
+  (let* ((g-type (g-registered-type-info-get-g-type info))
+         (g-name (gi-registered-type-info-name info))
          (name (g-name->name g-name)))
     (case type
       ((enum)
-       (values id
+       (values g-type
                name
                (or (gi-cache-ref 'enum name)
                    (gi-import-enum info))
                #t))
       ((flags)
-       (values id
+       (values g-type
                name
                (or (gi-cache-ref 'flags name)
                    (gi-import-flags info))
                #t))
       ((struct)
-       (values id
+       (values g-type
                name
                (or (gi-cache-ref 'boxed name)
                    (gi-import-struct info))
                #t))
       ((union)
-       (values id
+       (values g-type
                name
                (or (gi-cache-ref 'boxed name)
                    (gi-import-union info))
@@ -660,7 +661,7 @@ method with its 'old' definition.
               (c-inst (or (and (module-variable module c-name)
                                (module-ref module c-name))
                           ((@ (g-golf hl-api object) gi-import-object) info))))
-         (values id
+         (values g-type
                  c-name
                  c-inst
                  ;; we can't rely on GI to tell us, at import time, the
@@ -684,12 +685,12 @@ method with its 'old' definition.
               (c-inst (or (and (module-variable module c-name)
                                (module-ref module c-name))
                           ((@ (g-golf hl-api object) gi-import-interface) info))))
-         (values id
+         (values g-type
                  c-name
                  c-inst
                  #t)))
       (else
-       (values id name #f #f)))))
+       (values g-type name #f #f)))))
 
 (define (is-registered? type-tag)
   (member type-tag
@@ -1417,7 +1418,7 @@ method with its 'old' definition.
                             #f
                             with-methods?))
          (g-type (g-registered-type-info-get-g-type info))
-         (g-name (g-type-name g-type))
+         (g-name (gi-registered-type-info-name info))
          (name (g-name->name g-name)))
     (or (gi-cache-ref type name)
         (let ((gi-type-inst (case type

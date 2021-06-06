@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020
+;;;; Copyright (C) 2020 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -71,10 +71,10 @@
 ;;;
 
 (define (gi-interface-import info)
-  (let* ((id (g-registered-type-info-get-g-type info))
-         (g-name (g-type-name id))
+  (let* ((g-type (g-registered-type-info-get-g-type info))
+         (g-name (gi-registered-type-info-name info))
          (name (g-name->name g-name)))
-    (list 'interface name g-name id #t)))
+    (list 'interface name g-name g-type #t)))
 
 (define %iface-fmt
   "

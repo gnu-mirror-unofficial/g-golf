@@ -60,11 +60,11 @@
 ;;;
 
 (define* (gi-enum-import info #:key (flags #f))
-  (let* ((id (g-registered-type-info-get-g-type info))
-         (g-name (g-type-name id))
+  (let* ((g-type (g-registered-type-info-get-g-type info))
+         (g-name (gi-registered-type-info-name info))
 	 (e-vals (gi-enum-value-values info)))
     (make (if flags <gi-flags> <gi-enum>)
-      #:g-type id
+      #:g-type g-type
       #:g-name g-name
       #:enum-set e-vals)))
 
