@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2020
+;;;; Copyright (C) 2018 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -111,36 +111,54 @@
              (loop rest)))))))
 
 (define (compute-extra-slots class g-properties slots)
-  (let* ((c-name (class-name class))
-         (extra-slots (filter-map
-                          (lambda (g-property)
-                            (let* ((module (resolve-module '(g-golf hl-api gobject)))
-                                   (g-name (g-base-info-get-name g-property))
-                                   (g-flags (g-property-info-get-flags g-property))
-	                           (g-type (gi-property-g-type g-property))
-                                   (name (g-name->name g-name)))
-                              (and #;(has-valid-property-flag? g-flags)
-                               (not (has-slot? slots name))
-                               g-type
-                               (let* ((k-name (symbol->keyword name))
-                                      (a-name (symbol-append '! name))
-                                      (a-inst (if (module-variable module a-name)
-                                                  (module-ref module a-name)
-                                                  (let ((a-inst (make-accessor a-name)))
-                                                    (module-g-export! module `(,a-name))
-                                                    (module-set! module a-name a-inst)
-                                                    a-inst)))
-                                      (slot (make <slot>
-                                              #:name name
-                                              #:g-property g-property
-                                              #:g-type g-type
-                                              #:g-flags g-flags
-                                              #:allocation #:g-property
-                                              #:accessor a-inst
-                                              #:init-keyword k-name)))
-                                 slot))))
-                          g-properties)))
-    extra-slots))
+  (if (null? g-properties)
+      '()
+      (let* ((module (resolve-module '(g-golf hl-api gobject)))
+             (info (!info class))
+             (c-name (class-name class))
+             ;; the g-class (class) slot is set by the initialize method
+             ;; of <gtype-class>, the meta-class - but when the
+             ;; compute-slots method is called, which itself calls this
+             ;; procedure, that step hasn't been realized yet, hence the
+             ;; following necessary let variable binding.
+             (g-class (and info ;; info is #f for derived class(es)
+                           (g-type-class info)))
+             (extra-slots (filter-map
+                              (lambda (g-property)
+                                (let* ((g-name (g-base-info-get-name g-property))
+                                       (name (g-name->name g-name)))
+                                  (if (has-slot? slots name)
+                                      #f
+                                      (let* ((k-name (symbol->keyword name))
+                                             (a-name (symbol-append '! name))
+                                             (a-inst (if (module-variable module a-name)
+                                                         (module-ref module a-name)
+                                                         (let ((a-inst (make-accessor a-name)))
+                                                           (module-g-export! module `(,a-name))
+                                                           (module-set! module a-name a-inst)
+                                                           a-inst)))
+                                             (g-param-spec
+                                              (and g-class
+                                                   (g-object-class-find-property g-class g-name)))
+                                             (g-type (if g-param-spec
+                                                         (g-param-spec-type g-param-spec)
+                                                         (gi-property-g-type g-property)))
+                                             (g-flags (if g-param-spec
+                                                          (g-param-spec-get-flags g-param-spec)
+                                                          (g-property-info-get-flags g-property)))
+                                             (slot (make <slot>
+                                                     #:name name
+                                                     #:g-property g-property
+                                                     #:g-name g-name
+                                                     #:g-param-spec g-param-spec
+                                                     #:g-type g-type
+                                                     #:g-flags g-flags
+                                                     #:allocation #:g-property
+                                                     #:accessor a-inst
+                                                     #:init-keyword k-name)))
+                                        slot))))
+                              g-properties)))
+        extra-slots)))
 
 (define (n-prop-prop-accessors class)
   ;; Note that at this point, the g-type slot of the class is still
@@ -201,22 +219,18 @@
 (define-method (compute-get-n-set (class <gobject-class>) slot-def)
   (case (slot-definition-allocation slot-def)
     ((#:g-property)
-     (let ((name (slot-definition-name slot-def)))
+     (let* ((name (slot-definition-name slot-def))
+            (slot-opts (slot-definition-options slot-def))
+            (g-name (get-keyword #:g-name slot-opts #f))
+            (g-type (get-keyword #:g-type slot-opts #f)))
        (list (lambda (obj)
-               (let* ((slot-opts (slot-definition-options slot-def))
-                      (g-property (get-keyword #:g-property slot-opts #f))
-                      (g-type (get-keyword #:g-type slot-opts #f)))
-                 (if (is-readable? slot-def slot-opts)
-                     (g-inst-get-property (!g-inst obj) g-property g-type)
-                     (error "Unreadable slot:" name))))
+               (if (is-readable? slot-def slot-opts)
+                   (g-inst-get-property (!g-inst obj) g-name g-type)
+                   (error "Unreadable slot:" name)))
              (lambda (obj val)
-               (let* ((slot-opts (slot-definition-options slot-def))
-                      (g-property (get-keyword #:g-property slot-opts #f))
-                      (g-type (get-keyword #:g-type slot-opts #f)))
-                 (if (is-writable? slot-def slot-opts)
-                     (g-inst-set-property (!g-inst obj) g-property val g-type)
-                     (error "Unwritable slot:" name)))))))
-
+               (if (is-writable? slot-def slot-opts)
+                   (g-inst-set-property (!g-inst obj) g-name g-type val)
+                   (error "Unwritable slot:" name))))))
     (else
      (next-method))))
 
@@ -235,13 +249,12 @@
   #;(install-properties!)
   #;(install-signals! class))
 
-(define* (g-inst-get-property object property #:optional (g-type #f))
-  (let* ((p-name (g-base-info-get-name property))
-         (g-type (or g-type
-                     (gi-property-g-type property)))
-	 (g-value (g-value-init g-type)))
-    (g-object-get-property object p-name g-value)
-    (%g-inst-get-property-value g-value)))
+(define (g-inst-get-property inst g-name g-type)
+  (let* ((g-value (g-value-init g-type))
+         (dummy (g-object-get-property inst g-name g-value))
+         (result (%g-inst-get-property-value g-value)))
+    (g-value-unset g-value)
+    result))
 
 (define (%g-inst-get-property-value g-value)
   (let ((value (g-value-ref g-value)))
@@ -273,33 +286,16 @@
       (else
        value))))
 
-(define* (g-inst-set-property object property value #:optional (g-type #f))
-  (let* ((p-name (g-base-info-get-name property))
-         (g-type (or g-type
-                     (gi-property-g-type property)))
-	 (g-value (g-value-init g-type)))
+(define* (g-inst-set-property inst g-name g-type value)
+  (let ((g-value (g-value-init g-type)))
     (g-value-set! g-value
                   (%g-inst-set-property-value g-type value))
-    (g-object-set-property object p-name g-value)
+    (g-object-set-property inst g-name g-value)
     (g-value-unset g-value)
     (values)))
 
-(define (%g-inst-set-property-value g-type value)
-  (let ((g-type (if (symbol? g-type)
-                    g-type
-                    (g-type->symbol g-type))))
-    (case g-type
-      ((object)
-       (and value
-            (!g-inst value)))
-      ((interface)
-       (and value
-            (if (pointer? value)
-                value
-                ;; It is (should be) an instance
-                (!g-inst value))))
-      (else
-       value))))
+(define %g-inst-set-property-value
+  (@@ (g-golf hl-api gtype) %g-inst-set-property-value))
 
 
 ;;;

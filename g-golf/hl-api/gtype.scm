@@ -53,6 +53,7 @@
   #:export (<gtype-class>
             <gtype-instance>
 
+            g-type-class
             g-inst-cache-show))
 
 
@@ -93,18 +94,25 @@
              (g-type (g-registered-type-info-get-g-type info))
              (g-f-type (g-type-fundamental g-type))
              (g-name (g-registered-type-info-get-type-name info))
-             (g-class (case (g-type->symbol g-f-type)
-                        ((object)
-                         (g-type-class-ref g-type))
-                        (else
-                         #f))))
-        (and g-class
-             (g-type-class-unref g-class))
+             (g-class (g-type-class info #:g-type g-type)))
         (mslot-set! self
                     'namespace namespace
                     'g-type g-type
                     'g-name g-name
                     'g-class g-class)))))
+
+(define* (g-type-class info #:key (g-type #f))
+  (let* ((g-type (or g-type
+                     (g-registered-type-info-get-g-type info)))
+         (g-f-type (g-type-fundamental g-type))
+         (g-class (case (g-type->symbol g-f-type)
+                    ((object)
+                     (g-type-class-ref g-type))
+                    (else
+                     #f))))
+    (and g-class
+         (g-type-class-unref g-class))
+    g-class))
 
 ;; The root class of all instantiable GType classes.
 
@@ -161,14 +169,13 @@
                    (match slot-def-init-val-pair
                      ((slot-def . init-val)
                       (let* ((slot-opts (slot-definition-options slot-def))
-                             (g-property (get-keyword #:g-property slot-opts #f))
+                             (g-name (get-keyword #:g-name slot-opts #f))
                              (g-type (get-keyword #:g-type slot-opts #f)))
                         (%g_value_init g-value g-type)
                         (g-value-set! g-value
-                                      (%g-inst-construct-property-value g-type
-                                                                        init-val))
+                                      (%g-inst-set-property-value g-type init-val))
                         (loop (+ i 1)
-                              (cons (g-base-info-get-name g-property) names)
+                              (cons g-name names)
                               (gi-pointer-inc g-value %g-value-size)
                               rest)))))))))
         (g-object-new-with-properties g-type
@@ -176,18 +183,22 @@
                                       (scm->gi names 'strings)
                                       g-values))))
 
-(define (%g-inst-construct-property-value g-type value)
-  (case (g-type->symbol g-type)
-    ((object)
-     (and value
-          (!g-inst value)))
-    ((interface)
-     (if (pointer? value)
-         value
-         ;; It is (should be) an instance
-         (!g-inst value)))
-    (else
-     value)))
+(define (%g-inst-set-property-value g-type value)
+  (let ((g-type (if (symbol? g-type)
+                    g-type
+                    (g-type->symbol g-type))))
+    (case g-type
+      ((object)
+       (and value
+            (!g-inst value)))
+      ((interface)
+       (and value
+            (if (pointer? value)
+                value
+                ;; It is (should be) an instance
+                (!g-inst value))))
+      (else
+       value))))
 
 (define-method (slot-definition-init-value-pairs (self <gtype-instance>)
                                                  initargs)
