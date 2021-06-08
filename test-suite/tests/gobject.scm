@@ -173,18 +173,26 @@
     (assert (g-value-set! g-value "Hello!"))
     (assert (g-value-set! g-value "Apresentação"))))
 
-(define %g-io-channel
-  (gi-cache-ref 'boxed 'gio-channel))
-
 (define-method (test-g-value-boxed-semi-opaque (self <g-golf-test-gobject>))
   (let* ((port (open "/dev/tty" O_RDONLY))
          (fd (fileno port))
          (channel (g-io-channel-unix-new fd))
-         (g-value (g-value-init (slot-ref %g-io-channel 'g-type))))
+         (gio-channel (gi-cache-ref 'boxed 'gio-channel))
+         (g-type (slot-ref gio-channel 'g-type))
+         (g-value (g-value-init g-type)))
     (assert (g-value-set! g-value channel))
     (assert-true (eq? (pointer-address (g-value-ref g-value))
                       (pointer-address channel)))
     (close port)))
+
+(define-method (test-g-value-boxed-g-strv (self <g-golf-test-gobject>))
+  (let* ((g-type (g-type-from-name "GStrv"))
+         (g-value (g-value-init g-type))
+         (value '("one" "two" "three")))
+    (assert (g-value-set! g-value '()))
+    (assert-equal (g-value-ref g-value) '())
+    (assert (g-value-set! g-value value))
+    (assert-equal (g-value-ref g-value) value)))
 
 (define-method (test-g-value-get-pointer (self <g-golf-test-gobject>))
   (let ((g-value (g-value-init (symbol->g-type 'pointer))))
