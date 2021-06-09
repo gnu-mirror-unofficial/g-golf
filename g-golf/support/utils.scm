@@ -216,11 +216,15 @@
         name
         (string->symbol name))))
 
+(define %g-short-name-transform-exceptions
+  '(("GObject" . "g-object")))
+
 (define* (g-name->short-name g-name
                              g-parent-name
                              #:optional (as-string? #f))
   (let* ((name (g-name->name g-name 'as-string))
-         (parent-name (g-name->name g-parent-name 'as-string))
+         (parent-name (or (assoc-ref %g-short-name-transform-exceptions g-parent-name)
+                          (g-name->name g-parent-name 'as-string)))
          (short-name
           (if (string-contains name parent-name)
               (let* ((spl (string-length parent-name))
