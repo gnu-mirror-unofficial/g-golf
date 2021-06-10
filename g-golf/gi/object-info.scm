@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016, 2020
+;;;; Copyright (C) 2016, 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -39,6 +39,7 @@
   #:use-module (g-golf init)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gi base-info)
+  #:use-module (g-golf gi function-info)
   #:use-module (g-golf gi registered-type-info)
 
   #:duplicates (merge-generics
@@ -50,6 +51,8 @@
   #:export (gi-object-import
             gi-object-show
             gi-object-property-names
+            gi-object-method-names
+            gi-object-method-find-by-name
 
 	    g-object-info-get-abstract
 	    g-object-info-get-parent
@@ -152,11 +155,37 @@
              (results '()))
     (if (= i n-prop)
         (reverse! results)
-        (let ((g-property (g-object-info-get-property info i)))
+        (let* ((g-property (g-object-info-get-property info i))
+               (name (g-base-info-get-name g-property)))
+          (g-base-info-unref g-property)
           (loop n-prop
                 (+ i 1)
-                (cons (g-base-info-get-name g-property)
-                      results))))))
+                (cons name results))))))
+
+(define (gi-object-method-names info)
+  (let loop ((n-prop (g-object-info-get-n-methods info))
+             (i 0)
+             (results '()))
+    (if (= i n-prop)
+        (reverse! results)
+        (let* ((method (g-object-info-get-method info i))
+               (name (g-function-info-get-symbol method)))
+          (g-base-info-unref method)
+          (loop n-prop
+                (+ i 1)
+                (cons name results))))))
+
+(define (gi-object-method-find-by-name info name)
+  (let loop ((n-prop (g-object-info-get-n-methods info))
+             (i 0))
+    (if (= i n-prop)
+        #f
+        (let* ((method (g-object-info-get-method info i))
+               (m-name (g-function-info-get-symbol method)))
+          (if (string=? m-name name)
+              method
+              (loop n-prop
+                    (+ i 1)))))))
 
 
 ;;;

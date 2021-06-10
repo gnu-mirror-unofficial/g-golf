@@ -22,6 +22,8 @@ GIObjectInfo — Structs representing a GObject.
 @c @item @ref{gi-object-import}
 @item @ref{gi-object-show}
 @item @ref{gi-object-property-names}
+@item @ref{gi-object-method-names}
+@item @ref{gi-object-method-find-by-name}
 @item @ref{g-object-info-get-abstract}
 @item @ref{g-object-info-get-parent}
 @item @ref{g-object-info-get-type-name}
@@ -135,13 +137,27 @@ Obtains and displays the following informations about the object
 
 
 @anchor{gi-object-property-names}
+@anchor{gi-object-method-names}
 @deffn Procedure gi-object-property-names info
+@deffnx Procedure gi-object-method-names info
 
 Returns a (possibly empty) list.
 
 Obtains and returns the (possibly empty) list of the (untranslated) GI
-property names for @var{info} (see @ref{g-name->name} to obtain their
-scheme representation).
+property ormethod names for @var{info} (see @ref{g-name->name} to obtain
+their scheme representation).
+@end deffn
+
+
+@anchor{gi-object-method-find-by-name}
+@deffn Procedure gi-object-method-find-by-name info name
+
+Returns a pointer or @code{#f}.
+
+Obtains and returns a pointer to the method @code{GIFunctionInfo}
+contained in @var{info}, for which @ref{g-function-info-get-symbol} is
+@code{string=?} to @var{name}. If there is such method, it returns
+@code{#f}.
 @end deffn
 
 
