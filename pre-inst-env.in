@@ -68,9 +68,9 @@ export GUILE_LOAD_COMPILED_PATH
 
 if [ x"$LD_LIBRARY_PATH" = x ]
 then
-    LD_LIBRARY_PATH=$abs_top_builddir/libg-golf:$abs_top_srcdir/libg-golf
+    LD_LIBRARY_PATH=$abs_top_builddir/libg-golf:$abs_top_builddir/libg-golf/.libs
 else
-    LD_LIBRARY_PATH=$abs_top_builddir/libg-golf:$abs_top_srcdir/libg-golf:$LD_LIBRARY_PATH
+    LD_LIBRARY_PATH=$abs_top_builddir/libg-golf:$abs_top_builddir/libg-golf/.libs:$LD_LIBRARY_PATH
 fi
 
 ## echo $LD_LIBRARY_PATH
