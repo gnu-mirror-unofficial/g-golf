@@ -137,15 +137,27 @@ Obtains and displays the following informations about the object
 
 
 @anchor{gi-object-property-names}
-@anchor{gi-object-method-names}
 @deffn Procedure gi-object-property-names info
-@deffnx Procedure gi-object-method-names info
 
 Returns a (possibly empty) list.
 
 Obtains and returns the (possibly empty) list of the (untranslated) GI
-property ormethod names for @var{info} (see @ref{g-name->name} to obtain
-their scheme representation).
+property names for @var{info} (see @ref{g-name->name} to obtain their
+scheme representation).
+@end deffn
+
+
+@anchor{gi-object-method-names}
+@deffn Procedure gi-object-method-names info
+
+Returns a (possibly empty) list.
+
+Obtains and returns the (possibly empty) list of pairs of the
+(untranslated) GI method names for @var{info} (see @ref{g-name->name} to
+obtain their scheme representation).
+
+Each pair is composed of the @var{info} @ref{g-function-info-get-symbol}
+and @ref{g-base-info-get-name} names.
 @end deffn
 
 

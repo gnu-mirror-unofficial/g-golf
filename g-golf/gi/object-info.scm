@@ -169,11 +169,12 @@
     (if (= i n-prop)
         (reverse! results)
         (let* ((method (g-object-info-get-method info i))
+               (b-name (g-base-info-get-name method))
                (name (g-function-info-get-symbol method)))
           (g-base-info-unref method)
           (loop n-prop
                 (+ i 1)
-                (cons name results))))))
+                (cons (list name b-name) results))))))
 
 (define (gi-object-method-find-by-name info name)
   (let loop ((n-prop (g-object-info-get-n-methods info))
