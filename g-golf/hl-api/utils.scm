@@ -34,14 +34,18 @@
   #:use-module (g-golf gi)
   #:use-module (g-golf glib)
   #:use-module (g-golf gobject)
+  #:use-module (g-golf hl-api gtype)
+  #:use-module (g-golf hl-api gobject)
 
   #:duplicates (merge-generics
 		replace
 		warn-override-core
 		warn
 		last)
-  
-  #:export (gi-find-by-property-name))
+
+  #:export (gi-find-by-property-name
+
+            scm->g-type))
 
 
 #;(g-export )
@@ -74,3 +78,15 @@
              (loop n-info
                    (+ i 1)
                    results)))))))
+
+(define (scm->g-type value)
+  (letrec* ((v-class (class-of value))
+            (v-cpl (class-precedence-list v-class))
+            (is-a- (lambda (value class)
+                       (and (memq class v-cpl) #t))))
+    (cond ((is-a- value <string>)
+           (symbol->g-type 'string))
+          ((is-a- value <gobject>)
+           (!g-type v-class))
+          (else
+           (error "Unimplemented scm->g-type for " value)))))
