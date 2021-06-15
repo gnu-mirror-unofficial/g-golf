@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020 - 2021
+;;;; Copyright (C) 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -26,22 +26,22 @@
 ;;; Code:
 
 
-(define-module (g-golf override override)
-  #:use-module (srfi srfi-1)
-
-  #:export (%gi-override
-            gi-override?))
+(define-module (g-golf override gdk)
+  #:export (gdk-clipboard-set-value-ov))
 
 
-(define %gi-override
-  '("gdk_clipboard_set_value"
-
-    "gtk_container_child_get_property"
-    "gtk_container_child_set_property"
-    "gtk_list_store_set_value"
-    "gtk_tree_store_set_value"
-    "gtk_tree_model_get_value"))
-
-(define (gi-override? name)
-  (and (member name %gi-override string=?)
-       #t)) ;; not to store the member call result
+(define (gdk-clipboard-set-value-ov proc)
+  (values
+   #f
+   `(lambda (clipboard value)
+      (let* ((i-func ,proc)
+             (g-value-set-value
+              ,(@@ (g-golf hl-api gobject) %g-inst-set-property-value))
+             (g-type (scm->g-type value))
+             (g-value (g-value-init g-type)))
+        (g-value-set! g-value
+                      (g-value-set-value g-type value))
+        (i-func clipboard g-value)
+        (g-value-unset g-value)
+        (values)))
+   '(0 1)))

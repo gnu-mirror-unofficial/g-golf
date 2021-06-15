@@ -85,6 +85,7 @@ SOURCES = \
 	g-golf/gdk/events.scm			\
 	g-golf/gdk.scm				\
 	g-golf/override/override.scm		\
+	g-golf/override/gdk.scm			\
 	g-golf/override/gtk.scm			\
 	g-golf/override.scm			\
 	g-golf/hl-api/gtype.scm			\

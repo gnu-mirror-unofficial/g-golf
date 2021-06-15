@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020
+;;;; Copyright (C) 2020 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -29,9 +29,11 @@
 (define-module (g-golf override)
   #:use-module (g-golf support module)
   #:use-module (g-golf override override)
+  #:use-module (g-golf override gdk)
   #:use-module (g-golf override gtk))
 
 
 (eval-when (expand load eval)
   (re-export-public-interface (g-golf override override)
+                              (g-golf override gdk)
                               (g-golf override gtk)))
