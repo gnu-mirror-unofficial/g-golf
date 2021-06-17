@@ -163,9 +163,10 @@
              (apply values
                     (map arg-out->scm (!args-out f-inst))))
             (else
-             (apply values
-                    (cons (return-value->scm f-inst)
-                          (map arg-out->scm (!args-out f-inst))))))
+             (let ((args-out (map arg-out->scm (!args-out f-inst))))
+               (apply values
+                      (cons (return-value->scm f-inst #:args-out args-out)
+                            args-out)))))
           (case return-type
             ((void) (values))
             (else
@@ -1122,20 +1123,21 @@ method with its 'old' definition.
                       #:forced-type forced-type
                       #:is-pointer? is-pointer?)))
 
-(define (return-value->scm function)
+(define* (return-value->scm function #:key (args-out #f))
   (let ((type-tag (!return-type function))
         (type-desc (!type-desc function))
         (gi-argument (!gi-arg-result function)))
     (gi-argument->scm type-tag
                       type-desc
                       gi-argument
-                      function)))	;; the type-desc instance 'owner'
+                      function		;; the type-desc instance 'owner'
+                      #:args-out args-out)))
 
 (define %gdk-event-class
   (@ (g-golf gdk events) gdk-event-class))
 
 (define* (gi-argument->scm type-tag type-desc gi-argument funarg
-                           #:key (forced-type #f) (is-pointer? #f))
+                           #:key (forced-type #f) (is-pointer? #f) (args-out #f))
   ;; forced-type is only used for 'inout and 'out arguments, in which
   ;; case it is 'pointer - see 'simple' types below.
 
@@ -1220,6 +1222,11 @@ method with its 'old' definition.
           ((utf8
             filename)
            (gi->scm (gi-argument-ref gi-argument 'v-pointer) 'strings))
+          ((gtype)
+           (let ((array-ptr (gi-argument-ref gi-argument 'v-pointer)))
+             (if is-zero-terminated
+                 (gi->scm array-ptr 'gtypes)
+                 (gi->scm array-ptr 'n-gtype (list-ref args-out param-n)))))
           (else
            (warning "Unimplemented (arg-out->scm) type - array;"
                     (format #f "~S" type-desc)))))))
