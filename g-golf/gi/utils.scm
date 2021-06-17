@@ -258,8 +258,7 @@
             (reverse! results)
             (loop u64
                   (+ i 1)
-                  (cons (g-type->symbol (u64vector-ref u64 i))
-                        results))))))
+                  (cons (u64vector-ref u64 i) results))))))
 
 
 ;;;

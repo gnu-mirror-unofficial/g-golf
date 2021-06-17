@@ -104,7 +104,7 @@
          (scm->gi a 'n-gtype 3)
        (let ((b (gi->scm ptr 'n-gtype 3)))
          (and (= (length a) (length b))
-              (every eq? a b)))))))
+              (every eq? a (map g-type->symbol b))))))))
 
 
 ;;;
