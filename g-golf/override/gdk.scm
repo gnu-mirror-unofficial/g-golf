@@ -27,7 +27,8 @@
 
 
 (define-module (g-golf override gdk)
-  #:export (gdk-clipboard-set-value-ov))
+  #:export (gdk-clipboard-set-value-ov
+            gdk-content-provider-get-value-ov))
 
 
 (define (gdk-clipboard-set-value-ov proc)
@@ -45,3 +46,21 @@
         (g-value-unset g-value)
         (values)))
    '(0 1)))
+
+
+(define (gdk-content-provider-get-value-ov proc)
+  (values
+   #f
+   `(lambda (content-provider)
+      (let* ((i-func ,proc)
+             (g-value-get-value
+              ,(@@ (g-golf hl-api gobject) %g-inst-get-property-value))
+             (content-formats (ref-formats content-provider))
+             (g-types (gdk-content-formats-get-gtypes content-formats))
+             (g-type (car g-types))
+             (g-value (g-value-init g-type))
+             (dum (i-func content-provider g-value))
+             (value (g-value-get-value g-value)))
+        (g-value-unset g-value)
+        value))
+   '(0)))

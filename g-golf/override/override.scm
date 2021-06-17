@@ -35,6 +35,7 @@
 
 (define %gi-override
   '("gdk_clipboard_set_value"
+    "gdk_content_provider_get_value"
 
     "gtk_container_child_get_property"
     "gtk_container_child_set_property"
