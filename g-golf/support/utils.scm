@@ -107,7 +107,10 @@
 (define* (warning what msg
                   #:key (msg-2 #f)
                   (port (current-output-port)))
-  (display (string-append "Warning: " what ": " msg) port)
+  (display "Warning: " port)
+  (display what port)
+  (display ": " port)
+  (display msg port)
   (newline port)
   (when msg-2
     (display msg-2 port)
