@@ -36,6 +36,8 @@ Parameters and Values — Standard Parameter and Value Types
 @item @ref{g-value-set-flags}
 @item @ref{g-value-get-string}
 @item @ref{g-value-set-string}
+@item @ref{g-value-get-param}
+@item @ref{g-value-set-param}
 @item @ref{g-value-get-boxed}
 @item @ref{g-value-set-boxed}
 @item @ref{g-value-get-pointer}
@@ -273,6 +275,26 @@ Obtains and returns the content of @var{g-value}.
 Returns nothing.
 
 Sets the content of @var{g-value} to @var{str}.
+@end deffn
+
+
+@anchor{g-value-get-param}
+@deffn Procedure g-value-get-param g-value
+
+Returns a (pointer to) @code{GParamSpec} or @code{#f}.
+
+Obtains and returns the content of @var{g-value}, a (pointer to)
+@code{GParamSpec} or @code{#f} if the @var{g-value} content is the
+@code{%null-pointer}.
+@end deffn
+
+
+@anchor{g-value-set-param}
+@deffn Procedure g-value-set-param g-value param
+
+Returns nothing.
+
+Sets the content of @var{g-value} to @var{param}.
 @end deffn
 
 

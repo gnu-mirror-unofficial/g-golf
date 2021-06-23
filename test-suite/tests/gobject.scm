@@ -173,6 +173,20 @@
     (assert (g-value-set! g-value "Hello!"))
     (assert (g-value-set! g-value "Apresentação"))))
 
+(define-method (test-g-value-get-param (self <g-golf-test-gobject>))
+  (let ((g-value (g-value-init (symbol->g-type 'param))))
+    (assert (g-value-ref g-value))))
+
+(define-method (test-g-value-set-param (self <g-golf-test-gobject>))
+  (let* ((g-value (g-value-init (symbol->g-type 'param)))
+         (g-class (!g-class <g-binding>))
+         (p-spec (assert
+                  (g-object-class-find-property g-class "source"))))
+    (assert (g-value-set! g-value #f))
+    (assert (g-value-set! g-value p-spec))
+    (assert-true (eq? (pointer-address (g-value-ref g-value))
+                      (pointer-address p-spec)))))
+
 (define-method (test-g-value-boxed-semi-opaque (self <g-golf-test-gobject>))
   (let* ((port (open "/dev/tty" O_RDONLY))
          (fd (fileno port))

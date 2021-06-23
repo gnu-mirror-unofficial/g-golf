@@ -69,6 +69,8 @@
             g-value-get-flags
             g-value-get-string
             g-value-set-string
+            g-value-get-param
+            g-value-set-param
             g-value-get-boxed
             g-value-set-boxed
             g-value-get-pointer
@@ -121,6 +123,8 @@
        (g-value-get-flags g-value))
       ((string)
        (g-value-get-string g-value))
+      ((param)
+       (g-value-get-param g-value))
       ((boxed)
        (g-value-get-boxed g-value))
       ((pointer)
@@ -150,6 +154,8 @@
        (g-value-set-flags g-value value))
       ((string)
        (g-value-set-string g-value value))
+      ((param)
+       (g-value-set-param g-value value))
       ((boxed)
        (g-value-set-boxed g-value value))
       ((pointer)
@@ -249,6 +255,17 @@
 (define (g-value-set-string g-value str)
   (g_value_set_string g-value
                       (string->pointer str)))
+
+(define (g-value-get-param g-value)
+  (let ((pointer (g_value_get_param g-value)))
+    (if (null-pointer? pointer)
+        #f
+        pointer)))
+
+(define (g-value-set-param g-value param)
+  (if param
+      (g_value_set_param g-value param)
+      (g_value_set_param g-value %null-pointer)))
 
 (define %gdk-event-class
   (@ (g-golf gdk events) gdk-event-class))
@@ -421,6 +438,19 @@
 (define g_value_set_string
   (pointer->procedure void
                       (dynamic-func "g_value_set_string"
+				    %libgobject)
+                      (list '*
+                            '*)))
+
+(define g_value_get_param
+  (pointer->procedure '*
+                      (dynamic-func "g_value_get_param"
+				    %libgobject)
+                      (list '*)))
+
+(define g_value_set_param
+  (pointer->procedure void
+                      (dynamic-func "g_value_set_param"
 				    %libgobject)
                       (list '*
                             '*)))
