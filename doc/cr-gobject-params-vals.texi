@@ -263,9 +263,10 @@ being a valid member of the (registered) gi-flags type for
 @anchor{g-value-get-string}
 @deffn Procedure g-value-get-string g-value
 
-Returns a string.
+Returns a string or @code{#f}.
 
-Obtains and returns the content of @var{g-value}.
+Obtains and returns the content of @var{g-value}, a string or @code{#f}
+if the @var{g-value} content is the @code{%null-pointer}.
 @end deffn
 
 

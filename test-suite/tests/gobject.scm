@@ -169,6 +169,7 @@
 
 (define-method (test-g-value-set-string (self <g-golf-test-gobject>))
   (let ((g-value (g-value-init (symbol->g-type 'string))))
+    (assert (g-value-set! g-value #f))
     (assert (g-value-set! g-value ""))
     (assert (g-value-set! g-value "Hello!"))
     (assert (g-value-set! g-value "Apresentação"))))

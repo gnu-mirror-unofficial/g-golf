@@ -249,12 +249,14 @@
 (define (g-value-get-string g-value)
   (let ((pointer (g_value_get_string g-value)))
     (if (null-pointer? pointer)
-        ""
+        #f
         (pointer->string pointer))))
 
 (define (g-value-set-string g-value str)
   (g_value_set_string g-value
-                      (string->pointer str)))
+                      (if str
+                          (string->pointer str)
+                          %null-pointer)))
 
 (define (g-value-get-param g-value)
   (let ((pointer (g_value_get_param g-value)))
