@@ -996,7 +996,7 @@ method with its 'old' definition.
                                              (gi-type-tag->field forced-type)
                                              (bytevector->pointer s32))))
                         (else
-                         (warning "Unimplemeted (pointer to): " type-tag)))))
+                         (warning "Unimplemented (pointer to): " type-tag)))))
                  (else
                   (gi-argument-set! gi-argument-in
                                     (gi-type-tag->field forced-type)
