@@ -215,17 +215,16 @@
 ;;;
 
 (define-method (test-g-param-spec (self <g-golf-test-gobject>))
-  (gi-import-by-name "Gtk" "HPaned" #:version "3.0")
-  (let* ((g-class (!g-class <gtk-paned>))
+  (let* ((g-class (!g-class <g-binding>))
          (p-spec (assert
-                  (gtk-container-class-find-child-property g-class
-                                                           "resize"))))
+                  (g-object-class-find-property g-class "source"))))
     (assert (g-param-spec-type p-spec))
     (assert (g-param-spec-type-name p-spec))
     (assert (g-param-spec-get-default-value p-spec))
     (assert (g-param-spec-get-name p-spec))
     (assert (g-param-spec-get-nick p-spec))
-    (assert (g-param-spec-get-blurb p-spec))))
+    (assert (g-param-spec-get-blurb p-spec))
+    (assert (g-param-spec-get-flags p-spec))))
 
 
 (exit-with-summary (run-all-defined-test-cases))
