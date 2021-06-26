@@ -123,7 +123,9 @@
   (g_signal_connect_closure_by_id g-inst
                                   signal-id
                                   (if detail
-                                      (g-quark-from-string detail)
+                                      (if (string? detail)
+                                          (g-quark-from-string detail)
+                                          detail)
                                       0)
                                   closure
                                   (scm->gi after? 'boolean)))
