@@ -86,56 +86,52 @@
 ;;; Signal connection
 ;;;
 
-(define-method* (connect (inst <gtype-instance>) name function
-                         #:optional (after? #f) (detail #f))
-  (signal-connect inst name function after? detail))
+(define-method (connect (inst <gtype-instance>) name function)
+  (signal-connect inst name function #f))
 
-(define-method* (connect-after (inst <gtype-instance>) name function
-                               #:optional (detail #f))
-  (signal-connect inst name function #t detail))
+(define-method (connect-after (inst <gtype-instance>) name function)
+  (signal-connect inst name function #t))
 
-(define (signal-connect inst s-name function after? detail)
+(define (signal-connect inst s-name function after?)
   ;; Below, i- stands for instance-, o- for object-, s- for signal-
   (let* ((i-class (class-of inst))
          (i-class-name (class-name i-class))
-         (i-type (!g-type i-class))
-         (s-id (or (g-signal-lookup (symbol->string s-name) i-type)
-                   (error "No such signal: " i-class-name s-name)))
-         (g-signal (g-signal-query s-id)))
-    (match g-signal
-      ((id name iface-type flags return-type n-param param-types)
-       (let* ((iface-name (g-type-name iface-type))
-              (iface-key (string->symbol
-                          (g-studly-caps-expand iface-name)))
-              (signal (or (gi-signal-cache-ref iface-key s-name)
-                          (let* ((iface-info (g-irepository-find-by-gtype iface-type))
-                                 (iface-s-info (g-object-info-find-signal iface-info name))
-                                 (param-args (signal-arguments iface-s-info))
-                                 (s-inst (make <signal>
-                                           #:id id
-                                           #:name name
-                                           #:iface-type iface-type
-                                           #:iface-name iface-name
-                                           #:flags flags
-                                           #:return-type return-type
-                                           #:n-param n-param
-                                           #:param-types param-types
-                                           #:param-args param-args)))
-                            (gi-signal-cache-set! iface-key s-name s-inst)
-                            s-inst)))
-              (closure (make <closure>
-                         #:function function
-                         #:return-type (!return-type signal)
-                         #:param-types (cons 'object
-                                             (!param-types signal))
-                         #:param-args (cons #f
-                                            (!param-args signal)))))
-         (g-signal-connect-closure-by-id (!g-inst inst)
-                                         (!id signal)
-                                         detail
-                                         (!g-closure closure)
-                                         after?)
-         (values))))))
+         (i-type (!g-type i-class)))
+    (receive (s-id detail)
+        (g-signal-parse-name s-name i-type)
+      (match (g-signal-query s-id)
+        ((id name iface-type flags return-type n-param param-types)
+         (let* ((iface-name (g-type-name iface-type))
+                (iface-key (string->symbol
+                            (g-studly-caps-expand iface-name)))
+                (signal (or (gi-signal-cache-ref iface-key s-name)
+                            (let* ((iface-info (g-irepository-find-by-gtype iface-type))
+                                   (iface-s-info (g-object-info-find-signal iface-info name))
+                                   (param-args (signal-arguments iface-s-info))
+                                   (s-inst (make <signal>
+                                             #:id id
+                                             #:name name
+                                             #:iface-type iface-type
+                                             #:iface-name iface-name
+                                             #:flags flags
+                                             #:return-type return-type
+                                             #:n-param n-param
+                                             #:param-types param-types
+                                             #:param-args param-args)))
+                              (gi-signal-cache-set! iface-key s-name s-inst)
+                              s-inst)))
+                (closure (make <closure>
+                           #:function function
+                           #:return-type return-type
+                           #:param-types (cons 'object param-types)
+                           #:param-args (cons #f
+                                              (!param-args signal)))))
+           (g-signal-connect-closure-by-id (!g-inst inst)
+                                           (!id signal)
+                                           detail
+                                           (!g-closure closure)
+                                           after?)
+           (values)))))))
 
 (define (signal-arguments info)
   (let loop ((n-arg (g-callable-info-get-n-args info))
