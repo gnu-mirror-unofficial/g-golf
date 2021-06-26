@@ -20,6 +20,7 @@ purpose notification mechanism
 @item @ref{g-signal-query}
 @item @ref{g-signal-lookup}
 @item @ref{g-signal-list-ids}
+@item @ref{g-signal-parse-name}
 @end table
 @end indentedblock
 
@@ -107,6 +108,22 @@ Obtains and returns the list of signal's identifying integers for
 @var{g-type} (Note that at least one @var{g-type} instance must have
 been created prior to attempt to list or query signal's identifying
 integers for a given @var{g-type}).
+@end deffn
+
+
+@anchor{g-signal-parse-name}
+@deffn Procedure g-signal-parse-name detailed-signal g-type @
+                                     [force-detail-quark #t]
+
+Returns two integer values.
+
+Obtains and returns the signal-id and a detail corresponding to
+@var{detailed-signal} for @var{g-type}. The @var{detailed-signal} can be
+passed as a symbol or a string. When @var{force-detail-quark} is
+@code{#t} it forces the creation of a @code{GQuark} for the detail.
+
+If the signal name could not successfully be parsed, it raises an
+exception.
 @end deffn
 
 

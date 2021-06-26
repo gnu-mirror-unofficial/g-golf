@@ -51,6 +51,7 @@
             g-signal-lookup
             g-signal-list-ids
             g-signal-connect-closure-by-id
+            g-signal-parse-name
 
             %g-signal-flags))
 
@@ -127,6 +128,25 @@
                                   closure
                                   (scm->gi after? 'boolean)))
 
+(define* (g-signal-parse-name detailed-signal g-type
+                              #:optional (force-detail-quark #t))
+  (let* ((d-signal (if (symbol? detailed-signal)
+                       (symbol->string detailed-signal)
+                       detailed-signal))
+         (uint-size (sizeof unsigned-int))
+         (signal-id-bv (make-bytevector uint-size 0))
+         (uint32-size (sizeof uint32))
+         (detail-bv (make-bytevector uint32-size 0))
+         (parsed? (g_signal_parse_name (string->pointer d-signal)
+                                       g-type
+                                       (bytevector->pointer signal-id-bv)
+                                       (bytevector->pointer detail-bv)
+                                       (scm->gi force-detail-quark 'boolean))))
+    (if (gi->scm parsed? 'boolean)
+        (values (u32vector-ref signal-id-bv 0)
+                (u32vector-ref detail-bv 0))
+        (error "No such signal:" (g-type-name g-type) d-signal))))
+
 
 ;;;
 ;;; Utils
@@ -177,6 +197,16 @@
                             '*			;; closure
                             int)))		;; after (boolean)
 
+(define g_signal_parse_name
+  (pointer->procedure int
+                      (dynamic-func "g_signal_parse_name"
+				    %libgobject)
+                      (list '*			;; detailed signal
+                            unsigned-long	;; g-type
+                            '*			;; signal id
+                            '*			;; detail (g-quark)
+                            int)))		;; force detail quark (boolean)
+
 
 ;;;
 ;;; Types and Values
@@ -184,7 +214,7 @@
 
 (define %g-signal-flags
   (make <gi-flags>
-    #:g-name "GsignalFlags"
+    #:g-name "GSignalflags"
     #:enum-set '((run-first . 1)
                  (run-last . 2)
                  (run-cleanup . 4)

@@ -242,4 +242,20 @@
     (assert (g-param-spec-get-flags p-spec))))
 
 
+;;;
+;;; Signals
+;;;
+
+(define-method (test-g-signal-parse-name (self <g-golf-test-gobject>))
+  (let ((g-type (!g-type <g-binding>)))
+    (assert (g-signal-parse-name "notify" g-type))
+    (assert (g-signal-parse-name 'notify g-type))
+    (assert (g-signal-parse-name "notify::target" g-type))
+    (assert (g-signal-parse-name 'notify::target g-type))
+    (assert-exception (g-signal-parse-name "notified" g-type))
+    (assert-exception (g-signal-parse-name 'notified g-type))
+    (assert-exception (g-signal-parse-name "notified::target" g-type))
+    (assert-exception (g-signal-parse-name 'notified::target g-type))))
+
+
 (exit-with-summary (run-all-defined-test-cases))
