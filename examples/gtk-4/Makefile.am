@@ -24,5 +24,5 @@
 EXTRA_DIST = \
 	$(wildcard *.scm)		\
 	$(wildcard *.png)		\
-	$(wildcard images/*.png)
-
+	$(wildcard images/*.png)	\
+	$(wildcard ui/*.ui)
