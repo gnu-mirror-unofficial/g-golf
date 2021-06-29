@@ -67,7 +67,7 @@ exec guile -e main -s "$0" "$@"
                   #:orientation 'horizontal
                   #:halign 'center
                   #:spacing 24))
-         (path (string-append cwd "/levitating-gnu.png"))
+         (path (string-append cwd "/images/levitating-gnu.png"))
          (g-file (g-file-new-for-path path))
          (texture (gdk-texture-new-from-file g-file))
          (image-from (make <gtk-image>
