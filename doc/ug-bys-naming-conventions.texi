@@ -76,12 +76,12 @@ section), G-Golf also defines so called short name methods, obtained by
 dropping the container name (and its trailing hyphen) from the GI
 typelib method full/long names.
 
-For example, the @code{<gtk-container>} class, which defines a
-@code{gtk-container-add} method, would also define, using G-Golf's
-default settings, an @code{add} method. To be more precise, G-Golf would
-create (if it does not exist) or reuse (if it exists) the @code{add}
-generic function, make and add a method with its specializers, in this
-case @code{<gtk-container>} and @code{<gtk-widget>}.
+For example, the @code{<gtk-label>} class, which defines a
+@code{gtk-label-get-text} method, would also define, using G-Golf's
+default settings, an @code{get-text} method. To be more precise, G-Golf
+would create (if it does not exist) or reuse (if it exists) the
+@code{get-text} generic function, make and add a method with its
+specializer(s), in this case @code{<gtk-label>}.
 
 
 @ @ @sup{_} @strong{Functions}
