@@ -36,9 +36,9 @@ expose their respective G-Golf interfaces.
 @c note that introduces this section,}
 
 @c @center @sup{_} @sc{End of Special Note} @sup{_}
+
+
 @sp 1
-
-
 @ @ @sup{_} @strong{In Gdk-3.0}
 
 In @uref{@value{UGDK3}, Gdk-3.0}, a GdkEvent contains a union of all of
@@ -342,6 +342,7 @@ The result is simply obtained by destructuring and selecting one of the
 @end deffn
 
 
+@sp 1
 @ @ @sup{_} @strong{In Gdk-4.0}
 
 In @uref{@value{UGDK}, Gdk-4.0}, GdkEvent is a class@footnote{From a GI
