@@ -229,11 +229,11 @@
   (gi-import-by-name "GObject" "ParamSpec"
                      #:with-methods? #f #:force? #t)
 
-  (gi-import-by-name "GObject" "Binding" #:force? 't)
-  (gi-import-by-name "GObject" "BindingFlags" #:force? 't)
+  (gi-import-by-name "GObject" "Binding" #:force? #t)
+  (gi-import-by-name "GObject" "BindingFlags" #:force? #t)
 
   (let ((%gi-import-object-methods
          (@@ (g-golf hl-api object) gi-import-object-methods))
         (g-object-info
          (g-irepository-find-by-name "GObject" "Object")))
-    (%gi-import-object-methods g-object-info #:force? 't)))
+    (%gi-import-object-methods g-object-info #:force? #t)))
