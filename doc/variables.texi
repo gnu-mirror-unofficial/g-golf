@@ -70,6 +70,11 @@
 @set UGLIB-GSList https://developer.gnome.org/glib/stable/glib-Singly-Linked-Lists.html
 
 @set UGOBJECT https://developer.gnome.org/gobject/stable/
+@set UGOBJECT-Introduction https://developer.gnome.org/gobject/stable/pr01.html
+@set UGOBJECT-Concepts https://developer.gnome.org/gobject/stable/pt01.html
+@set UGOBJECT-Concepts-GType https://developer.gnome.org/gobject/stable/chapter-gtype.html
+@set UGOBJECT-Concepts-GObject https://developer.gnome.org/gobject/stable/chapter-gobject.html
+@set UGOBJECT-Concepts-Signals https://developer.gnome.org/gobject/stable/chapter-signal.html
 
 @set UGOBJECT-Type-Info https://developer.gnome.org/gobject/stable/gobject-Type-Information.html
 @set UGOBJECT-GType-Module https://developer.gnome.org/gobject/stable/GTypeModule.html

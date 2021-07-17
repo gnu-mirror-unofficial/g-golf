@@ -50,6 +50,7 @@ g_golf_TEXINFOS = \
   ug-gswg-scripting.texi	\
   ug-wwg-import.texi		\
   ug-wwg-events.texi		\
+  ug-wwg-gobject.texi		\
   ug-wwg.texi			\
   cr.texi			\
   cr-overview.texi		\
