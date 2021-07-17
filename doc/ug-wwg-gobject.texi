@@ -12,17 +12,26 @@
 @subsection GObject
 
 G-Golf GObject interfaces.@*
-The GLib Object System
+The G-Golf integration with the GLib Object System.
 
 
-@c @subheading Procedures
+@subheading Classes
 
-@c @indentedblock
-@c @table @code
-@c @item @ref{gi-import}
-@c @item @ref{gi-import-by-name}
-@c @end table
-@c @end indentedblock
+@indentedblock
+@table @code
+@item @ref{<gobject>}
+@end table
+@end indentedblock
+
+
+@subheading Procedures
+@c, Accessors and Methods
+
+@indentedblock
+@table @code
+@item @ref{gobject-class?}
+@end table
+@end indentedblock
 
 
 @subheading Description
@@ -55,9 +64,27 @@ G-Golf uses GOOPS@footnote{The Guile Object Oriented System
 (@pxref{GOOPS,,, guile, The GNU Guile Reference Manual}). If you haven't
 done so already, please make sure you read both the @ref{Naming
 Conventions} and @ref{GOOPS Notes and Conventions} sections.} and
-defines the @code{<gobject>} class, from which imported GNOME libraries
+defines the @ref{<gobject>} class, from which imported GNOME libraries
 will inherit, as their class hierarchy is being built in Guile Scheme.
 
 @c uses the Metaobject Protocol@footnote{The
 @c @abbr{MOP, the Metaobject Protocol} (@pxref{The Metaobject Protocol,,,
 @c guile, The GNU Guile Reference Manual}).}
+
+
+@subheading Classes
+
+@anchor{<gobject>}
+@deftp Class <gobject>
+
+The base class of the GLib Object System.
+
+@end deftp
+
+
+@anchor{gobject-class?}
+@deffn Procedure gobject-class? val
+
+Returns #t if @var{val} is a class and if @ref{<gobject>} is a member
+of its class precedence list. Otherwise, it returns #f.
+@end deffn

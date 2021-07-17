@@ -29,7 +29,7 @@ I. Concepts} of the GObject reference manual.
 @menu
 * Import:: Importing GNOME libraries.
 * Events:: Handling events from the window system.
-* GObject (1):: The GLib Object System .
+* GObject (1):: The G-Golf integration with the GLib Object System.
 @end menu
 
 

@@ -30,7 +30,6 @@ Reference Manual}), in a way that is largely inspired by
 @menu
 
 * GType:: The base of the GObject type system.
-* GObject__:: The G-Golf integration with the GObject object system.
 * Closure:: The G-Golf integration with GObject Closures.
 * Function:: The G-Golf GI function and argument high level API.
 @c * Object:: The G-Golf GI object import high level API.
@@ -41,7 +40,6 @@ Reference Manual}), in a way that is largely inspired by
 
 
 @include cr-hl-api-gtype.texi
-@include cr-hl-api-gobject.texi
 @include cr-hl-api-closure.texi
 @include cr-hl-api-function.texi
 @c @include cr-hl-api-object.texi

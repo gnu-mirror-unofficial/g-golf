@@ -103,7 +103,6 @@ g_golf_TEXINFOS = \
   cr-support-utils.texi		\
   cr-hl-api.texi		\
   cr-hl-api-gtype.texi		\
-  cr-hl-api-gobject.texi	\
   cr-hl-api-closure.texi	\
   cr-hl-api-function.texi	\
   cr-hl-api-object.texi		\
