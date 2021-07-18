@@ -102,10 +102,8 @@ g_golf_TEXINFOS = \
   cr-support-union.texi		\
   cr-support-utils.texi		\
   cr-hl-api.texi		\
-  cr-hl-api-gtype.texi		\
   cr-hl-api-closure.texi	\
   cr-hl-api-function.texi	\
-  cr-hl-api-object.texi		\
   cr-hl-api-import.texi		\
   cr-hl-api-utils.texi		\
   indices.texi			\
