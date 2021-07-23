@@ -34,11 +34,11 @@ The G-Golf integration with the GLib Object System.
 @table @code
 @item @ref{gobject-class?}
 @item @ref{!info}
+@item @ref{!derived}
 @item @ref{!namespace}
 @item @ref{!g-type}
 @item @ref{!g-name (2)}
 @item @ref{!g-class}
-@item @ref{!derived}
 @item @ref{!g-inst}
 @item @ref{unref}
 @end table
@@ -94,6 +94,14 @@ The base class of the GLib Object System.
 
 It is an instance of @ref{<gobject-class>}.
 
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <gtype-instance>
+@end table
+@end indentedblock
+
 Class Precedence List:
 
 @indentedblock
@@ -116,6 +124,14 @@ Class Precedence List:
 The base class for GLib's interface types. Not derivable in Scheme.
 
 It is an instance of @ref{<gobject-class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <gtype-instance>
+@end table
+@end indentedblock
 
 Class Precedence List:
 
@@ -140,6 +156,14 @@ The metaclass of the @ref{<gobject>} and @ref{<ginterface>} classes.
 
 It is an instance of @code{<class>}.
 
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <gtype-class>
+@end table
+@end indentedblock
+
 Class Precedence List:
 
 @indentedblock
@@ -161,9 +185,18 @@ Class Precedence List:
 @deftp Class <gtype-class>
 
 The metaclass of all GType classes. Ensures that GType classes have an
-@code{info} slot, holding a pointer to a @code{GIObjectInfo}.
+@code{info} slot, holding a pointer to either a @code{GIObjectInfo} or a
+@code{GIInterfaceInfo}.
 
 It is an instance of @code{<class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <class>
+@end table
+@end indentedblock
 
 Class Precedence List:
 
@@ -233,10 +266,18 @@ Returns the content of their respective slot for @var{inst}.
 @anchor{<gtype-instance>}
 @deftp Class <gtype-instance>
 
-The root class of all instantiatable GType classes. Adds a slot,
+The root class of all instantiable GType classes. Adds a slot,
 @code{g-inst}, to instances, which holds a pointer to the C value.
 
 It is an instance of @ref{<gtype-class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <object>
+@end table
+@end indentedblock
 
 Class Precedence List:
 

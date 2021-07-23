@@ -99,6 +99,16 @@ accessor, which is the only way users may retrieve data fields.
 @anchor{<gdk-event>}
 @deftp Class <gdk-event>
 
+It is an instance of @code{<class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <object>
+@end table
+@end indentedblock
+
 Class Precedence List:
 
 @indentedblock
