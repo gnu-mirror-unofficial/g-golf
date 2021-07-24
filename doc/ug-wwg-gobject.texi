@@ -14,7 +14,29 @@
 G-Golf GObject interfaces.@*
 The G-Golf integration with the GLib Object System.
 
+@sp 1
+@center @sup{_} @sc{Special Note} @sup{_}
 
+For completion, this section exposes the definition of the classes and
+metaclasses involved in the G-Golf integration of the GLib Object
+System. From a (strict) user point of view however, these are actually
+G-Golf internals and, unless you are interested of course, might be
+ignored.
+
+What you actually really need to know, as a G-Golf user, is mostly (a)
+the upstream reference manual of the GNOME library(ies) you intend to
+use, (b) how to program in Guile Scheme of course, and (c) the basics of
+the Guile Object Oriented System.
+
+It doesn't hurt if you are, or if you are willing to become one, but we
+would like to emphasize that you do not need to be a Guile Object
+Oriented System expert to use G-Golf. What you need to know, with that
+respect, is somehow largely covered by the @ref{Getting Started with
+G-Golf} sections, the description of this (and related) sections and
+in the examples that comes with G-Golf.
+
+
+@sp 1
 @subheading Classes
 
 @indentedblock
