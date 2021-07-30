@@ -33,7 +33,7 @@ would like to emphasize that you do not need to be a Guile Object
 Oriented System expert to use G-Golf. What you need to know, with that
 respect, is somehow largely covered by the @ref{Getting Started with
 G-Golf} sections, the description of this (and related) sections and
-in the examples that comes with G-Golf.
+in the examples that come with G-Golf.
 
 
 @sp 1
