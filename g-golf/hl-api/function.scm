@@ -1199,6 +1199,7 @@ method with its 'old' definition.
                ((<g-param>) foreign)
                (else
                 (and foreign
+                     (not (null-pointer? foreign))
                      (receive (class name g-type)
                          (g-object-find-class foreign)
                        ;; We used to update the funarg 'type-desc
