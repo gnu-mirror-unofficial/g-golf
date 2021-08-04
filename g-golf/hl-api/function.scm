@@ -97,6 +97,8 @@
           !type-tag
           !forced-type
           !string-pointer
+          !bv-cache
+          !bv-cache-ptr
           !is-pointer?
           !may-be-null?
           !is-caller-allocate?
@@ -471,6 +473,8 @@ method with its 'old' definition.
   (array-type-desc #:accessor !array-type-desc)
   (forced-type #:accessor !forced-type #:init-keyword #:forced-type)
   (string-pointer #:accessor !string-pointer)
+  (bv-cache #:accessor !bv-cache #:init-value #f)
+  (bv-cache-ptr #:accessor !bv-cache-ptr #:init-value #f)
   (is-pointer? #:accessor !is-pointer? #:init-keyword #:is-pointer?)
   (may-be-null? #:accessor !may-be-null? #:init-keyword #:may-be-null?)
   (is-caller-allocate? #:accessor !is-caller-allocate?)
@@ -990,11 +994,19 @@ method with its 'old' definition.
                           (error "Invalid (pointer to) " type-tag " argument: " arg))
                       (case type-tag
                         ((int32)
-                         (let ((s32 (make-s32vector 1 0)))
+                         (let* ((bv-cache (!bv-cache arg-in))
+                                (s32 (or bv-cache
+                                         (make-s32vector 1 0)))
+                                (s32-ptr (or (!bv-cache-ptr arg-in)
+                                             (bytevector->pointer s32))))
+                           (unless bv-cache
+                             (mslot-set! arg-in
+                                         'bv-cache s32
+                                         'bv-cache-ptr s32-ptr))
                            (s32vector-set! s32 0 arg)
                            (gi-argument-set! gi-argument-in
                                              (gi-type-tag->field forced-type)
-                                             (bytevector->pointer s32))))
+                                             s32-ptr)))
                         (else
                          (warning "Unimplemented (pointer to): " type-tag)))))
                  (else
