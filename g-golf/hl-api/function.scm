@@ -1069,17 +1069,11 @@ method with its 'old' definition.
                                  (gi-argument-set! gi-argument-out 'v-pointer
                                                    (g-value-new))) ;; an empty GValue
                                 (else
-                                 (gi-argument-set! gi-argument-out 'v-pointer
-                                                   (cond ((!is-opaque? gi-type)
-                                                          %null-pointer)
-                                                         ((!is-semi-opaque? gi-type)
-                                                          (bytevector->pointer
-                                                           (make-bytevector (!size gi-type)
-                                                                            0)))
-                                                         (else
-                                                          (make-c-struct
-                                                           (!scm-types gi-type)
-                                                           (!init-vals gi-type))))))))
+                                 (let ((bv (if is-caller-allocate?
+                                               (make-bytevector (!size gi-type))
+                                               (make-bytevector (sizeof '*) 0))))
+                                   (gi-argument-set! gi-argument-out 'v-pointer
+                                                     (bytevector->pointer bv))))))
                              ((object
                                interface)
                               (if is-pointer?
@@ -1182,7 +1176,10 @@ method with its 'old' definition.
                          (gi-argument-ref gi-argument 'v-int)))))
              (integer->flags gi-type val)))
           ((struct)
-           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+           (let* ((gi-arg-val (gi-argument-ref gi-argument 'v-pointer))
+                  (foreign (if is-pointer?
+                               (dereference-pointer gi-arg-val)
+                               gi-arg-val)))
              (case name
                ((g-value)
                 (g-value-ref foreign))
