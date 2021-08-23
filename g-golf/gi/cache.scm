@@ -117,7 +117,7 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
 (define %g-inst-cache-default-size 1013)
 
 (define %g-inst-cache
-  (make-hash-table %g-inst-cache-default-size))
+  (make-weak-value-hash-table %g-inst-cache-default-size))
 
 (define (g-inst-cache-ref g-inst)
   (hashq-ref %g-inst-cache
