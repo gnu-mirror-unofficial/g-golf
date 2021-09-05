@@ -73,7 +73,7 @@
 
 
 (define-method (test-gtk-list-store-set-value (self <g-golf-test-override-gtk>))
-  (let* ((store (assert (gtk-list-store-newv 2 '(int string))))
+  (let* ((store (assert (gtk-list-store-new 2 '(int string))))
          (iter (gtk-list-store-insert store 0)))
     (assert (gtk-list-store-set-value store iter 0 10))
     (assert (gtk-list-store-set-value store iter 1 "hello-world"))

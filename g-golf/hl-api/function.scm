@@ -51,6 +51,7 @@
             is-namespace-import-exception?
             %gi-strip-boolean-result
             gi-import-function
+            gi-import-function-names
             %gi-method-short-names-skip
             <function>
             <argument>
@@ -68,6 +69,8 @@
 
           !info		;; function
           !namespace
+          !m-name
+          !c-name
           !override?
           !i-func
           !o-func
@@ -199,8 +202,8 @@
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
-      (let* ((g-name (g-function-info-get-symbol info))
-             (name (g-name->name g-name)))
+      (receive (name short-name c-name namespace)
+          (gi-import-function-names info namespace)
         (or (gi-cache-ref 'function name)
             (let ((f-inst (make <function> #:info info)))
               ;; Do not (g-base-info-unref info) - unref the function
@@ -210,6 +213,43 @@
                   (gi-add-method f-inst gi-add-procedure)
                   (gi-add-procedure f-inst))
               f-inst))))))
+
+(define* (gi-import-function-names info #:optional (ns #f))
+  (let* ((namespace (or ns
+                        (g-base-info-get-namespace info)))
+         (ns-prefix (g-irepository-get-c-prefix namespace))
+         (ct-info (g-base-info-get-container info))
+         (ct-rg-name (and ct-info
+                          (g-registered-type-info-get-type-name ct-info)))
+         (ct-bi-name (and ct-info
+                          (g-base-info-get-name ct-info)))
+         (ct-name (cond (ct-rg-name
+                         (g-name->name ct-rg-name))
+                        (ct-bi-name
+                         (g-name->name (string-append ns-prefix ct-bi-name)))
+                        (else
+                         #f)))
+         (bi-name (g-base-info-get-name info))
+         (c-name (g-function-info-get-symbol info)))
+    (if (char=? (string-ref bi-name 0) #\_)
+        ;; this (should only) happens for methods, for which the C name
+        ;; gets a 'plural-ed' container name, such as for the GdkEvent
+        ;; gdk-events-get-angle method. we expect that in these cases,
+        ;; there is no renaming, otherwise, we raise an exception.
+        (if (string-contains c-name bi-name)
+            (let ((name (g-name->name c-name))
+                  (m-name (g-name->name (substring bi-name 1))))
+              (values name m-name c-name namespace))
+            (error "Unexpected renaming" ct-name c-name bi-name))
+        (let* ((bi-name (g-name->name bi-name))
+               (ns-prefix (g-name->name ns-prefix))
+               (name (if ct-name
+                         (symbol-append ct-name '- bi-name)
+                         (symbol-append ns-prefix '- bi-name))))
+          (values name
+                  (and ct-info ct-name bi-name)
+                  c-name
+                  namespace)))))
 
 (define (gi-add-procedure f-inst)
   (let ((module (resolve-module '(g-golf hl-api function)))
@@ -226,11 +266,9 @@
     (case type-tag
       ((interface
         object)
-       (let* ((g-name (!g-name f-inst))
-              (g-parent-name (g-registered-type-info-get-type-name parent))
-              (m-long-name (!name f-inst))
+       (let* ((m-long-name (!name f-inst))
               (m-long-generic (gi-add-method-gf m-long-name))
-              (m-short-name (g-name->short-name g-name g-parent-name))
+              (m-short-name (!m-name f-inst))
               (m-short-generic (gi-add-method-gf-sn m-short-name))
               (specializers (gi-add-method-specializers f-inst))
               (procedure (if (!override? f-inst)
@@ -363,8 +401,9 @@ method with its 'old' definition.
 (define-class <function> ()
   (info #:accessor !info)
   (namespace #:accessor !namespace)
-  (g-name #:accessor !g-name)
   (name #:accessor !name)
+  (m-name #:accessor !m-name)
+  (c-name #:accessor !c-name)
   (override? #:accessor !override? #:init-value #f)
   (i-func #:accessor !i-func #:init-value #f)
   (o-func #:accessor !o-func #:init-value #f)
@@ -392,46 +431,46 @@ method with its 'old' definition.
   (let ((info (or (get-keyword #:info initargs #f)
                   (error "Missing #:info initarg: " initargs))))
     (next-method self '())
-    (let* ((namespace (g-base-info-get-namespace info))
-           (g-name (g-function-info-get-symbol info))
-           (name (g-name->name g-name))
-           (override? (gi-override? g-name))
-           (flags (g-function-info-get-flags info))
-           (is-method? (gi-function-info-is-method? info flags))
-           (return-type-info (g-callable-info-get-return-type info))
-           (return-type (g-type-info-get-tag return-type-info)))
-      (receive (type-desc array-type-desc)
-          (type-description return-type-info #:type-tag return-type)
-        (g-base-info-unref return-type-info)
-        (receive (n-arg args
-                  n-gi-arg-in args-in gi-args-in gi-args-in-bv
-                  n-gi-arg-out args-out gi-args-out gi-args-out-bv)
-            (function-arguments-and-gi-arguments info is-method? override?)
-          (mslot-set! self
-                      'info info
-                      'namespace namespace
-                      'g-name g-name
-                      'name name
-                      'override? override?
-                      'flags flags
-                      'is-method? is-method?
-                      'n-arg n-arg
-                      'caller-owns (g-callable-info-get-caller-owns info)
-                      'return-type return-type
-                      'type-desc type-desc
-                      'array-type-desc array-type-desc
-                      'may-return-null? (g-callable-info-may-return-null info)
-                      'arguments args
-                      'n-gi-arg-in n-gi-arg-in
-                      'args-in args-in
-                      'gi-args-in gi-args-in
-                      'gi-args-in-bv gi-args-in-bv
-                      'n-gi-arg-out n-gi-arg-out
-                      'args-out args-out
-                      'gi-args-out gi-args-out
-                      'gi-args-out-bv gi-args-out-bv
-                      'gi-arg-result (make-gi-argument))
-          (function-finalizer self))))))
+    (receive (name m-name c-name namespace)
+        (gi-import-function-names info)
+      (let* ((override? (gi-override? c-name))
+             (flags (g-function-info-get-flags info))
+             (is-method? (gi-function-info-is-method? info flags))
+             (return-type-info (g-callable-info-get-return-type info))
+             (return-type (g-type-info-get-tag return-type-info)))
+        (receive (type-desc array-type-desc)
+            (type-description return-type-info #:type-tag return-type)
+          (g-base-info-unref return-type-info)
+          (receive (n-arg args
+                          n-gi-arg-in args-in gi-args-in gi-args-in-bv
+                          n-gi-arg-out args-out gi-args-out gi-args-out-bv)
+              (function-arguments-and-gi-arguments info is-method? override?)
+            (mslot-set! self
+                        'info info
+                        'namespace namespace
+                        'name name
+                        'm-name m-name
+                        'c-name c-name
+                        'override? override?
+                        'flags flags
+                        'is-method? is-method?
+                        'n-arg n-arg
+                        'caller-owns (g-callable-info-get-caller-owns info)
+                        'return-type return-type
+                        'type-desc type-desc
+                        'array-type-desc array-type-desc
+                        'may-return-null? (g-callable-info-may-return-null info)
+                        'arguments args
+                        'n-gi-arg-in n-gi-arg-in
+                        'args-in args-in
+                        'gi-args-in gi-args-in
+                        'gi-args-in-bv gi-args-in-bv
+                        'n-gi-arg-out n-gi-arg-out
+                        'args-out args-out
+                        'gi-args-out gi-args-out
+                        'gi-args-out-bv gi-args-out-bv
+                        'gi-arg-result (make-gi-argument))
+            (function-finalizer self)))))))
 
 (define (function-finalizer f-inst)
   (let ((i-func (%i-func f-inst)))
