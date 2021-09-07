@@ -51,7 +51,6 @@
             is-namespace-import-exception?
             %gi-strip-boolean-result
             gi-import-function
-            gi-import-function-names
             %gi-method-short-names-skip
             <function>
             <argument>
@@ -203,7 +202,7 @@
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
       (receive (name short-name c-name namespace)
-          (gi-import-function-names info namespace)
+          (gi-function-info-names info namespace)
         (or (gi-cache-ref 'function name)
             (let ((f-inst (make <function> #:info info)))
               ;; Do not (g-base-info-unref info) - unref the function
@@ -213,43 +212,6 @@
                   (gi-add-method f-inst gi-add-procedure)
                   (gi-add-procedure f-inst))
               f-inst))))))
-
-(define* (gi-import-function-names info #:optional (ns #f))
-  (let* ((namespace (or ns
-                        (g-base-info-get-namespace info)))
-         (ns-prefix (g-irepository-get-c-prefix namespace))
-         (ct-info (g-base-info-get-container info))
-         (ct-rg-name (and ct-info
-                          (g-registered-type-info-get-type-name ct-info)))
-         (ct-bi-name (and ct-info
-                          (g-base-info-get-name ct-info)))
-         (ct-name (cond (ct-rg-name
-                         (g-name->name ct-rg-name))
-                        (ct-bi-name
-                         (g-name->name (string-append ns-prefix ct-bi-name)))
-                        (else
-                         #f)))
-         (bi-name (g-base-info-get-name info))
-         (c-name (g-function-info-get-symbol info)))
-    (if (char=? (string-ref bi-name 0) #\_)
-        ;; this (should only) happens for methods, for which the C name
-        ;; gets a 'plural-ed' container name, such as for the GdkEvent
-        ;; gdk-events-get-angle method. we expect that in these cases,
-        ;; there is no renaming, otherwise, we raise an exception.
-        (if (string-contains c-name bi-name)
-            (let ((name (g-name->name c-name))
-                  (m-name (g-name->name (substring bi-name 1))))
-              (values name m-name c-name namespace))
-            (error "Unexpected renaming" ct-name c-name bi-name))
-        (let* ((bi-name (g-name->name bi-name))
-               (ns-prefix (g-name->name ns-prefix))
-               (name (if ct-name
-                         (symbol-append ct-name '- bi-name)
-                         (symbol-append ns-prefix '- bi-name))))
-          (values name
-                  (and ct-info ct-name bi-name)
-                  c-name
-                  namespace)))))
 
 (define (gi-add-procedure f-inst)
   (let ((module (resolve-module '(g-golf hl-api function)))
@@ -432,7 +394,7 @@ method with its 'old' definition.
                   (error "Missing #:info initarg: " initargs))))
     (next-method self '())
     (receive (name m-name c-name namespace)
-        (gi-import-function-names info)
+        (gi-function-info-names info)
       (let* ((override? (gi-override? c-name))
              (flags (g-function-info-get-flags info))
              (is-method? (gi-function-info-is-method? info flags))
