@@ -32,6 +32,7 @@
 
 (define-module (g-golf gi object-info)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 receive)
   #:use-module (oop goops)
   #:use-module (system foreign)
   #:use-module (g-golf support utils)
@@ -147,7 +148,30 @@
              (g-object-info-get-n-properties info)
              (g-object-info-get-n-signals info)
              (g-object-info-get-n-vfuncs info)))
+    (gi-object-show-methods info port)
     (values)))
+
+(define %object-method-fmt
+  "
+     ~A. ~S
+           long name: ~A
+              C name: ~A
+")
+
+(define* (gi-object-show-methods info
+                                 #:optional (port (current-output-port)))
+  (format port "  Methods:\n")
+  (let loop ((n-method (g-object-info-get-n-methods info))
+             (i 0))
+    (if (= i n-method)
+        (newline port)
+        (let ((m-info (g-object-info-get-method info i)))
+          (receive (name short-name c-name namespace)
+              (gi-function-info-names m-info)
+            (format port "~?" %object-method-fmt
+                    (list i short-name name c-name))
+            (loop n-method
+                  (+ i 1)))))))
 
 (define (gi-object-property-names info)
   (let loop ((n-prop (g-object-info-get-n-properties info))
