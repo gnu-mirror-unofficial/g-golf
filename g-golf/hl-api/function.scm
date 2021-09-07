@@ -201,7 +201,7 @@
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
-      (receive (name short-name c-name namespace)
+      (receive (name short-name c-name namespace shadows?)
           (gi-function-info-names info namespace)
         (or (gi-cache-ref 'function name)
             (let ((f-inst (make <function> #:info info)))
@@ -393,7 +393,7 @@ method with its 'old' definition.
   (let ((info (or (get-keyword #:info initargs #f)
                   (error "Missing #:info initarg: " initargs))))
     (next-method self '())
-    (receive (name m-name c-name namespace)
+    (receive (name m-name c-name namespace shadows?)
         (gi-function-info-names info)
       (let* ((override? (gi-override? c-name))
              (flags (g-function-info-get-flags info))

@@ -83,7 +83,7 @@
         (if (string-contains c-name bi-name)
             (let ((name (g-name->name c-name))
                   (m-name (g-name->name (substring bi-name 1))))
-              (values name m-name c-name namespace))
+              (values name m-name c-name namespace #f))
             (error "Unexpected renaming" ct-name c-name bi-name))
         (let* ((bi-name (g-name->name bi-name))
                (ns-prefix (g-name->name ns-prefix))
@@ -93,7 +93,9 @@
           (values name
                   (and ct-info ct-name bi-name)
                   c-name
-                  namespace)))))
+                  namespace
+                  ;; shadows?
+                  (not (eq? name (g-name->name c-name))))))))
 
 (define* (gi-function-info-is-method? info #:optional (flags #f))
   (let ((flags (or flags
