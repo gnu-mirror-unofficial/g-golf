@@ -153,9 +153,15 @@
 
 (define %object-method-fmt
   "
-     ~A. ~S
-           long name: ~A
-              C name: ~A
+     ~2,,,' @A. ~A
+         ~A
+")
+
+(define %object-method-shadows-fmt
+  "
+     ~2,,,' @A. ~A
+         ~A
+         --- shadows ~A ---
 ")
 
 (define* (gi-object-show-methods info
@@ -166,10 +172,13 @@
     (if (= i n-method)
         (newline port)
         (let ((m-info (g-object-info-get-method info i)))
-          (receive (name short-name c-name namespace)
+          (receive (name short-name c-name namespace shadows?)
               (gi-function-info-names m-info)
-            (format port "~?" %object-method-fmt
-                    (list i short-name name c-name))
+            (if shadows?
+                (format port "~?" %object-method-shadows-fmt
+                        (list i short-name name c-name))
+                (format port "~?" %object-method-fmt
+                        (list i short-name name)))
             (loop n-method
                   (+ i 1)))))))
 
