@@ -27,11 +27,11 @@
 
 
 (define-module (g-golf override gdk)
-  #:export (gdk-clipboard-set-value-ov
+  #:export (gdk-clipboard-set-ov
             gdk-content-provider-get-value-ov))
 
 
-(define (gdk-clipboard-set-value-ov proc)
+(define (gdk-clipboard-set-ov proc)
   (values
    #f
    `(lambda (clipboard value)

@@ -86,7 +86,7 @@ exec guile -e main -s "$0" "$@"
     (connect copy-1
              'clicked
              (lambda (b)
-               (set-value clipboard (!text entry-from))))
+               (set clipboard (!text entry-from))))
 
     (connect paste-1
              'clicked
@@ -102,7 +102,7 @@ exec guile -e main -s "$0" "$@"
     (connect copy-2
              'clicked
              (lambda (b)
-               (set-value clipboard (!paintable image-from))))
+               (set clipboard (!paintable image-from))))
 
     (connect paste-2
              'clicked
