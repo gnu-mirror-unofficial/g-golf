@@ -346,9 +346,11 @@ When the reference count for the @code{g-inst} reaches 0 (zero), it sets
 the @code{g-inst} slot value for @var{instance} to #f and removes
 @var{instance} from the @code{%g-inst-cache}.
 
-This method must be called upon instances that are not referenced
-anywhere anymore, so that their memory can be freed by the next gc
-occurrence.
+Note that it used to be mandatory to call this method upon
+@emph{unreachable} instances, so that their memory could be freed by the
+next @abbr{gc, garbage collector} occurrence, but this is not the case
+anymore, as auto gc of @emph{unreachable} <gobject> instances is a now
+feature [since August 2021].
 @end deffn
 
 
