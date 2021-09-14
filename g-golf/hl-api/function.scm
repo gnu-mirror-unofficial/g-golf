@@ -1071,7 +1071,7 @@ method with its 'old' definition.
                                                    (g-value-new))) ;; an empty GValue
                                 (else
                                  (let ((bv (if is-caller-allocate?
-                                               (make-bytevector (!size gi-type))
+                                               (make-bytevector (!size gi-type) 0)
                                                (make-bytevector (sizeof '*) 0))))
                                    (gi-argument-set! gi-argument-out 'v-pointer
                                                      (bytevector->pointer bv))))))
