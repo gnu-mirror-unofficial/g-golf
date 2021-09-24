@@ -1070,11 +1070,20 @@ method with its 'old' definition.
                                  (gi-argument-set! gi-argument-out 'v-pointer
                                                    (g-value-new))) ;; an empty GValue
                                 (else
-                                 (let ((bv (if is-caller-allocate?
-                                               (make-bytevector (!size gi-type) 0)
-                                               (make-bytevector (sizeof '*) 0))))
-                                   (gi-argument-set! gi-argument-out 'v-pointer
-                                                     (bytevector->pointer bv))))))
+                                 (if is-caller-allocate?
+                                     (let* ((bv (make-bytevector (!size gi-type) 0))
+                                            (bv-ptr (bytevector->pointer bv)))
+                                       (mslot-set! arg-out
+                                                   'bv-cache bv
+                                                   'bv-cache-ptr bv-ptr)
+                                       (gi-argument-set! gi-argument-out 'v-pointer bv-ptr))
+                                     (let ((bv (make-bytevector (sizeof '*) 0)))
+                                       (mslot-set! arg-out
+                                                   'bv-cache #f
+                                                   'bv-cache-ptr %null-pointer)
+                                       (gi-argument-set! gi-argument-out 'v-pointer
+                                                         (bytevector->pointer bv)))))))
+
                              ((object
                                interface)
                               (if is-pointer?
@@ -1187,7 +1196,19 @@ method with its 'old' definition.
                (else
                 (if (or (!is-opaque? gi-type)
                         (!is-semi-opaque? gi-type))
-                    foreign
+                    (let ((bv (!bv-cache funarg))
+                          (bv-ptr (!bv-cache-ptr funarg)))
+                      (if bv
+                          (begin
+                            (g-boxed-guard bv-ptr bv)
+                            bv-ptr)
+                          ;; when bv is #f, it (indirectly) means that
+                          ;; memory was allocated by the caller. maybe
+                          ;; we could still guard, then auto free, if we
+                          ;; can: this would require to grab the type
+                          ;; and the function to do so ... i think it is
+                          ;; possible, and will look into this asap.
+                          foreign))
                     (parse-c-struct foreign (!scm-types gi-type)))))))
           ((union)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))

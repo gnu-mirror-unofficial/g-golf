@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2020
+;;;; Copyright (C) 2018 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -39,20 +39,26 @@
   #:use-module (system foreign)
 
   #:export (%gi-cache
-
             gi-cache-ref
             gi-cache-set!
             gi-cache-remove!
-
             gi-cache-show
             gi-cache-find
 
             ;; instance cache
-            %g-inst-cache-default-size
             %g-inst-cache
             g-inst-cache-ref
             g-inst-cache-set!
-            g-inst-cache-for-each))
+            g-inst-cache-for-each
+
+            ;; boxed cache
+            %g-boxed-cache
+            g-boxed-cache-ref
+            g-boxed-cache-set!
+            g-boxed-cache-remove!
+            g-boxed-cache-show
+
+            g-boxed-guard))
 
 
 (define %gi-cache
@@ -131,3 +137,55 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
 (define (g-inst-cache-for-each proc)
   (hash-for-each proc
                  %g-inst-cache))
+
+
+;;;
+;;; The g-boxed(instance) cache
+;;;
+
+(define %dimfi
+  (@ (g-golf support utils) dimfi))
+
+(define %g-boxed-cache-default-size 1013)
+
+(define %g-boxed-cache
+  (make-weak-key-hash-table %g-boxed-cache-default-size))
+
+(define (g-boxed-cache-ref ptr)
+  (hashq-ref %g-boxed-cache ptr))
+
+(define (g-boxed-cache-set! ptr bv)
+  (hashq-set! %g-boxed-cache ptr bv))
+
+(define (g-boxed-cache-remove! ptr)
+  (hashq-remove! %g-boxed-cache ptr))
+
+(define (g-boxed-cache-show)
+  (hash-for-each (lambda (key value)
+                   (%dimfi key value))
+                 %g-boxed-cache))
+
+
+;;;
+;;; g-boxed-guard
+;;;
+
+(define-syntax make-g-boxed-guard
+  (syntax-rules ()
+    ((make-g-boxed-guard)
+     (let ((guardian (make-guardian)))
+       (add-hook! after-gc-hook
+                  (lambda ()
+                    #;(%dimfi guardian)
+                    (let loop ()
+                      (let ((ptr (guardian)))
+                        (when ptr
+                          #;(%dimfi "  cleaning" ptr)
+                          (g-boxed-cache-remove! ptr)
+                          (loop))))))
+       (lambda (ptr bv)
+         (guardian ptr)
+         (g-boxed-cache-set! ptr bv)
+         ptr)))))
+
+(define g-boxed-guard (make-g-boxed-guard))
