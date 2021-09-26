@@ -51,14 +51,14 @@
             g-inst-cache-set!
             g-inst-cache-for-each
 
-            ;; boxed cache
-            %g-boxed-cache
-            g-boxed-cache-ref
-            g-boxed-cache-set!
-            g-boxed-cache-remove!
-            g-boxed-cache-show
+            ;; boxed sa - scheme allocated - cache
+            %g-boxed-sa-cache
+            g-boxed-sa-cache-ref
+            g-boxed-sa-cache-set!
+            g-boxed-sa-cache-remove!
+            g-boxed-sa-cache-show
 
-            g-boxed-guard))
+            g-boxed-sa-guard))
 
 
 (define %gi-cache
@@ -146,33 +146,33 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
 (define %dimfi
   (@ (g-golf support utils) dimfi))
 
-(define %g-boxed-cache-default-size 1013)
+(define %g-boxed-sa-cache-default-size 1013)
 
-(define %g-boxed-cache
-  (make-weak-key-hash-table %g-boxed-cache-default-size))
+(define %g-boxed-sa-cache
+  (make-weak-key-hash-table %g-boxed-sa-cache-default-size))
 
-(define (g-boxed-cache-ref ptr)
-  (hashq-ref %g-boxed-cache ptr))
+(define (g-boxed-sa-cache-ref ptr)
+  (hashq-ref %g-boxed-sa-cache ptr))
 
-(define (g-boxed-cache-set! ptr bv)
-  (hashq-set! %g-boxed-cache ptr bv))
+(define (g-boxed-sa-cache-set! ptr bv)
+  (hashq-set! %g-boxed-sa-cache ptr bv))
 
-(define (g-boxed-cache-remove! ptr)
-  (hashq-remove! %g-boxed-cache ptr))
+(define (g-boxed-sa-cache-remove! ptr)
+  (hashq-remove! %g-boxed-sa-cache ptr))
 
-(define (g-boxed-cache-show)
+(define (g-boxed-sa-cache-show)
   (hash-for-each (lambda (key value)
                    (%dimfi key value))
-                 %g-boxed-cache))
+                 %g-boxed-sa-cache))
 
 
 ;;;
-;;; g-boxed-guard
+;;; g-boxed-sa-guard
 ;;;
 
-(define-syntax make-g-boxed-guard
+(define-syntax make-g-boxed-sa-guard
   (syntax-rules ()
-    ((make-g-boxed-guard)
+    ((make-g-boxed-sa-guard)
      (let ((guardian (make-guardian)))
        (add-hook! after-gc-hook
                   (lambda ()
@@ -181,11 +181,11 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
                       (let ((ptr (guardian)))
                         (when ptr
                           #;(%dimfi "  cleaning" ptr)
-                          (g-boxed-cache-remove! ptr)
+                          (g-boxed-sa-cache-remove! ptr)
                           (loop))))))
        (lambda (ptr bv)
          (guardian ptr)
-         (g-boxed-cache-set! ptr bv)
+         (g-boxed-sa-cache-set! ptr bv)
          ptr)))))
 
-(define g-boxed-guard (make-g-boxed-guard))
+(define g-boxed-sa-guard (make-g-boxed-sa-guard))

@@ -1200,7 +1200,7 @@ method with its 'old' definition.
                           (bv-ptr (!bv-cache-ptr funarg)))
                       (if bv
                           (begin
-                            (g-boxed-guard bv-ptr bv)
+                            (g-boxed-sa-guard bv-ptr bv)
                             bv-ptr)
                           ;; when bv is #f, it (indirectly) means that
                           ;; memory was allocated by the caller. maybe
