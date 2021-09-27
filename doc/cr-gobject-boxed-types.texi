@@ -1,0 +1,69 @@
+@c -*-texinfo-*-
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@node Boxed Types
+@subsection Boxed Types
+
+G-Golf GObject Boxed Types low level API.@*
+Boxed Types — A mechanism to wrap opaque C structures registered by the
+type system.
+
+
+@subheading Procedures
+
+@indentedblock
+@table @code
+@item @ref{g-boxed-free}
+@end table
+@end indentedblock
+
+
+@c @subheading Types and Values
+
+@c @indentedblock
+@c @table @code
+@c @item @ref{%g-type-fundamental-flags}
+@c @end table
+@c @end indentedblock
+
+
+@c @subheading Object Hierarchy
+
+@c @indentedblock
+@c GBoxed           	       @*
+@c @ @ +--- GValue	       @*
+@c @end indentedblock
+
+
+@subheading Description
+
+GBoxed is a generic wrapper mechanism for arbitrary C structures. The
+only thing the type system needs to know about the structures is how to
+copy them (a GBoxedCopyFunc) and how to free them (a GBoxedFreeFunc) —
+beyond that they are treated as opaque chunks of memory.
+
+Please read the @uref{@value{UGOBJECT-Boxed-Types}, Boxed Types} section
+from the GObject reference manual for a complete description.
+
+
+@subheading Procedures
+
+@c Note: in this section, the @var{value} arguments are [must be] pointers
+@c to a @code{GValue}.
+
+
+@anchor{g-boxed-free}
+@deffn Procedure g-boxed-free g-type pointer
+
+Returns nothing.
+
+Frees the boxed structure at @var{pointer}, which is of type
+@var{g-type}.
+@end deffn
+
+
+@c @subheading Types and Values
+

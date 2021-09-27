@@ -55,6 +55,7 @@ SOURCES = \
 	g-golf/gobject/type-info.scm		\
 	g-golf/gobject/gobject.scm		\
 	g-golf/gobject/enum-flags.scm		\
+	g-golf/gobject/boxed-types.scm		\
 	g-golf/gobject/generic-values.scm	\
 	g-golf/gobject/params-vals.scm		\
 	g-golf/gobject/param-spec.scm		\

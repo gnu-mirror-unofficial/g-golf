@@ -68,6 +68,7 @@ g_golf_TEXINFOS = \
   cr-gobject-type-info.texi	\
   cr-gobject-gobject.texi	\
   cr-gobject-enum-flags.texi	\
+  cr-gobject-boxed-types.texi	\
   cr-gobject-gen-vals.texi	\
   cr-gobject-params-vals.texi	\
   cr-gobject-param-spec.texi	\

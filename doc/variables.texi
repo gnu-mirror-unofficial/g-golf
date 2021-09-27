@@ -81,6 +81,7 @@
 @set UGOBJECT-GObject https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html
 @set UGOBJECT-GObject-struct https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#GObject-struct
 @set UGOBJECT-Enum-Flags https://developer.gnome.org/gobject/stable/gobject-Enumeration-and-Flag-Types.html
+@set UGOBJECT-Boxed-Types https://developer.gnome.org/gobject/stable/gobject-Boxed-Types.html
 @set UGOBJECT-Gen-Vals https://developer.gnome.org/gobject/stable/gobject-Generic-Values.html
 @set UGOBJECT-Params-Vals https://developer.gnome.org/gobject/stable/gobject-Parameters-and-Values.html
 @set UGOBJECT-GParamSpec https://developer.gnome.org/gobject/stable/gobject-GParamSpec.html
