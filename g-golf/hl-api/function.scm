@@ -65,6 +65,8 @@
           !name
           !type-desc
           !array-type-desc
+          !bv-cache
+          !bv-cache-ptr
 
           !info		;; function
           !namespace
@@ -99,8 +101,6 @@
           !type-tag
           !forced-type
           !string-pointer
-          !bv-cache
-          !bv-cache-ptr
           !is-pointer?
           !may-be-null?
           !is-caller-allocate?
@@ -377,6 +377,8 @@ method with its 'old' definition.
   (return-type #:accessor !return-type)
   (type-desc #:accessor !type-desc)
   (array-type-desc #:accessor !array-type-desc)
+  (bv-cache #:accessor !bv-cache #:init-value #f)
+  (bv-cache-ptr #:accessor !bv-cache-ptr #:init-value #f)
   (may-return-null? #:accessor !may-return-null?)
   (arguments #:accessor !arguments)
   (n-gi-arg-in #:accessor !n-gi-arg-in)
@@ -1203,12 +1205,12 @@ method with its 'old' definition.
                             (g-boxed-sa-guard bv-ptr bv)
                             bv-ptr)
                           ;; when bv is #f, it (indirectly) means that
-                          ;; memory was allocated by the caller. maybe
-                          ;; we could still guard, then auto free, if we
-                          ;; can: this would require to grab the type
-                          ;; and the function to do so ... i think it is
-                          ;; possible, and will look into this asap.
-                          foreign))
+                          ;; memory was allocated by the caller.
+                          (if (null-pointer? foreign)
+                              #f
+                              (begin
+                                (g-boxed-ga-guard foreign g-type)
+                                foreign))))
                     (parse-c-struct foreign (!scm-types gi-type)))))))
           ((union)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))

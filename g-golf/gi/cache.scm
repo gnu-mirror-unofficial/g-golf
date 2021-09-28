@@ -37,6 +37,7 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (system foreign)
+  #:use-module (g-golf gobject boxed-types)
 
   #:export (%gi-cache
             gi-cache-ref
@@ -57,8 +58,15 @@
             g-boxed-sa-cache-set!
             g-boxed-sa-cache-remove!
             g-boxed-sa-cache-show
+            g-boxed-sa-guard
 
-            g-boxed-sa-guard))
+            ;; boxed ga - gobject allocated - cache
+            %g-boxed-ga-cache
+            g-boxed-ga-cache-ref
+            g-boxed-ga-cache-set!
+            g-boxed-ga-cache-remove!
+            g-boxed-ga-cache-show
+            g-boxed-ga-guard))
 
 
 (define %gi-cache
@@ -140,7 +148,7 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
 
 
 ;;;
-;;; The g-boxed(instance) cache
+;;; The g-boxed(instance) scheme allocated cache
 ;;;
 
 (define %dimfi
@@ -184,8 +192,73 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
                           (g-boxed-sa-cache-remove! ptr)
                           (loop))))))
        (lambda (ptr bv)
-         (guardian ptr)
          (g-boxed-sa-cache-set! ptr bv)
+         (guardian ptr)
          ptr)))))
 
 (define g-boxed-sa-guard (make-g-boxed-sa-guard))
+
+
+;;;
+;;; The g-boxed(instance) gobject allocated cache
+;;;
+
+;; in this case, we need to use a normal hash table, because when a
+;; guardian returns a pointer, as part of an after-gc-hook procedure, a
+;; weak hash table would already have cleared the entry, and unlike for
+;; the other caches, we need to retreive the g-type of the (opaque)
+;; boxedtype pointer.
+
+;; a consequence of the above, is that we can't hold a reference to the
+;; ffi pointer, otherwise it would never become unreachable ... and
+;; hence, we specifically use the pointer address as the key.
+
+(define %g-boxed-ga-cache-default-size 1013)
+
+(define %g-boxed-ga-cache
+  (make-hash-table %g-boxed-ga-cache-default-size))
+
+(define (g-boxed-ga-cache-ref ptr)
+  (hashq-ref %g-boxed-ga-cache
+             (pointer-address ptr)))
+
+(define (g-boxed-ga-cache-set! ptr g-type)
+  (hashq-set! %g-boxed-ga-cache
+              (pointer-address ptr)
+              g-type))
+
+(define (g-boxed-ga-cache-remove! ptr)
+  (hashq-remove! %g-boxed-ga-cache
+                 (pointer-address ptr)))
+
+(define (g-boxed-ga-cache-show)
+  (hash-for-each (lambda (key value)
+                   (%dimfi key value))
+                 %g-boxed-ga-cache))
+
+
+;;;
+;;; g-boxed-ga-guard
+;;;
+
+(define-syntax make-g-boxed-ga-guard
+  (syntax-rules ()
+    ((make-g-boxed-ga-guard)
+     (let ((guardian (make-guardian)))
+       (add-hook! after-gc-hook
+                  (lambda ()
+                    #;(%dimfi guardian)
+                    (let loop ()
+                      (let ((ptr (guardian)))
+                        (when ptr
+                          #;(%dimfi "  cleaning" ptr)
+                          (let ((g-type (g-boxed-ga-cache-ref ptr)))
+                            (g-boxed-ga-cache-remove! ptr)
+                            (g-boxed-free g-type ptr)
+                            (loop)))))))
+       (lambda (ptr g-type)
+         (g-boxed-ga-cache-set! ptr g-type)
+         (guardian ptr)
+         ptr)))))
+
+(define g-boxed-ga-guard (make-g-boxed-ga-guard))
