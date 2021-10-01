@@ -50,7 +50,7 @@
             %g-inst-cache
             g-inst-cache-ref
             g-inst-cache-set!
-            g-inst-cache-for-each
+            g-inst-cache-show
 
             ;; boxed sa - scheme allocated - cache
             %g-boxed-sa-cache
@@ -142,8 +142,28 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
               (pointer-address g-inst)
               inst))
 
-(define (g-inst-cache-for-each proc)
+#;(define (g-inst-cache-for-each proc)
   (hash-for-each proc
+                 %g-inst-cache))
+
+#;(define* (g-inst-cache-show #:optional
+                            (port (current-output-port)))
+  (let ((n-entry (hash-count (const #t) %g-inst-cache)))
+    (case n-entry
+      ((0)
+       (display "The g-inst cache is empty\n" port))
+      (else
+       (letrec ((show (lambda (key value)
+                        (format port "  ~S  -  ~S~%"
+                                (!g-inst value)
+                                value))))
+         (format port "The g-inst cache has ~A entry(ies):~%"
+                 n-entry)
+         (g-inst-cache-for-each show))))))
+
+(define (g-inst-cache-show)
+  (hash-for-each (lambda (key value)
+                   (%dimfi key value))
                  %g-inst-cache))
 
 
@@ -189,7 +209,6 @@ and returns a list of the S-KEY for which (PRED S-VAL) was satisfied."
                       (let ((ptr (guardian)))
                         (when ptr
                           #;(%dimfi "  cleaning" ptr)
-                          (g-boxed-sa-cache-remove! ptr)
                           (loop))))))
        (lambda (ptr bv)
          (g-boxed-sa-cache-set! ptr bv)

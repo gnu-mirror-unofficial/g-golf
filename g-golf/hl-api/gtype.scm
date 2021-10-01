@@ -53,8 +53,7 @@
   #:export (<gtype-class>
             <gtype-instance>
 
-            g-type-class
-            g-inst-cache-show))
+            g-type-class))
 
 
 (g-export !info
@@ -144,7 +143,6 @@
                                    "[ g-object ref-count before cleaning"
                                    (g-object-ref-count g-inst) "]")
                             (g-object-unref g-inst)
-                            (g-inst-cache-remove! inst g-inst)
                             (loop)))))))
        (lambda (g-inst inst)
          (g-inst-cache-set! g-inst inst)
@@ -262,18 +260,3 @@
   (hashq-remove! %g-inst-cache
                  (pointer-address (or g-inst
                                       (!g-inst self)))))
-
-(define* (g-inst-cache-show #:optional
-                            (port (current-output-port)))
-  (let ((n-entry (hash-count (const #t) %g-inst-cache)))
-    (case n-entry
-      ((0)
-       (display "The g-inst cache is empty\n" port))
-      (else
-       (letrec ((show (lambda (key value)
-                        (format port "  ~S  -  ~S~%"
-                                (!g-inst value)
-                                value))))
-         (format port "The g-inst cache has ~A entry(ies):~%"
-                 n-entry)
-         (g-inst-cache-for-each show))))))
