@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020
+;;;; Copyright (C) 2020 - 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -29,6 +29,7 @@
 (define-module (g-golf override gtk)
   #:export (gtk-container-child-get-property-ov
             gtk-container-child-set-property-ov
+            gtk-list-store-new-ov
             gtk-list-store-set-value-ov
             gtk-tree-store-set-value-ov
             gtk-tree-model-get-value-ov))
@@ -78,6 +79,15 @@
               (values))
             (error "No child property" container name))))
    '(0 1 2 3)))
+
+(define (gtk-list-store-new-ov proc)
+  (values
+   #f
+   `(lambda (g-types)
+      (let* ((i-func ,proc)
+             (n-type (length g-types)))
+        (i-func n-type g-types)))
+   '(0 1)))
 
 (define (gtk-list-store-set-value-ov proc)
   (values
