@@ -21,8 +21,8 @@ This is particularly true for the GLib Object System related
 sections. For a thorough understanding of the GLib Object System - its
 background, design goals, dynamic type system, base class instantiation,
 memory management, properties, closures and signals messaging system -
-please consult the @uref{@value{UGOBJECT-Concepts}, GObject - Part
-I. Concepts} of the GObject reference manual.
+please consult the @uref{@value{UGOBJECT-Concepts}, GObject - Type
+System Concepts} of the GObject reference manual.
 
 @c Note that this not, and by no means, a description 
 
