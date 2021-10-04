@@ -32,7 +32,8 @@
             gtk-list-store-new-ov
             gtk-list-store-set-value-ov
             gtk-tree-store-set-value-ov
-            gtk-tree-model-get-value-ov))
+            gtk-tree-model-get-value-ov
+            gtk-text-buffer-insert-ov))
 
 
 (define (gtk-container-child-get-property-ov proc)
@@ -84,10 +85,10 @@
   (values
    #f
    `(lambda (g-types)
-      (let* ((i-func ,proc)
-             (n-type (length g-types)))
+      (let ((i-func ,proc)
+            (n-type (length g-types)))
         (i-func n-type g-types)))
-   '(0 1)))
+   '(1)))
 
 (define (gtk-list-store-set-value-ov proc)
   (values
@@ -134,3 +135,13 @@
         (g-value-unset g-value)
         value))
       '(0 1 2)))
+
+
+(define (gtk-text-buffer-insert-ov proc)
+  (values
+   #f
+   `(lambda (buffer iter str)
+      (let ((i-func ,proc))
+        (i-func buffer iter str -1)
+        (values)))
+   '(0 1 2)))

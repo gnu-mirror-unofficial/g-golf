@@ -42,7 +42,8 @@
     "gtk_list_store_newv"
     "gtk_list_store_set_value"
     "gtk_tree_store_set_value"
-    "gtk_tree_model_get_value"))
+    "gtk_tree_model_get_value"
+    "gtk_text_buffer_insert"))
 
 (define (gi-override? name)
   (and (member name %gi-override string=?)

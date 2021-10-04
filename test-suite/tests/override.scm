@@ -42,8 +42,9 @@
             (gi-import-by-name "Gtk" item #:version "3.0"))
     '("HPaned"
       "VPaned"
-      "ListStore"
       "TreeView"
+      "ListStore"
+      "TextBuffer"
       "init"))
 
 (gtk-init 0 '())
@@ -72,6 +73,10 @@
                                        "resize"))))
 
 
+(define-method (test-gtk-list-store-new (self <g-golf-test-override-gtk>))
+  (assert (gtk-list-store-new '(int string))))
+
+
 (define-method (test-gtk-list-store-set-value (self <g-golf-test-override-gtk>))
   (let* ((store (assert (gtk-list-store-new '(int string))))
          (iter (gtk-list-store-insert store 0)))
@@ -81,6 +86,13 @@
                     10))
     (assert-true (string=? (gtk-tree-model-get-value store iter 1)
                            "hello-world"))))
+
+
+(define-method (test-gtk-text-buffer-insert (self <g-golf-test-override-gtk>))
+  (let* ((buffer (gtk-text-buffer-new #f))
+         (iter (get-start-iter buffer)))
+    (assert (gtk-text-buffer-insert buffer iter "não merci!\n"))
+    (assert (insert buffer iter "não merci!\n"))))
 
 
 (exit-with-summary (run-all-defined-test-cases))
