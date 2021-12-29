@@ -10,13 +10,29 @@
 Working with GNOME exposes, grouped by theme, the user interfaces to
 import and work with GObject-Introspectable GNOME libraries.
 
+Please note that within the scope of the G-Golf manual in general, in
+the sections presented here in particular, we simply (as in merely and
+in the simplest possible way) exposes the scheme representation and
+G-Golf interfaces of the elements that are being addressed. For a
+deep(er) understanding of the original concepts, components and
+interfaces, you must refer to the upstream library documentation itself.
+
+This is particularly true for the GLib Object System related
+sections. For a thorough understanding of the GLib Object System - its
+background, design goals, dynamic type system, base class instantiation,
+memory management, properties, closures and signals messaging system -
+please consult the @uref{@value{UGOBJECT-Concepts}, GObject - Type
+System Concepts} of the GObject reference manual.
+
 @c Note that this not, and by no means, a description 
 
 @menu
 * Import:: Importing GNOME libraries.
 * Events:: Handling events from the window system.
+* GObject (1):: The G-Golf integration with the GLib Object System.
 @end menu
 
 
 @include ug-wwg-import.texi
 @include ug-wwg-events.texi
+@include ug-wwg-gobject.texi

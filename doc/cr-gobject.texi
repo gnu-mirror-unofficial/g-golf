@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2019 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2021 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -25,6 +25,7 @@ though they might be some exception in the future.
 * Type Information::  The GLib Runtime type identification and management system.
 * GObject_::  The base object type.
 * Enumeration and Flag Types::  Enumeration and Flag Types.
+* Boxed Types:: A mechanism to wrap opaque C structures registered by the type system.
 * Generic Values::  A polymorphic type that can hold values of any other type.
 * Parameters and Values::  Standard Parameter and Value Types.
 * GParamSpec::  Metadata for parameter specifications.
@@ -37,6 +38,7 @@ though they might be some exception in the future.
 @include cr-gobject-type-info.texi
 @include cr-gobject-gobject.texi
 @include cr-gobject-enum-flags.texi
+@include cr-gobject-boxed-types.texi
 @include cr-gobject-gen-vals.texi
 @include cr-gobject-params-vals.texi
 @include cr-gobject-param-spec.texi

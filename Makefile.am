@@ -55,6 +55,7 @@ SOURCES = \
 	g-golf/gobject/type-info.scm		\
 	g-golf/gobject/gobject.scm		\
 	g-golf/gobject/enum-flags.scm		\
+	g-golf/gobject/boxed-types.scm		\
 	g-golf/gobject/generic-values.scm	\
 	g-golf/gobject/params-vals.scm		\
 	g-golf/gobject/param-spec.scm		\
@@ -148,8 +149,9 @@ SUBDIRS = \
 SOURCES_TO_REMOVE = \
 	g-golf/gdk/event-structures.scm		\
 	g-golf/gdk/event-class.scm		\
+	g-golf/gdk/key-values.scm		\
 	g-golf/support/modules.scm		\
-	g-golf/support.flag.scm
+	g-golf/support/flag.scm
 
 GOBJECTS_TO_REMOVE = $(SOURCES_TO_REMOVE:%.scm=%.go)
 

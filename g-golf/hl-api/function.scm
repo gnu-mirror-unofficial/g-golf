@@ -65,9 +65,13 @@
           !name
           !type-desc
           !array-type-desc
+          !bv-cache
+          !bv-cache-ptr
 
           !info		;; function
           !namespace
+          !m-name
+          !c-name
           !override?
           !i-func
           !o-func
@@ -197,8 +201,8 @@
   (let ((namespace (g-base-info-get-namespace info)))
     (when (or force?
               (not (is-namespace-import-exception? namespace)))
-      (let* ((g-name (g-function-info-get-symbol info))
-             (name (g-name->name g-name)))
+      (receive (name short-name c-name namespace shadows?)
+          (gi-function-info-names info namespace)
         (or (gi-cache-ref 'function name)
             (let ((f-inst (make <function> #:info info)))
               ;; Do not (g-base-info-unref info) - unref the function
@@ -224,11 +228,9 @@
     (case type-tag
       ((interface
         object)
-       (let* ((g-name (!g-name f-inst))
-              (g-parent-name (g-registered-type-info-get-type-name parent))
-              (m-long-name (!name f-inst))
+       (let* ((m-long-name (!name f-inst))
               (m-long-generic (gi-add-method-gf m-long-name))
-              (m-short-name (g-name->short-name g-name g-parent-name))
+              (m-short-name (!m-name f-inst))
               (m-short-generic (gi-add-method-gf-sn m-short-name))
               (specializers (gi-add-method-specializers f-inst))
               (procedure (if (!override? f-inst)
@@ -361,8 +363,9 @@ method with its 'old' definition.
 (define-class <function> ()
   (info #:accessor !info)
   (namespace #:accessor !namespace)
-  (g-name #:accessor !g-name)
   (name #:accessor !name)
+  (m-name #:accessor !m-name)
+  (c-name #:accessor !c-name)
   (override? #:accessor !override? #:init-value #f)
   (i-func #:accessor !i-func #:init-value #f)
   (o-func #:accessor !o-func #:init-value #f)
@@ -374,6 +377,8 @@ method with its 'old' definition.
   (return-type #:accessor !return-type)
   (type-desc #:accessor !type-desc)
   (array-type-desc #:accessor !array-type-desc)
+  (bv-cache #:accessor !bv-cache #:init-value #f)
+  (bv-cache-ptr #:accessor !bv-cache-ptr #:init-value #f)
   (may-return-null? #:accessor !may-return-null?)
   (arguments #:accessor !arguments)
   (n-gi-arg-in #:accessor !n-gi-arg-in)
@@ -390,46 +395,46 @@ method with its 'old' definition.
   (let ((info (or (get-keyword #:info initargs #f)
                   (error "Missing #:info initarg: " initargs))))
     (next-method self '())
-    (let* ((namespace (g-base-info-get-namespace info))
-           (g-name (g-function-info-get-symbol info))
-           (name (g-name->name g-name))
-           (override? (gi-override? g-name))
-           (flags (g-function-info-get-flags info))
-           (is-method? (gi-function-info-is-method? info flags))
-           (return-type-info (g-callable-info-get-return-type info))
-           (return-type (g-type-info-get-tag return-type-info)))
-      (receive (type-desc array-type-desc)
-          (type-description return-type-info #:type-tag return-type)
-        (g-base-info-unref return-type-info)
-        (receive (n-arg args
-                  n-gi-arg-in args-in gi-args-in gi-args-in-bv
-                  n-gi-arg-out args-out gi-args-out gi-args-out-bv)
-            (function-arguments-and-gi-arguments info is-method? override?)
-          (mslot-set! self
-                      'info info
-                      'namespace namespace
-                      'g-name g-name
-                      'name name
-                      'override? override?
-                      'flags flags
-                      'is-method? is-method?
-                      'n-arg n-arg
-                      'caller-owns (g-callable-info-get-caller-owns info)
-                      'return-type return-type
-                      'type-desc type-desc
-                      'array-type-desc array-type-desc
-                      'may-return-null? (g-callable-info-may-return-null info)
-                      'arguments args
-                      'n-gi-arg-in n-gi-arg-in
-                      'args-in args-in
-                      'gi-args-in gi-args-in
-                      'gi-args-in-bv gi-args-in-bv
-                      'n-gi-arg-out n-gi-arg-out
-                      'args-out args-out
-                      'gi-args-out gi-args-out
-                      'gi-args-out-bv gi-args-out-bv
-                      'gi-arg-result (make-gi-argument))
-          (function-finalizer self))))))
+    (receive (name m-name c-name namespace shadows?)
+        (gi-function-info-names info)
+      (let* ((override? (gi-override? c-name))
+             (flags (g-function-info-get-flags info))
+             (is-method? (gi-function-info-is-method? info flags))
+             (return-type-info (g-callable-info-get-return-type info))
+             (return-type (g-type-info-get-tag return-type-info)))
+        (receive (type-desc array-type-desc)
+            (type-description return-type-info #:type-tag return-type)
+          (g-base-info-unref return-type-info)
+          (receive (n-arg args
+                          n-gi-arg-in args-in gi-args-in gi-args-in-bv
+                          n-gi-arg-out args-out gi-args-out gi-args-out-bv)
+              (function-arguments-and-gi-arguments info is-method? override?)
+            (mslot-set! self
+                        'info info
+                        'namespace namespace
+                        'name name
+                        'm-name m-name
+                        'c-name c-name
+                        'override? override?
+                        'flags flags
+                        'is-method? is-method?
+                        'n-arg n-arg
+                        'caller-owns (g-callable-info-get-caller-owns info)
+                        'return-type return-type
+                        'type-desc type-desc
+                        'array-type-desc array-type-desc
+                        'may-return-null? (g-callable-info-may-return-null info)
+                        'arguments args
+                        'n-gi-arg-in n-gi-arg-in
+                        'args-in args-in
+                        'gi-args-in gi-args-in
+                        'gi-args-in-bv gi-args-in-bv
+                        'n-gi-arg-out n-gi-arg-out
+                        'args-out args-out
+                        'gi-args-out gi-args-out
+                        'gi-args-out-bv gi-args-out-bv
+                        'gi-arg-result (make-gi-argument))
+            (function-finalizer self)))))))
 
 (define (function-finalizer f-inst)
   (let ((i-func (%i-func f-inst)))
@@ -471,6 +476,8 @@ method with its 'old' definition.
   (array-type-desc #:accessor !array-type-desc)
   (forced-type #:accessor !forced-type #:init-keyword #:forced-type)
   (string-pointer #:accessor !string-pointer)
+  (bv-cache #:accessor !bv-cache #:init-value #f)
+  (bv-cache-ptr #:accessor !bv-cache-ptr #:init-value #f)
   (is-pointer? #:accessor !is-pointer? #:init-keyword #:is-pointer?)
   (may-be-null? #:accessor !may-be-null? #:init-keyword #:may-be-null?)
   (is-caller-allocate? #:accessor !is-caller-allocate?)
@@ -990,11 +997,19 @@ method with its 'old' definition.
                           (error "Invalid (pointer to) " type-tag " argument: " arg))
                       (case type-tag
                         ((int32)
-                         (let ((s32 (make-s32vector 1 0)))
+                         (let* ((bv-cache (!bv-cache arg-in))
+                                (s32 (or bv-cache
+                                         (make-s32vector 1 0)))
+                                (s32-ptr (or (!bv-cache-ptr arg-in)
+                                             (bytevector->pointer s32))))
+                           (unless bv-cache
+                             (mslot-set! arg-in
+                                         'bv-cache s32
+                                         'bv-cache-ptr s32-ptr))
                            (s32vector-set! s32 0 arg)
                            (gi-argument-set! gi-argument-in
                                              (gi-type-tag->field forced-type)
-                                             (bytevector->pointer s32))))
+                                             s32-ptr)))
                         (else
                          (warning "Unimplemented (pointer to): " type-tag)))))
                  (else
@@ -1057,17 +1072,20 @@ method with its 'old' definition.
                                  (gi-argument-set! gi-argument-out 'v-pointer
                                                    (g-value-new))) ;; an empty GValue
                                 (else
-                                 (gi-argument-set! gi-argument-out 'v-pointer
-                                                   (cond ((!is-opaque? gi-type)
-                                                          %null-pointer)
-                                                         ((!is-semi-opaque? gi-type)
-                                                          (bytevector->pointer
-                                                           (make-bytevector (!size gi-type)
-                                                                            0)))
-                                                         (else
-                                                          (make-c-struct
-                                                           (!scm-types gi-type)
-                                                           (!init-vals gi-type))))))))
+                                 (if is-caller-allocate?
+                                     (let* ((bv (make-bytevector (!size gi-type) 0))
+                                            (bv-ptr (bytevector->pointer bv)))
+                                       (mslot-set! arg-out
+                                                   'bv-cache bv
+                                                   'bv-cache-ptr bv-ptr)
+                                       (gi-argument-set! gi-argument-out 'v-pointer bv-ptr))
+                                     (let ((bv (make-bytevector (sizeof '*) 0)))
+                                       (mslot-set! arg-out
+                                                   'bv-cache #f
+                                                   'bv-cache-ptr %null-pointer)
+                                       (gi-argument-set! gi-argument-out 'v-pointer
+                                                         (bytevector->pointer bv)))))))
+
                              ((object
                                interface)
                               (if is-pointer?
@@ -1170,14 +1188,29 @@ method with its 'old' definition.
                          (gi-argument-ref gi-argument 'v-int)))))
              (integer->flags gi-type val)))
           ((struct)
-           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
+           (let* ((gi-arg-val (gi-argument-ref gi-argument 'v-pointer))
+                  (foreign (if is-pointer?
+                               (dereference-pointer gi-arg-val)
+                               gi-arg-val)))
              (case name
                ((g-value)
                 (g-value-ref foreign))
                (else
                 (if (or (!is-opaque? gi-type)
                         (!is-semi-opaque? gi-type))
-                    foreign
+                    (let ((bv (!bv-cache funarg))
+                          (bv-ptr (!bv-cache-ptr funarg)))
+                      (if bv
+                          (begin
+                            (g-boxed-sa-guard bv-ptr bv)
+                            bv-ptr)
+                          ;; when bv is #f, it (indirectly) means that
+                          ;; memory was allocated by the caller.
+                          (if (null-pointer? foreign)
+                              #f
+                              (begin
+                                (g-boxed-ga-guard foreign g-type)
+                                foreign))))
                     (parse-c-struct foreign (!scm-types gi-type)))))))
           ((union)
            (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
@@ -1199,6 +1232,7 @@ method with its 'old' definition.
                ((<g-param>) foreign)
                (else
                 (and foreign
+                     (not (null-pointer? foreign))
                      (receive (class name g-type)
                          (g-object-find-class foreign)
                        ;; We used to update the funarg 'type-desc

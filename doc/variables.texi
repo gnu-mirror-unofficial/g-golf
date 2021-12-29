@@ -70,12 +70,18 @@
 @set UGLIB-GSList https://developer.gnome.org/glib/stable/glib-Singly-Linked-Lists.html
 
 @set UGOBJECT https://developer.gnome.org/gobject/stable/
+@set UGOBJECT-Introduction https://developer.gnome.org/gobject/stable/pr01.html
+@set UGOBJECT-Concepts https://docs.gtk.org/gobject/concepts.html
+@set UGOBJECT-Concepts-GType https://developer.gnome.org/gobject/stable/chapter-gtype.html
+@set UGOBJECT-Concepts-GObject https://developer.gnome.org/gobject/stable/chapter-gobject.html
+@set UGOBJECT-Concepts-Signals https://developer.gnome.org/gobject/stable/chapter-signal.html
 
 @set UGOBJECT-Type-Info https://developer.gnome.org/gobject/stable/gobject-Type-Information.html
 @set UGOBJECT-GType-Module https://developer.gnome.org/gobject/stable/GTypeModule.html
 @set UGOBJECT-GObject https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html
 @set UGOBJECT-GObject-struct https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#GObject-struct
 @set UGOBJECT-Enum-Flags https://developer.gnome.org/gobject/stable/gobject-Enumeration-and-Flag-Types.html
+@set UGOBJECT-Boxed-Types https://developer.gnome.org/gobject/stable/gobject-Boxed-Types.html
 @set UGOBJECT-Gen-Vals https://developer.gnome.org/gobject/stable/gobject-Generic-Values.html
 @set UGOBJECT-Params-Vals https://developer.gnome.org/gobject/stable/gobject-Parameters-and-Values.html
 @set UGOBJECT-GParamSpec https://developer.gnome.org/gobject/stable/gobject-GParamSpec.html

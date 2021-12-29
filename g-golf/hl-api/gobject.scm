@@ -329,8 +329,11 @@
 ;;; <gobject>
 ;;;
 
+(eval-when (expand load eval)
+  (g-irepository-require "GObject"))
+
 (define-class <gobject> (<gtype-instance>)
-  #:info #t
+  #:info (g-irepository-find-by-name "GObject" "Object")
   #:metaclass <gobject-class>)
 
 (define safe-class-name

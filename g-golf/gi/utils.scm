@@ -63,6 +63,7 @@
             gi-pointers->scm
             gi-glist->scm
             gi-gslist->scm
+            gi-gtypes->scm
             gi-n-gtype->scm
             scm->gi
             scm->gi-boolean
@@ -135,6 +136,7 @@
     ((pointers) (gi-pointers->scm value))
     ((glist) (gi-glist->scm value))
     ((gslist) (gi-gslist->scm value))
+    ((gtypes) (gi-gtypes->scm value))
     ((n-gtype) (gi-n-gtype->scm value cmpl))
     (else
      (error "No such type: " type))))
@@ -244,21 +246,38 @@
                     (cons (data-acc g-next)
                           result))))))
 
+(define (gi-gtypes->scm pointer)
+  (if (or (not pointer)
+          (null-pointer? pointer))
+      '()
+      (letrec* ((u64-size (sizeof unsigned-long))
+                (gi-gtypes->scm-1
+                 (lambda (pointer result)
+                   (receive (d-pointer)
+                       (dereference-pointer pointer)
+                     (if (null-pointer? d-pointer)
+                         (reverse! result)
+                         (let ((u64 (pointer->bytevector pointer u64-size)))
+                           (gi-gtypes->scm-1 (gi-pointer-inc pointer u64-size)
+                                             (cons (u64vector-ref u64 0)
+                                                   result))))))))
+        (gi-gtypes->scm-1 pointer '()))))
+
 (define (gi-n-gtype->scm pointer n-gtype)
   (if (or (not pointer)
           (null-pointer? pointer)
           (= n-gtype 0))
       '()
-      (let loop ((u64 (pointer->bytevector pointer
-                                           (* n-gtype
-                                              (sizeof unsigned-long))))
-                 (i 0)
-                 (results '()))
-        (if (= i n-gtype)
-            (reverse! results)
-            (loop u64
-                  (+ i 1)
-                  (cons (u64vector-ref u64 i) results))))))
+      (let ((u64 (pointer->bytevector pointer
+                                      (* n-gtype
+                                         (sizeof unsigned-long)))))
+        (let loop ((i 0)
+                   (results '()))
+          (if (= i n-gtype)
+              (reverse! results)
+              (loop (+ i 1)
+                    (cons (u64vector-ref u64 i)
+                          results)))))))
 
 
 ;;;
@@ -278,8 +297,9 @@
     #;((glist) (scm->gi-glist value))
     ((gslist) (scm->gi-gslist value))
     ((n-gtype) (scm->gi-n-gtype value cmpl))
+    ((gtypes) (scm->gi-gtypes value))
     (else
-     value)))
+     (error "No such type: " type))))
 
 (define (scm->gi-boolean value)
   (if value 1 0))
@@ -404,6 +424,26 @@
              (bytevector->pointer u64))
             ((g-type . rest)
              (u64vector-set! u64 i
-                             (symbol->g-type g-type))
+                             (if (symbol? g-type)
+                                 (symbol->g-type g-type)
+                                 g-type))
+             (loop rest
+                   (+ i 1))))))))
+
+(define (scm->gi-gtypes lst)
+  (if (null? lst)
+      %null-pointer
+      (let* ((n-gtype (length lst))
+             (u64 (make-u64vector (+ n-gtype 1) 0)))
+        (let loop ((lst lst)
+                   (i 0))
+          (match lst
+            (()
+             (bytevector->pointer u64))
+            ((g-type . rest)
+             (u64vector-set! u64 i
+                             (if (symbol? g-type)
+                                 (symbol->g-type g-type)
+                                 g-type))
              (loop rest
                    (+ i 1))))))))

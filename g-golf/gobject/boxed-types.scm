@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020 - 2021
+;;;; Copyright (C) 2021
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -26,25 +26,36 @@
 ;;; Code:
 
 
-(define-module (g-golf override override)
-  #:use-module (srfi srfi-1)
+(define-module (g-golf gobject boxed-types)
+  #:use-module (oop goops)
+  #:use-module (system foreign)
+  #:use-module (g-golf init)
+  #:use-module (g-golf support libg-golf)
 
-  #:export (%gi-override
-            gi-override?))
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
+
+  #:export (g-boxed-free))
 
 
-(define %gi-override
-  '("gdk_clipboard_set_value"
-    "gdk_content_provider_get_value"
+;;;
+;;; GObject Low level API
+;;;
 
-    "gtk_container_child_get_property"
-    "gtk_container_child_set_property"
-    "gtk_list_store_newv"
-    "gtk_list_store_set_value"
-    "gtk_tree_store_set_value"
-    "gtk_tree_model_get_value"
-    "gtk_text_buffer_insert"))
+(define (g-boxed-free g-type foreign)
+  (g_boxed_free g-type foreign))
 
-(define (gi-override? name)
-  (and (member name %gi-override string=?)
-       #t)) ;; not to store the member call result
+
+;;;
+;;; GObject Bindings
+;;;
+
+(define g_boxed_free
+  (pointer->procedure void
+                      (dynamic-func "g_boxed_free"
+				    %libgobject)
+                      (list unsigned-long	;; g-type
+                            '*)))		;; g-pointer

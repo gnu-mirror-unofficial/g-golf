@@ -1,0 +1,365 @@
+@c -*-texinfo-*-
+
+@c This is part of the GNU G-Golf Reference Manual.
+@c Copyright (C) 2021 Free Software Foundation, Inc.
+@c See the file g-golf.texi for copying conditions.
+
+
+@c @defindex ei
+
+
+@node GObject (1)
+@subsection GObject
+
+G-Golf GObject interfaces.@*
+The G-Golf integration with the GLib Object System.
+
+@sp 1
+@center @sup{_} @sc{Special Note} @sup{_}
+
+For completion, this section exposes the definition of the classes and
+metaclasses involved in the G-Golf integration of the GLib Object
+System. From a (strict) user point of view however, these are actually
+G-Golf internals and, unless you are interested of course, might be
+ignored.
+
+What you actually really need to know, as a G-Golf user, is mostly (a)
+the upstream reference manual of the GNOME library(ies) you intend to
+use, (b) how to program in Guile Scheme of course, and (c) the basics of
+the Guile Object Oriented System.
+
+It doesn't hurt if you are, or if you are willing to become one, but we
+would like to emphasize that you do not need to be a Guile Object
+Oriented System expert to use G-Golf. What you need to know, with that
+respect, is somehow largely covered by the @ref{Getting Started with
+G-Golf} sections, the description of this (and related) sections and
+in the examples that come with G-Golf.
+
+
+@sp 1
+@subheading Classes
+
+@indentedblock
+@table @code
+@item @ref{<gobject>}
+@item @ref{<ginterface>}
+@item @ref{<gobject-class>}
+@item @ref{<gtype-class>}
+@item @ref{<gtype-instance>}
+@end table
+@end indentedblock
+
+
+@subheading Procedures, Accessors and Methods
+
+@indentedblock
+@table @code
+@item @ref{gobject-class?}
+@item @ref{!info}
+@item @ref{!derived}
+@item @ref{!namespace}
+@item @ref{!g-type}
+@item @ref{!g-name (2)}
+@item @ref{!g-class}
+@item @ref{!g-inst}
+@item @ref{unref}
+@end table
+@end indentedblock
+
+
+@subheading Description
+
+GObject@footnote{The name GObject, depending on the context, can
+actually be used and refer to the @uref{@value{UGOBJECT}, GLib Object
+System} language system as a all, or be used and refer to the
+fundamental type implementation, the @uref{@value{UGOBJECT-GObject},
+base object type}, upon which GNOME libraries object hierarchies are
+based.} is the GLib Object System.
+
+The @uref{@value{UGOBJECT}, GLib Object System} - a C based
+object-oriented framework and APIs@ - is composed of three principal
+elements: (1) GType@footnote{The name GType, depending on the context,
+can actually be used and refer to the The
+@uref{@value{UGOBJECT-Concepts-GType}, GLib Dynamic Type System}, or be
+used and refer to the type it denotes, a unique @abbr{ID, Identifier} -
+an @code{unsigned-long} to be precise.}, the lower-level
+@uref{@value{UGOBJECT-Concepts-GType}, GLib Dynamic Type System}, (2)
+GObject, the @uref{@value{UGOBJECT-Concepts-GObject}, base object type}
+and (3) the GObject closures and signals
+@uref{@value{UGOBJECT-Concepts-Signals}, messaging system}.
+
+All the GNOME libraries that use the GLib type system inherit from
+@uref{@value{UGOBJECT-GObject}, GObject}, the base object type, which
+provides methods for object construction and destruction, property
+access methods, and signal support.
+
+G-Golf uses GOOPS@footnote{The Guile Object Oriented System
+(@pxref{GOOPS,,, guile, The GNU Guile Reference Manual}). If you haven't
+done so already, please make sure you read both the @ref{Naming
+Conventions} and @ref{GOOPS Notes and Conventions} sections.} and
+defines the @ref{<gobject>} class, from which all imported GNOME
+libraries inherit, as their class hierarchy is being built in Guile
+Scheme.
+
+@c uses the Metaobject Protocol@footnote{The
+@c @abbr{MOP, the Metaobject Protocol} (@pxref{The Metaobject Protocol,,,
+@c guile, The GNU Guile Reference Manual}).}
+
+
+@subheading Classes
+
+
+@anchor{<gobject>}
+@deftp Class <gobject>
+
+The base class of the GLib Object System.
+
+It is an instance of @ref{<gobject-class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <gtype-instance>
+@end table
+@end indentedblock
+
+Class Precedence List:
+
+@indentedblock
+@table @code
+@item <gobject>
+@item <gtype-instance>
+@item <object>
+@item <top>
+@end table
+@end indentedblock
+
+(No direct slot) @c Direct slots are: - none -
+
+@end deftp
+
+
+@anchor{<ginterface>}
+@deftp Class <ginterface>
+
+The base class for GLib's interface types. Not derivable in Scheme.
+
+It is an instance of @ref{<gobject-class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <gtype-instance>
+@end table
+@end indentedblock
+
+Class Precedence List:
+
+@indentedblock
+@table @code
+@item <ginterface>
+@item <gtype-instance>
+@item <object>
+@item <top>
+@end table
+@end indentedblock
+
+(No direct slot) @c Direct slots are: - none -
+
+@end deftp
+
+
+@anchor{<gobject-class>}
+@deftp Class <gobject-class>
+
+The metaclass of the @ref{<gobject>} and @ref{<ginterface>} classes.
+
+It is an instance of @code{<class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <gtype-class>
+@end table
+@end indentedblock
+
+Class Precedence List:
+
+@indentedblock
+@table @code
+@item <gobject-class>
+@item <gtype-class>
+@item <class>
+@item <object>
+@item <top>
+@end table
+@end indentedblock
+
+(No direct slot) @c Direct slots are: - none -
+
+@end deftp
+
+
+@anchor{<gtype-class>}
+@deftp Class <gtype-class>
+
+The metaclass of all GType classes. Ensures that GType classes have an
+@code{info} slot, holding a pointer to either a @code{GIObjectInfo} or a
+@code{GIInterfaceInfo}.
+
+It is an instance of @code{<class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <class>
+@end table
+@end indentedblock
+
+Class Precedence List:
+
+@indentedblock
+@table @code
+@item <gtype-class>
+@item <class>
+@item <object>
+@item <top>
+@end table
+@end indentedblock
+
+Direct slots are:
+
+@indentedblock
+@table @code
+@item @emph{info}
+#:accessor !info @*
+#:init-keyword #:info @*
+
+@item @emph{derived}
+#:accessor !derived	 @*
+#:init-keyword #:derived @*
+#:init-value #f
+
+A class is derived when it is user defined (not imported), and inherit a
+@ref{<gobject>} subclass.
+
+@item @emph{namespace}
+#:accessor !namespace @*
+
+@item @emph{g-type}
+#:accessor !g-type @*
+
+@item @emph{g-name}
+#:accessor !g-name @*
+
+@item @emph{g-class}
+#:accessor !g-class @*
+@end table
+@end indentedblock
+
+The @var{#:info} #:init-keyword is mandatory, other slots are
+initialized automatically. All slots are immutable (to be precise, they
+are not meant to be mutated, see @ref{GOOPS Notes and Conventions},
+'Slots are not Immutable').
+@end deftp
+
+
+@anchor{!info}
+@anchor{!derived}
+@anchor{!namespace}
+@anchor{!g-type}
+@anchor{!g-name (2)}
+@anchor{!g-class}
+@deffn Accessor !info (inst <gtype-class>)
+@deffnx Accessor !derived (inst <gtype-class>)
+@deffnx Accessor !namespace (inst <gtype-class>)
+@deffnx Accessor !g-type (inst <gtype-class>)
+@deffnx Accessor !g-name (inst <gtype-class>)
+@deffnx Accessor !g-class (inst <gtype-class>)
+
+Returns the content of their respective slot for @var{inst}.
+@end deffn
+
+
+@anchor{<gtype-instance>}
+@deftp Class <gtype-instance>
+
+The root class of all instantiable GType classes. Adds a slot,
+@code{g-inst}, to instances, which holds a pointer to the C value.
+
+It is an instance of @ref{<gtype-class>}.
+
+Superclasses are:
+
+@indentedblock
+@table @code
+@item <object>
+@end table
+@end indentedblock
+
+Class Precedence List:
+
+@indentedblock
+@table @code
+@item <gtype-instance>
+@item <object>
+@item <top>
+@end table
+@end indentedblock
+
+Direct slots are:
+
+@indentedblock
+@table @code
+@item @emph{g-inst}
+#:accessor !g-inst @*
+@c #:init-value #f @*
+@end table
+@end indentedblock
+
+The @var{g-inst} slot is initialized automatically and immutable (to be
+precise, it is not meant to be mutated, see @ref{GOOPS Notes and
+Conventions}, 'Slots are not Immutable').
+@end deftp
+
+
+@anchor{!g-inst}
+@deffn Accessor !g-inst (inst <gtype-instance>)
+
+Returns the content of the @var{g-inst} slot for @var{instance}.
+@end deffn
+
+
+@anchor{unref}
+@deffn Method unref (inst <gtype-instance>)
+
+Returns nothing.
+
+This method calls @ref{g-object-unref} on the @code{g-inst} of
+@var{instance}.
+
+When the reference count for the @code{g-inst} reaches 0 (zero), it sets
+the @code{g-inst} slot value for @var{instance} to #f and removes
+@var{instance} from the @code{%g-inst-cache}.
+
+Note that it used to be mandatory to call this method upon
+@emph{unreachable} instances, so that their memory could be freed by the
+next @abbr{gc, garbage collector} occurrence, but this is not the case
+anymore, as auto gc of @emph{unreachable} <gobject> instances is a now
+feature [since August 2021].
+@end deffn
+
+
+@subheading Procedures
+
+
+@anchor{gobject-class?}
+@deffn Procedure gobject-class? val
+
+Returns #t if @var{val} is a class and if @ref{<gobject>} is a member
+of its class precedence list. Otherwise, it returns #f.
+@end deffn

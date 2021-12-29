@@ -50,6 +50,7 @@ g_golf_TEXINFOS = \
   ug-gswg-scripting.texi	\
   ug-wwg-import.texi		\
   ug-wwg-events.texi		\
+  ug-wwg-gobject.texi		\
   ug-wwg.texi			\
   cr.texi			\
   cr-overview.texi		\
@@ -67,6 +68,7 @@ g_golf_TEXINFOS = \
   cr-gobject-type-info.texi	\
   cr-gobject-gobject.texi	\
   cr-gobject-enum-flags.texi	\
+  cr-gobject-boxed-types.texi	\
   cr-gobject-gen-vals.texi	\
   cr-gobject-params-vals.texi	\
   cr-gobject-param-spec.texi	\
@@ -101,11 +103,8 @@ g_golf_TEXINFOS = \
   cr-support-union.texi		\
   cr-support-utils.texi		\
   cr-hl-api.texi		\
-  cr-hl-api-gtype.texi		\
-  cr-hl-api-gobject.texi	\
   cr-hl-api-closure.texi	\
   cr-hl-api-function.texi	\
-  cr-hl-api-object.texi		\
   cr-hl-api-import.texi		\
   cr-hl-api-utils.texi		\
   indices.texi			\

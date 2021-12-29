@@ -31,8 +31,12 @@
   #:use-module (system foreign)
   #:use-module (g-golf support enum)
   #:use-module (g-golf support flags)
+  #:use-module (g-golf support utils)
   #:use-module (g-golf init)
   #:use-module (g-golf gi utils)
+  #:use-module (g-golf gi repository)
+  #:use-module (g-golf gi base-info)
+  #:use-module (g-golf gi registered-type-info)
 
   #:duplicates (merge-generics
 		replace
@@ -40,7 +44,8 @@
 		warn
 		last)
 
-  #:export (gi-function-info-is-method?
+  #:export (gi-function-info-names
+            gi-function-info-is-method?
 
             g-function-info-get-flags
             g-function-info-get-property
@@ -53,6 +58,44 @@
 ;;;
 ;;; High level API
 ;;;
+(define* (gi-function-info-names info #:optional (ns #f))
+  (let* ((namespace (or ns
+                        (g-base-info-get-namespace info)))
+         (ns-prefix (g-irepository-get-c-prefix namespace))
+         (ct-info (g-base-info-get-container info))
+         (ct-rg-name (and ct-info
+                          (g-registered-type-info-get-type-name ct-info)))
+         (ct-bi-name (and ct-info
+                          (g-base-info-get-name ct-info)))
+         (ct-name (cond (ct-rg-name
+                         (g-name->name ct-rg-name))
+                        (ct-bi-name
+                         (g-name->name (string-append ns-prefix ct-bi-name)))
+                        (else
+                         #f)))
+         (bi-name (g-base-info-get-name info))
+         (c-name (g-function-info-get-symbol info)))
+    (if (char=? (string-ref bi-name 0) #\_)
+        ;; this (should only) happens for methods, for which the C name
+        ;; gets a 'plural-ed' container name, such as for the GdkEvent
+        ;; gdk-events-get-angle method. we expect that in these cases,
+        ;; there is no renaming, otherwise, we raise an exception.
+        (if (string-contains c-name bi-name)
+            (let ((name (g-name->name c-name))
+                  (m-name (g-name->name (substring bi-name 1))))
+              (values name m-name c-name namespace #f))
+            (error "Unexpected renaming" ct-name c-name bi-name))
+        (let* ((bi-name (g-name->name bi-name))
+               (ns-prefix (g-name->name ns-prefix))
+               (name (if ct-name
+                         (symbol-append ct-name '- bi-name)
+                         (symbol-append ns-prefix '- bi-name))))
+          (values name
+                  (and ct-info ct-name bi-name)
+                  c-name
+                  namespace
+                  ;; shadows?
+                  (not (eq? name (g-name->name c-name))))))))
 
 (define* (gi-function-info-is-method? info #:optional (flags #f))
   (let ((flags (or flags

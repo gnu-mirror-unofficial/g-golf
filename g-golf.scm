@@ -69,6 +69,7 @@
   #:use-module (g-golf gobject type-info)
   #:use-module (g-golf gobject gobject)
   #:use-module (g-golf gobject enum-flags)
+  #:use-module (g-golf gobject boxed-types)
   #:use-module (g-golf gobject generic-values)
   #:use-module (g-golf gobject params-vals)
   #:use-module (g-golf gobject param-spec)
@@ -156,6 +157,7 @@
 			      (g-golf gobject type-info)
                               (g-golf gobject gobject)
 			      (g-golf gobject enum-flags)
+                              (g-golf gobject boxed-types)
 			      (g-golf gobject generic-values)
                               (g-golf gobject params-vals)
 			      (g-golf gobject param-spec)
@@ -229,11 +231,11 @@
   (gi-import-by-name "GObject" "ParamSpec"
                      #:with-methods? #f #:force? #t)
 
-  (gi-import-by-name "GObject" "Binding" #:force? 't)
-  (gi-import-by-name "GObject" "BindingFlags" #:force? 't)
+  (gi-import-by-name "GObject" "Binding" #:force? #t)
+  (gi-import-by-name "GObject" "BindingFlags" #:force? #t)
 
   (let ((%gi-import-object-methods
          (@@ (g-golf hl-api object) gi-import-object-methods))
         (g-object-info
          (g-irepository-find-by-name "GObject" "Object")))
-    (%gi-import-object-methods g-object-info #:force? 't)))
+    (%gi-import-object-methods g-object-info #:force? #t)))

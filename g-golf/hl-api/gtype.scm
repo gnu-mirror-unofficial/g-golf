@@ -53,8 +53,7 @@
   #:export (<gtype-class>
             <gtype-instance>
 
-            g-type-class
-            g-inst-cache-show))
+            g-type-class))
 
 
 (g-export !info
@@ -129,6 +128,29 @@
              (g-inst-cache-ref g-inst))
         (next-method))))
 
+(define-syntax make-g-inst-guard
+  (syntax-rules ()
+    ((make-g-inst-guard)
+     (let ((guardian (make-guardian)))
+       (add-hook! after-gc-hook
+                  (lambda ()
+                    #;(dimfi guardian)
+                    (let loop ()
+                      (let ((inst (guardian)))
+                        (when inst
+                          (let ((g-inst (!g-inst inst)))
+                            #;(dimfi "  gc" inst
+                                   "[ g-object ref-count before cleaning"
+                                   (g-object-ref-count g-inst) "]")
+                            (g-object-unref g-inst)
+                            (loop)))))))
+       (lambda (g-inst inst)
+         (g-inst-cache-set! g-inst inst)
+         (guardian inst)
+         inst)))))
+
+(define g-inst-guard (make-g-inst-guard))
+
 (define-method (initialize (self <gtype-instance>) initargs)
   (receive (split-kw split-rest)
       (split-keyword-args (map slot-definition-init-keyword
@@ -140,7 +162,7 @@
         (when (g-object-is-floating g-inst)
           (g-object-ref-sink g-inst))
         (set! (!g-inst self) g-inst)
-        (g-inst-cache-set! g-inst self))))
+        (g-inst-guard g-inst self))))
 
 (define %g_value_init
   (@@ (g-golf gobject generic-values) g_value_init))
@@ -233,21 +255,8 @@
   (hashq-remove! %g-inst-cache
                  (pointer-address self)))
 
-(define-method (g-inst-cache-remove! (self <gtype-instance>))
+(define-method* (g-inst-cache-remove! (self <gtype-instance>)
+                                      #:optional (g-inst #f))
   (hashq-remove! %g-inst-cache
-                 (pointer-address (!g-inst self))))
-
-(define* (g-inst-cache-show #:optional
-                            (port (current-output-port)))
-  (let ((n-entry (hash-count (const #t) %g-inst-cache)))
-    (case n-entry
-      ((0)
-       (display "The g-inst cache is empty\n" port))
-      (else
-       (letrec ((show (lambda (key value)
-                        (format port "  ~S  -  ~S~%"
-                                (!g-inst value)
-                                value))))
-         (format port "The g-inst cache has ~A entry(ies):~%"
-                 n-entry)
-         (g-inst-cache-for-each show))))))
+                 (pointer-address (or g-inst
+                                      (!g-inst self)))))

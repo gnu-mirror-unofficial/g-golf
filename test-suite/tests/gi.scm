@@ -106,6 +106,15 @@
          (and (= (length a) (length b))
               (every eq? a (map g-type->symbol b))))))))
 
+(define-method (test-utils-gtypes (self <g-golf-test-gi>))
+  (let ((a '(int double object)))
+    (assert-true
+     (receive (ptr)
+         (scm->gi a 'gtypes)
+       (let ((b (gi->scm ptr 'gtypes)))
+         (and (= (length a) (length b))
+              (every eq? a (map g-type->symbol b))))))))
+
 
 ;;;
 ;;; Repository

@@ -28,6 +28,7 @@
 
 (define-module (g-golf gi interface-info)
   #:use-module (ice-9 format)
+  #:use-module (ice-9 receive)
   #:use-module (oop goops)
   #:use-module (system foreign)
   #:use-module (g-golf support utils)
@@ -35,6 +36,7 @@
   #:use-module (g-golf init)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gi base-info)
+  #:use-module (g-golf gi function-info)
   #:use-module (g-golf gi registered-type-info)
 
   #:duplicates (merge-generics
@@ -115,7 +117,39 @@
              (g-interface-info-get-n-constants info)
              iface-struct
              iface-struct-name))
+    (gi-interface-show-methods info port)
     (values)))
+
+(define %iface-method-fmt
+  "
+     ~2,,,' @A. ~A
+         ~A
+")
+
+(define %iface-method-shadows-fmt
+  "
+     ~2,,,' @A. ~A
+         ~A
+         --- shadows ~A ---
+")
+
+(define* (gi-interface-show-methods info
+                                    #:optional (port (current-output-port)))
+  (format port "  Methods:\n")
+  (let loop ((n-method (g-interface-info-get-n-methods info))
+             (i 0))
+    (if (= i n-method)
+        (newline port)
+        (let ((m-info (g-interface-info-get-method info i)))
+          (receive (name short-name c-name namespace shadows?)
+              (gi-function-info-names m-info)
+            (if shadows?
+                (format port "~?" %iface-method-shadows-fmt
+                        (list i short-name name c-name))
+                (format port "~?" %iface-method-fmt
+                        (list i short-name name)))
+            (loop n-method
+                  (+ i 1)))))))
 
 
 ;;;
