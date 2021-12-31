@@ -916,31 +916,30 @@ method with its 'old' definition.
                        (error "Invalid array argument: " arg))
                    (match type-desc
                      ((array fixed-size is-zero-terminated param-n param-tag)
+                      (let* ((param-n (case param-n
+                                        ((-1) param-n)
+                                        (else
+                                         (if is-method? (+ param-n 1) param-n))))
+                             (arg-n (list-ref args param-n)))
                       (case param-tag
                         ((utf8
                           filename)
                          (gi-argument-set! gi-argument-in 'v-pointer
-                                           (if is-zero-terminated
+                                           (if (or is-zero-terminated
+                                                   (= arg-n -1))
                                                (scm->gi-strings arg)
-                                               (scm->gi-n-string arg
-                                                                 (list-ref args
-                                                                           (if is-method?
-                                                                               (+ param-n 1)
-                                                                               param-n))))))
+                                               (scm->gi-n-string arg arg-n))))
                         ((gtype)
                          (gi-argument-set! gi-argument-in 'v-pointer
-                                           (if is-zero-terminated
+                                           (if (or is-zero-terminated
+                                                   (= arg-n -1))
                                                (warning
                                                 "Unimplemented (prepare args-in) scm->gi-gtypes."
                                                 "")
-                                               (scm->gi-n-gtype arg
-                                                                (list-ref args
-                                                                           (if is-method?
-                                                                               (+ param-n 1)
-                                                                               param-n))))))
+                                               (scm->gi-n-gtype arg arg-n))))
                         (else
                          (warning "Unimplemented (prepare args-in) type - array;"
-                                  (format #f "~S" type-desc))))))))
+                                  (format #f "~S" type-desc)))))))))
               ((glist)
                (if (or (not arg)
                        (null? arg))
