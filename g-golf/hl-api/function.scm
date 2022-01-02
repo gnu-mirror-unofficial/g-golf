@@ -937,6 +937,21 @@ method with its 'old' definition.
                                                 "Unimplemented (prepare args-in) scm->gi-gtypes."
                                                 "")
                                                (scm->gi-n-gtype arg arg-n))))
+                        ((uint8)
+                         ;; this is most likely a string, but we will
+                         ;; check and also (blindingly) accept a pointer.
+                         (cond ((string? arg)
+                                (let ((string-pointer (string->pointer arg)))
+                                  (set! (!string-pointer arg-in) string-pointer)
+                                  ;; don't use 'v-string, which expects a
+                                  ;; string, calls string->pointer (and
+                                  ;; does not keep a reference).
+                                  (gi-argument-set! gi-argument-in 'v-pointer string-pointer)))
+                               ((pointer? arg)
+                                ;; as said above, we blindingly accept a pointer
+                                (gi-argument-set! gi-argument-in 'v-pointer arg))
+                               (else
+                                (error "Invalid (uint8 array) argument: " arg))))
                         (else
                          (warning "Unimplemented (prepare args-in) type - array;"
                                   (format #f "~S" type-desc)))))))))
