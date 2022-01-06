@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2021
+;;;; Copyright (C) 2019 - 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -1237,7 +1237,8 @@ method with its 'old' definition.
                      (make (%gdk-event-class) #:event foreign)))
                (else
                 foreign))))
-          ((object)
+          ((object
+            interface)
            (let* ((gi-arg-val (gi-argument-ref gi-argument 'v-pointer))
                   (foreign (if is-pointer?
                                (dereference-pointer gi-arg-val)
@@ -1258,11 +1259,7 @@ method with its 'old' definition.
                        #;(unless confirmed?
                          (set! (!type-desc funarg)
                                (list 'object name class g-type #t)))
-                       (make class #:g-inst foreign)))))))
-          ((interface)
-           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
-             (and foreign
-                  (make gi-type #:g-inst foreign))))))))
+                       (make class #:g-inst foreign)))))))))))
     ((array)
      (match type-desc
        ((array fixed-size is-zero-terminated param-n param-tag)
