@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019 - 2021
+;;;; Copyright (C) 2019 - 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -827,7 +827,7 @@ method with its 'old' definition.
             (= args-length n-arg-in))
         (begin
           (prepare-gi-args-in function args)
-          (prepare-gi-args-out function args))
+          (prepare-gi-args-out function args args-length n-arg))
         (error "Wrong number of arguments: " args))))
 
 (define %allow-none-exceptions
@@ -916,31 +916,45 @@ method with its 'old' definition.
                        (error "Invalid array argument: " arg))
                    (match type-desc
                      ((array fixed-size is-zero-terminated param-n param-tag)
+                      (let* ((param-n (case param-n
+                                        ((-1) param-n)
+                                        (else
+                                         (if is-method? (+ param-n 1) param-n))))
+                             (arg-n (list-ref args param-n)))
                       (case param-tag
                         ((utf8
                           filename)
                          (gi-argument-set! gi-argument-in 'v-pointer
-                                           (if is-zero-terminated
+                                           (if (or is-zero-terminated
+                                                   (= arg-n -1))
                                                (scm->gi-strings arg)
-                                               (scm->gi-n-string arg
-                                                                 (list-ref args
-                                                                           (if is-method?
-                                                                               (+ param-n 1)
-                                                                               param-n))))))
+                                               (scm->gi-n-string arg arg-n))))
                         ((gtype)
                          (gi-argument-set! gi-argument-in 'v-pointer
-                                           (if is-zero-terminated
+                                           (if (or is-zero-terminated
+                                                   (= arg-n -1))
                                                (warning
                                                 "Unimplemented (prepare args-in) scm->gi-gtypes."
                                                 "")
-                                               (scm->gi-n-gtype arg
-                                                                (list-ref args
-                                                                           (if is-method?
-                                                                               (+ param-n 1)
-                                                                               param-n))))))
+                                               (scm->gi-n-gtype arg arg-n))))
+                        ((uint8)
+                         ;; this is most likely a string, but we will
+                         ;; check and also (blindingly) accept a pointer.
+                         (cond ((string? arg)
+                                (let ((string-pointer (string->pointer arg)))
+                                  (set! (!string-pointer arg-in) string-pointer)
+                                  ;; don't use 'v-string, which expects a
+                                  ;; string, calls string->pointer (and
+                                  ;; does not keep a reference).
+                                  (gi-argument-set! gi-argument-in 'v-pointer string-pointer)))
+                               ((pointer? arg)
+                                ;; as said above, we blindingly accept a pointer
+                                (gi-argument-set! gi-argument-in 'v-pointer arg))
+                               (else
+                                (error "Invalid (uint8 array) argument: " arg))))
                         (else
                          (warning "Unimplemented (prepare args-in) type - array;"
-                                  (format #f "~S" type-desc))))))))
+                                  (format #f "~S" type-desc)))))))))
               ((glist)
                (if (or (not arg)
                        (null? arg))
@@ -1018,7 +1032,7 @@ method with its 'old' definition.
                                     arg)))))
             (loop (+ i 1)))))))
 
-(define (prepare-gi-args-out function args)
+(define (prepare-gi-args-out function args args-length n-arg)
   (let ((n-gi-arg-out (!n-gi-arg-out function))
         (args-out (!args-out function)))
     (let loop ((i 0))
@@ -1038,8 +1052,9 @@ method with its 'old' definition.
                                        out-bv
                                        (* out-bv-pos gi-argument-size)
                                        gi-argument-size)))
-                  ((!override? function)
-                   ;; Then all 'out argument(s) must be provided, as a
+                  ((and (!override? function)
+                        (= args-length n-arg))
+                   ;; Then all 'out argument(s) have been provided, as a
                    ;; pointer, and what ever they point to must have
                    ;; been initialized - see (g-golf override gtk) for
                    ;; some exmples.
@@ -1223,7 +1238,8 @@ method with its 'old' definition.
                      (make (%gdk-event-class) #:event foreign)))
                (else
                 foreign))))
-          ((object)
+          ((object
+            interface)
            (let* ((gi-arg-val (gi-argument-ref gi-argument 'v-pointer))
                   (foreign (if is-pointer?
                                (dereference-pointer gi-arg-val)
@@ -1244,11 +1260,7 @@ method with its 'old' definition.
                        #;(unless confirmed?
                          (set! (!type-desc funarg)
                                (list 'object name class g-type #t)))
-                       (make class #:g-inst foreign)))))))
-          ((interface)
-           (let ((foreign (gi-argument-ref gi-argument 'v-pointer)))
-             (and foreign
-                  (make gi-type #:g-inst foreign))))))))
+                       (make class #:g-inst foreign)))))))))))
     ((array)
      (match type-desc
        ((array fixed-size is-zero-terminated param-n param-tag)

@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020 - 2021
+;;;; Copyright (C) 2020 - 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -33,7 +33,8 @@
             gtk-list-store-set-value-ov
             gtk-tree-store-set-value-ov
             gtk-tree-model-get-value-ov
-            gtk-text-buffer-insert-ov))
+            gtk-text-buffer-insert-ov
+            gtk-tree-selection-get-selected-ov))
 
 
 (define (gtk-container-child-get-property-ov proc)
@@ -145,3 +146,16 @@
         (i-func buffer iter str -1)
         (values)))
    '(0 1 2)))
+
+
+(define (gtk-tree-selection-get-selected-ov proc)
+  (values
+   #f
+   `(lambda (selection)
+      (let ((i-func ,proc))
+        (receive (selected? model iter)
+            (i-func selection)
+          (if selected?
+              (values model iter)
+              (values model #f)))))
+   '(0)))

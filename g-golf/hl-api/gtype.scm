@@ -152,17 +152,22 @@
 (define g-inst-guard (make-g-inst-guard))
 
 (define-method (initialize (self <gtype-instance>) initargs)
-  (receive (split-kw split-rest)
-      (split-keyword-args (map slot-definition-init-keyword
-                            (class-g-property-slots (class-of self)))
-                          initargs)
-    (let ((g-inst (or (get-keyword #:g-inst initargs #f)
-                      (g-inst-construct self split-kw))))
+  (let* ((class (class-of self))
+         (g-type (!g-type class))
+         (g-type-name (g-type->symbol (g-type-fundamental g-type))))
+    (receive (split-kw split-rest)
+        (split-keyword-args (map slot-definition-init-keyword
+                              (class-g-property-slots class))
+                            initargs)
+      (let ((g-inst (or (get-keyword #:g-inst initargs #f)
+                        (g-inst-construct self split-kw))))
         (next-method self split-rest)
-        (when (g-object-is-floating g-inst)
-          (g-object-ref-sink g-inst))
+        (case g-type-name
+          ((object) ;; [not when interface]
+           (when (g-object-is-floating g-inst)
+             (g-object-ref-sink g-inst))))
         (set! (!g-inst self) g-inst)
-        (g-inst-guard g-inst self))))
+        (g-inst-guard g-inst self)))))
 
 (define %g_value_init
   (@@ (g-golf gobject generic-values) g_value_init))
