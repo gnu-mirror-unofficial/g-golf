@@ -827,7 +827,7 @@ method with its 'old' definition.
             (= args-length n-arg-in))
         (begin
           (prepare-gi-args-in function args)
-          (prepare-gi-args-out function args))
+          (prepare-gi-args-out function args args-length n-arg))
         (error "Wrong number of arguments: " args))))
 
 (define %allow-none-exceptions
@@ -1032,7 +1032,7 @@ method with its 'old' definition.
                                     arg)))))
             (loop (+ i 1)))))))
 
-(define (prepare-gi-args-out function args)
+(define (prepare-gi-args-out function args args-length n-arg)
   (let ((n-gi-arg-out (!n-gi-arg-out function))
         (args-out (!args-out function)))
     (let loop ((i 0))
@@ -1052,8 +1052,9 @@ method with its 'old' definition.
                                        out-bv
                                        (* out-bv-pos gi-argument-size)
                                        gi-argument-size)))
-                  ((!override? function)
-                   ;; Then all 'out argument(s) must be provided, as a
+                  ((and (!override? function)
+                        (= args-length n-arg))
+                   ;; Then all 'out argument(s) have been provided, as a
                    ;; pointer, and what ever they point to must have
                    ;; been initialized - see (g-golf override gtk) for
                    ;; some exmples.
