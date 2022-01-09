@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020 - 2021
+;;;; Copyright (C) 2020 - 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -43,7 +43,8 @@
     "gtk_list_store_set_value"
     "gtk_tree_store_set_value"
     "gtk_tree_model_get_value"
-    "gtk_text_buffer_insert"))
+    "gtk_text_buffer_insert"
+    "gtk_tree_selection_get_selected"))
 
 (define (gi-override? name)
   (and (member name %gi-override string=?)
