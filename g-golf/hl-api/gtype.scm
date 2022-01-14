@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2018 - 2020
+;;;; Copyright (C) 2018 - 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -122,10 +122,24 @@
 
 (define-method (make (class <gtype-class>) . initargs)
   ;; If #:g-inst is passed, we first check if the g-inst is cached, in
-  ;; which case we just return the goops instance associated with it.
-  (let ((g-inst (get-keyword #:g-inst initargs #f)))
-    (or (and g-inst
-             (g-inst-cache-ref g-inst))
+  ;; which case we just the goops instance associated with it, unless we
+  ;; detect that the cache holds an entry that is no longer valid, as
+  ;; further explained here below.
+  (let* ((g-inst (get-keyword #:g-inst initargs #f))
+         (inst (and g-inst
+                    (g-inst-cache-ref g-inst))))
+    (if inst
+        (let ((its-class (class-of inst)))
+          (if (eq? its-class class)
+              inst
+              (begin
+                ;; This means that g-inst points to a new gobject
+                ;; instance, but g-golf's cache still has the 'old'
+                ;; entry, this may happen if no gc occurrred yet, but
+                ;; glib/gobject already recovered the memory and is
+                ;; using it ...
+                (g-inst-cache-remove! g-inst)
+                (next-method))))
         (next-method))))
 
 (define-syntax make-g-inst-guard
