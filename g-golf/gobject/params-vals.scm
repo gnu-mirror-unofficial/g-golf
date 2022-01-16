@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2016 - 2021
+;;;; Copyright (C) 2016 - 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -76,7 +76,8 @@
             g-value-get-pointer
             g-value-set-pointer
             g-value-get-object
-            g-value-set-object))
+            g-value-set-object
+            g-value-get-variant))
 
 
 (g-export g-value-set-enum
@@ -132,6 +133,8 @@
       ((object
         interface)
        (g-value-get-object g-value))
+      ((variant)
+       (g-value-get-variant g-value))
       (else
        (error "Not implemented:" type-tag)))))
 
@@ -335,6 +338,12 @@
   (g_value_set_object g-value
                       (if object object %null-pointer)))
 
+(define (g-value-get-variant g-value)
+  (let ((variant (g_value_get_variant g-value)))
+    (if (null-pointer? variant)
+        #f
+        variant)))
+
 
 ;;;
 ;;; GObject Bindings
@@ -495,3 +504,9 @@
 				    %libgobject)
                       (list '*
                             '*)))
+
+(define g_value_get_variant
+  (pointer->procedure '*
+                      (dynamic-func "g_value_get_variant"
+				    %libgobject)
+                      (list '*)))
