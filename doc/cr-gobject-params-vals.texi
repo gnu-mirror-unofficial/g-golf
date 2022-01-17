@@ -1,6 +1,6 @@
 @c -*-texinfo-*-
 @c This is part of the GNU G-Golf Reference Manual.
-@c Copyright (C) 2016 - 2020 Free Software Foundation, Inc.
+@c Copyright (C) 2016 - 2022 Free Software Foundation, Inc.
 @c See the file g-golf.texi for copying conditions.
 
 
@@ -44,6 +44,7 @@ Parameters and Values — Standard Parameter and Value Types
 @item @ref{g-value-set-pointer}
 @item @ref{g-value-get-object}
 @item @ref{g-value-set-object}
+@item @ref{g-value-get-variant}
 @end table
 @end indentedblock
 
@@ -359,6 +360,16 @@ Returns nothing.
 
 Sets the content of @var{g-value} to @var{object} (a pointer to a
 @code{GObject} instance) and increases the @var{object} reference count.
+@end deffn
+
+
+@anchor{g-value-get-variant}
+@deffn Procedure g-value-get-variant g-value
+
+Returns a pointer or #f.
+
+Obtains and returns content of a variant @var{g-value}, or #f (may be
+NULL).
 @end deffn
 
 
