@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2020
+;;;; Copyright (C) 2020 - 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -34,7 +34,8 @@
   #:use-module (g-golf init)
   #:use-module (g-golf support)
   #:use-module (g-golf gi utils)
-  #:use-module (g-golf gi cache)
+  #:use-module (g-golf gi cache-gi)
+  #:use-module (g-golf gi cache-others)
   #:use-module (g-golf gi repository)
   #:use-module (g-golf gi common-types)
   #:use-module (g-golf gi base-info)
@@ -69,7 +70,8 @@
                               (g-golf init)
                               (g-golf support)
                               (g-golf gi utils)
-                              (g-golf gi cache)
+                              (g-golf gi cache-gi)
+                              (g-golf gi cache-others)
                               (g-golf gi repository)
                               (g-golf gi common-types)
                               (g-golf gi base-info)

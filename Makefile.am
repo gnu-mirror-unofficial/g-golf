@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2016 - 2021
+#### Copyright (C) 2016 - 2022
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU G-Golf
@@ -63,7 +63,8 @@ SOURCES = \
 	g-golf/gobject/signals.scm		\
 	g-golf/gobject.scm			\
 	g-golf/gi/utils.scm			\
-	g-golf/gi/cache.scm			\
+	g-golf/gi/cache-gi.scm			\
+	g-golf/gi/cache-others.scm		\
 	g-golf/gi/repository.scm		\
 	g-golf/gi/common-types.scm		\
 	g-golf/gi/base-info.scm			\
@@ -151,7 +152,8 @@ SOURCES_TO_REMOVE = \
 	g-golf/gdk/event-class.scm		\
 	g-golf/gdk/key-values.scm		\
 	g-golf/support/modules.scm		\
-	g-golf/support/flag.scm
+	g-golf/support/flag.scm			\
+	g-golf/gi/cache.scm
 
 GOBJECTS_TO_REMOVE = $(SOURCES_TO_REMOVE:%.scm=%.go)
 

@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2019, 2021
+;;;; Copyright (C) 2019, 2022
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU G-Golf
@@ -33,7 +33,7 @@
   #:use-module (g-golf support enum)
   #:use-module (g-golf support flags)
   #:use-module (g-golf support utils)
-  #:use-module (g-golf gi cache)
+  #:use-module (g-golf gi cache-gi)
   #:use-module (g-golf gi utils)
 
   #:duplicates (merge-generics

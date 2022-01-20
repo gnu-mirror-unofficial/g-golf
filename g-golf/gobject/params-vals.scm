@@ -38,7 +38,7 @@
   #:use-module (g-golf support struct)
   #:use-module (g-golf support union)
   #:use-module (g-golf support utils)
-  #:use-module (g-golf gi cache)
+  #:use-module (g-golf gi cache-gi)
   #:use-module (g-golf gi utils)
   #:use-module (g-golf gobject type-info)
   #:use-module (g-golf gobject enum-flags)
